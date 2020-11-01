@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "eidolon:item/crafting_altar"
+    },
+    "facing=west": {
+      "model": "eidolon:item/crafting_altar",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "eidolon:item/crafting_altar",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "eidolon:item/crafting_altar",
+      "y": 90
+    }
+  }
+}

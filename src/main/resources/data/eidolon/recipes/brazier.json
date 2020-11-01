@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    "xxx",
+    " y ",
+    "z z"
+  ],
+  "key": {
+    "x": {
+      "item": "eidolon:pewter_ingot"
+    },
+    "y": {
+      "tag": "forge:storage_blocks/coal"
+    },
+    "z": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "eidolon:brazier"
+  }
+}

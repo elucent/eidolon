@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    "xxx",
+    "xzx",
+    "ywy"
+  ],
+  "key": {
+    "x": {
+      "item": "minecraft:stone"
+    },
+    "y": {
+      "item": "eidolon:pewter_ingot"
+    },
+    "z": {
+      "item": "minecraft:bone"
+    },
+    "w": {
+      "item": "eidolon:pewter_inlay"
+    }
+  },
+  "result": {
+    "item": "eidolon:necrotic_focus"
+  }
+}

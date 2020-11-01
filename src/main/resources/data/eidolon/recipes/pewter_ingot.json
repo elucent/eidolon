@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    "xxx",
+    "xxx",
+    "xxx"
+  ],
+  "key": {
+    "x": {
+      "item": "eidolon:pewter_nugget"
+    }
+  },
+  "result": {
+    "item": "eidolon:pewter_ingot"
+  }
+}

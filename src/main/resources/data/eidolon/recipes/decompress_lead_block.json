@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "eidolon",
+  "ingredients": [
+    {
+      "tag": "forge:storage_blocks/lead"
+    }
+  ],
+  "result": {
+    "item": "eidolon:lead_ingot",
+    "count": 9
+  }
+}

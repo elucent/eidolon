@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "eidolon:block/pewter_block",
+    "top": "eidolon:block/pewter_block_top",
+    "bottom": "eidolon:block/pewter_block_bottom"
+  }
+}

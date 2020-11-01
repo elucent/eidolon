@@ -1,0 +1,6 @@
+{
+    "parent": "eidolon:block/enchanted_ash_side",
+    "textures": {
+        "line": "eidolon:block/enchanted_ash_line1"
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "eidolon",
+  "ingredients": [
+    {
+      "item": "eidolon:pewter_block"
+    }
+  ],
+  "result": {
+    "item": "eidolon:pewter_ingot",
+    "count": 9
+  }
+}

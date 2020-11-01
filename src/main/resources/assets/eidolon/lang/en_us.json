@@ -1,0 +1,42 @@
+{
+  "itemGroup.eidolon": "Eidolon",
+
+  "lore.eidolon.wraith_heart": "It's very cold...",
+  "lore.eidolon.sapping_sword": "Steals life from target.",
+  "lore.eidolon.sanguine_amulet": "Stores health for later.",
+  "lore.eidolon.void_amulet": "Absorbs projectiles occasionally.",
+  "lore.eidolon.warded_mail": "Defends from magic attacks.",
+
+  "item.eidolon.lead_ingot": "Lead Ingot",
+  "item.eidolon.lead_nugget": "Lead Nugget",
+  "item.eidolon.pewter_blend": "Pewter Blend",
+  "item.eidolon.pewter_ingot": "Pewter Ingot",
+  "item.eidolon.pewter_nugget": "Pewter Nugget",
+  "item.eidolon.pewter_inlay": "Pewter Inlay",
+  "item.eidolon.basic_ring": "Basic Ring",
+  "item.eidolon.basic_amulet": "Basic Amulet",
+  "item.eidolon.shadow_gem": "Shadow Gem",
+  "item.eidolon.wraith_heart": "Wraith Heart",
+  "item.eidolon.tattered_cloth": "Tattered Cloth",
+  "item.eidolon.soul_shard": "Soul Shard",
+  "item.eidolon.lesser_soul_gem": "Lesser Soul Gem",
+  "item.eidolon.sapping_sword": "Sword of Sapping",
+  "item.eidolon.sanguine_amulet": "Sanguine Amulet",
+  "item.eidolon.void_amulet": "Void Amulet",
+  "item.eidolon.warded_mail": "Warded Mail",
+  "item.eidolon.spawn_wraith": "Spawn Wraith",
+  "item.eidolon.spawn_zombie_brute": "Spawn Zombie Brute",
+
+  "block.eidolon.lead_block": "Lead Block",
+  "block.eidolon.lead_ore": "Lead Ore",
+  "block.eidolon.pewter_block": "Pewter Block",
+  "block.eidolon.brazier": "Brazier",
+  "block.eidolon.crucible": "Crucible",
+  "block.eidolon.crafting_altar": "Crafting Altar",
+  "block.eidolon.plinth": "Plinth",
+  "block.eidolon.stone_hand": "Stone Hand",
+  "block.eidolon.enchanted_ash": "Enchanted Ash",
+  "block.eidolon.necrotic_focus": "Necrotic Focus",
+
+  "effect.eidolon.chilled": "Chilled"
+}

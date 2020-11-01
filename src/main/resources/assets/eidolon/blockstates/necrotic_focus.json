@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "eidolon:item/necrotic_focus"
+    },
+    "facing=west": {
+      "model": "eidolon:item/necrotic_focus",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "eidolon:item/necrotic_focus",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "eidolon:item/necrotic_focus",
+      "y": 90
+    }
+  }
+}
