@@ -49,12 +49,12 @@ public class BlockBase extends Block {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext ctx) {
-        return shape != null ? shape : VoxelShapes.fullCube();
+        return getRaytraceShape(state, world, pos);
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext ctx) {
-        return shape != null ? shape : VoxelShapes.fullCube();
+        return getRaytraceShape(state, world, pos);
     }
 
     @Override

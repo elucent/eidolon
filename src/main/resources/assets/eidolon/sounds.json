@@ -1,0 +1,36 @@
+{
+  "cast_soulfire": {
+    "category": "neutral",
+    "subtitle": "eidolon.subtitle.cast_soulfire",
+    "sounds": [ "eidolon:cast_soulfire" ]
+  },
+  "cast_bonechill": {
+    "category": "neutral",
+    "subtitle": "eidolon.subtitle.cast_bonechill",
+    "sounds": [ "eidolon:cast_bonechill" ]
+  },
+  "splash_soulfire": {
+    "category": "neutral",
+    "subtitle": "eidolon.subtitle.splash_soulfire",
+    "sounds": [ "eidolon:splash_soulfire" ]
+  },
+  "splash_bonechill": {
+    "category": "neutral",
+    "subtitle": "eidolon.subtitle.splash_bonechill",
+    "sounds": [ "eidolon:splash_bonechill" ]
+  },
+  "select_sign": {
+    "category": "neutral",
+    "sounds": [ "eidolon:select_sign" ]
+  },
+  "chant_word": {
+    "category": "neutral",
+    "subtitle": "eidolon.subtitle.chant_word",
+    "sounds": [ "eidolon:chant_word" ]
+  },
+  "parousia": {
+    "category": "record",
+    "stream": true,
+    "sounds": [ "eidolon:parousia" ]
+  }
+}

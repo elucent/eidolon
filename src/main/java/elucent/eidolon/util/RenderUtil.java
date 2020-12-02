@@ -88,9 +88,45 @@ public class RenderUtil {
             .transparency(ADDITIVE_TRANSPARENCY)
             .texture(new RenderState.TextureState(AtlasTexture.LOCATION_PARTICLES_TEXTURE, false, false))
             .build(false)
+    ), GLOWING_BLOCK_PARTICLE = RenderType.makeType(
+        Eidolon.MODID + ":glowing_particle",
+        DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP,
+        GL11.GL_QUADS, 256,
+        RenderType.State.getBuilder()
+            .shadeModel(new RenderState.ShadeModelState(true))
+            .writeMask(new RenderState.WriteMaskState(true, false))
+            .lightmap(new RenderState.LightmapState(false))
+            .diffuseLighting(new RenderState.DiffuseLightingState(false))
+            .transparency(ADDITIVE_TRANSPARENCY)
+            .texture(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, false))
+            .build(false)
     );
 
     static double ticks = 0;
+
+    public static void litQuad(MatrixStack mStack, IRenderTypeBuffer buffer, double x, double y, double w, double h, float r, float g, float b, TextureAtlasSprite sprite) {
+        IVertexBuilder builder = buffer.getBuffer(GLOWING_SPRITE);
+
+        float f7 = sprite.getMinU();
+        float f8 = sprite.getMaxU();
+        float f5 = sprite.getMinV();
+        float f6 = sprite.getMaxV();
+        Matrix4f mat = mStack.getLast().getMatrix();
+        builder.pos(mat, (float)x, (float)y + (float)h, 0).color(r, g, b, 1.0f).tex(f7, f6).endVertex();
+        builder.pos(mat, (float)x + (float)w, (float)y + (float)h, 0).color(r, g, b, 1.0f).tex(f8, f6).endVertex();
+        builder.pos(mat, (float)x + (float)w, (float)y, 0).color(r, g, b, 1.0f).tex(f8, f5).endVertex();
+        builder.pos(mat, (float)x, (float)y, 0).color(r, g, b, 1.0f).tex(f7, f5).endVertex();
+    }
+
+    public static void litQuad(MatrixStack mStack, IRenderTypeBuffer buffer, double x, double y, double w, double h, float r, float g, float b, float u, float v, float uw, float vh) {
+        IVertexBuilder builder = buffer.getBuffer(GLOWING_SPRITE);
+
+        Matrix4f mat = mStack.getLast().getMatrix();
+        builder.pos(mat, (float)x, (float)y + (float)h, 0).color(r, g, b, 1.0f).tex(u, v + vh).endVertex();
+        builder.pos(mat, (float)x + (float)w, (float)y + (float)h, 0).color(r, g, b, 1.0f).tex(u + uw, v + vh).endVertex();
+        builder.pos(mat, (float)x + (float)w, (float)y, 0).color(r, g, b, 1.0f).tex(u + uw, v).endVertex();
+        builder.pos(mat, (float)x, (float)y, 0).color(r, g, b, 1.0f).tex(u, v).endVertex();
+    }
 
     public static void litBillboard(MatrixStack mStack, IRenderTypeBuffer buffer, double x, double y, double z, float r, float g, float b, TextureAtlasSprite sprite) {
         IVertexBuilder builder = buffer.getBuffer(GLOWING_SPRITE);

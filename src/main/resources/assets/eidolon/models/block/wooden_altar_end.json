@@ -1,0 +1,23 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"3": "eidolon:block/wood_altar_parts",
+		"particle": "eidolon:block/wood_altar_bottom"
+	},
+	"elements": [
+		{
+			"from": [4, 3.99, 1.99],
+			"to": [12, 8.01, 4.01],
+			"rotation": {"angle": 0, "axis": "y", "origin": [19, 12, 10]},
+			"faces": {
+				"north": {"uv": [4, 12, 12, 16], "texture": "#3"},
+				"east": {"uv": [0, 0, 2, 4], "texture": "#3"},
+				"south": {"uv": [4, 12, 12, 16], "texture": "#3"},
+				"west": {"uv": [12, 12, 14, 16], "texture": "#3"},
+				"up": {"uv": [8, 6, 16, 8], "rotation": 180, "texture": "#3"},
+				"down": {"uv": [8, 4, 16, 6], "texture": "#3"}
+			}
+		}
+	]
+}

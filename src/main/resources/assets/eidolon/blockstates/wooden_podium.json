@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "eidolon:item/wooden_podium"
+    },
+    "facing=west": {
+      "model": "eidolon:item/wooden_podium",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "eidolon:item/wooden_podium",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "eidolon:item/wooden_podium",
+      "y": 90
+    }
+  }
+}

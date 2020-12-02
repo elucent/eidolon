@@ -1,0 +1,83 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "eidolon:block/wooden_altar_main"
+      }
+    },
+    {
+      "when": {
+        "pxny": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/wooden_altar_corner"
+      }
+    },
+    {
+      "when": {
+        "pxpy": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/wooden_altar_corner",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "nxpy": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/wooden_altar_corner",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "nxny": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/wooden_altar_corner",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "nxny": "true",
+        "pxny": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/wooden_altar_end"
+      }
+    },
+    {
+      "when": {
+        "pxpy": "true",
+        "pxny": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/wooden_altar_end",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "nxpy": "true",
+        "pxpy": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/wooden_altar_end",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "nxpy": "true",
+        "nxny": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/wooden_altar_end",
+        "y": 270
+      }
+    }
+  ]
+}

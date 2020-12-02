@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    "xxx",
+    "y y",
+    "y y"
+  ],
+  "key": {
+    "x": {
+      "tag": "minecraft:wooden_slabs"
+    },
+    "y": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "item": "eidolon:wooden_altar",
+    "count": 3
+  }
+}

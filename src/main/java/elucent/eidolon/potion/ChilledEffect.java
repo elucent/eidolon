@@ -13,6 +13,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.DisplayEffectsScreen;
 import net.minecraft.client.gui.IngameGui;
+import net.minecraft.data.advancements.AdventureAdvancements;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
@@ -28,6 +29,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.gen.feature.structure.StrongholdStructure;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -65,12 +67,6 @@ public class ChilledEffect extends Effect implements IForgeEffect {
         LivingEntity e = event.getEntityLiving();
         if (e.isPotionActive(this)) {
             event.setCanceled(true);
-            for (PlayerEntity player : e.world.getEntitiesWithinAABB(PlayerEntity.class, e.getBoundingBox().expand(16, 16, 16))) {
-                Networking.INSTANCE.send(
-                    PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(e.getPosX(), e.getPosY(), e.getPosZ(), 16, e.world.getDimensionKey())),
-                    new ChilledEffectPacket(e.getPosX(), e.getPosY() + e.getHeight() / 2, e.getPosZ())
-                );
-            }
         }
     }
 

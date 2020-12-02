@@ -1,6 +1,8 @@
 package elucent.eidolon.network;
 
 import elucent.eidolon.Eidolon;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -106,6 +108,38 @@ public class Networking {
             LifestealEffectPacket::decode,
             LifestealEffectPacket::consume
         );
+
+        INSTANCE.registerMessage(
+            ++ id,
+            MagicBurstEffectPacket.class,
+            MagicBurstEffectPacket::encode,
+            MagicBurstEffectPacket::decode,
+            MagicBurstEffectPacket::consume
+        );
+
+        INSTANCE.registerMessage(
+            ++ id,
+            KnowledgeUpdatePacket.class,
+            KnowledgeUpdatePacket::encode,
+            KnowledgeUpdatePacket::decode,
+            KnowledgeUpdatePacket::consume
+        );
+
+        INSTANCE.registerMessage(
+            ++ id,
+            AttemptCastPacket.class,
+            AttemptCastPacket::encode,
+            AttemptCastPacket::decode,
+            AttemptCastPacket::consume
+        );
+
+        INSTANCE.registerMessage(
+            ++ id,
+            SpellCastPacket.class,
+            SpellCastPacket::encode,
+            SpellCastPacket::decode,
+            SpellCastPacket::consume
+        );
     }
 
     public static <MSG> void sendToDimension(World world, MSG msg, RegistryKey<World> dimension) {
@@ -114,5 +148,13 @@ public class Networking {
 
     public static <MSG> void sendToTracking(World world, BlockPos pos, MSG msg) {
         Networking.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), msg);
+    }
+
+    public static <MSG> void sendTo(PlayerEntity entity, MSG msg) {
+        Networking.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)entity), msg);
+    }
+
+    public static <MSG> void sendToServer(MSG msg) {
+        Networking.INSTANCE.sendToServer(msg);
     }
 }

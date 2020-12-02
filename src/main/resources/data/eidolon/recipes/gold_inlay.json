@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    " x ",
+    "x x",
+    " x "
+  ],
+  "key": {
+    "x": {
+      "tag": "forge:ingots/gold"
+    }
+  },
+  "result": {
+    "item": "eidolon:gold_inlay",
+    "count": 2
+  }
+}

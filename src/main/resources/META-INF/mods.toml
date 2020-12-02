@@ -17,6 +17,6 @@ A spooky magic mod about necromancy.
 [[dependencies.eidolon]]
     modId="curios"
     mandatory=true
-    versionRange="[FORGE-1.16.2,)"
+    versionRange="[FORGE-1.16.3,)"
     ordering="AFTER"
     side="BOTH"

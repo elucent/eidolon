@@ -1,6 +1,7 @@
 package elucent.eidolon.item.curio;
 
 import elucent.eidolon.Registry;
+import elucent.eidolon.entity.SpellProjectileEntity;
 import elucent.eidolon.item.ItemBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -88,7 +89,8 @@ public class VoidAmuletItem extends ItemBase {
                         || event.getSource().getImmediateSource() instanceof LlamaSpitEntity
                         || event.getSource().getImmediateSource() instanceof SmallFireballEntity
                         || event.getSource().getImmediateSource() instanceof ShulkerBulletEntity
-                        || event.getSource().getImmediateSource() instanceof PotionEntity)) {
+                        || event.getSource().getImmediateSource() instanceof PotionEntity
+                        || event.getSource().getImmediateSource() instanceof SpellProjectileEntity)) {
                     event.setCanceled(true);
                     if (!event.getEntity().getEntityWorld().isRemote) {
                         event.getEntity().getEntityWorld().playSound(null, event.getEntity().getPosition(), SoundEvents.ENTITY_WITHER_HURT, SoundCategory.PLAYERS, 1.0f, 0.75f);

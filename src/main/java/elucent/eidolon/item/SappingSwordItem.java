@@ -6,8 +6,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -19,42 +17,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.List;
 
 public class SappingSwordItem extends SwordItem {
-    public static class SappingSwordTier implements IItemTier {
-        @Override
-        public int getMaxUses() {
-            return 507;
-        }
-
-        @Override
-        public float getEfficiency() {
-            return 4.0f;
-        }
-
-        @Override
-        public float getAttackDamage() {
-            return 1;
-        }
-
-        @Override
-        public int getHarvestLevel() {
-            return 1;
-        }
-
-        @Override
-        public int getEnchantability() {
-            return 20;
-        }
-
-        @Override
-        public Ingredient getRepairMaterial() {
-            return Ingredient.fromStacks(new ItemStack(Items.IRON_INGOT));
-        }
-
-        public static SappingSwordTier INSTANCE = new SappingSwordTier();
-    }
-
     public SappingSwordItem(Properties builderIn) {
-        super(SappingSwordTier.INSTANCE, 3, -2.4f, builderIn);
+        super(Tiers.SanguineTier.INSTANCE, 1, -2.4f, builderIn);
     }
 
     String loreTag = null;
