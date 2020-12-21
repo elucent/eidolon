@@ -21,16 +21,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
-public class BonechillWandItem extends Item {
+public class BonechillWandItem extends WandItem {
     public BonechillWandItem(Properties builderIn) {
         super(builderIn);
-    }
-
-    String loreTag = null;
-
-    public Item setLore(String tag) {
-        this.loreTag = tag;
-        return this;
     }
 
     @Override

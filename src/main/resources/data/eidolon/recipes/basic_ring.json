@@ -8,7 +8,7 @@
   ],
   "key": {
     "x": {
-      "tag": "forge:ingots/gold"
+      "item": "eidolon:arcane_gold_ingot"
     },
     "y": {
       "item": "eidolon:soul_shard"

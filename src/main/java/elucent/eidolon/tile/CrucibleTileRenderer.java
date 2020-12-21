@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ColorHelper;
 import net.minecraft.util.ColorHelper.PackedColor;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -46,13 +47,15 @@ public class CrucibleTileRenderer extends TileEntityRenderer<CrucibleTileEntity>
         Minecraft mc = Minecraft.getInstance();
         mc.getTextureManager().bindTexture(STIRRER_TEXTURE);
         float coeff = tile.stirTicks == 0 ? 0 : (tile.stirTicks - partialTicks) / 20.0f;
-        matrixStackIn.push();
-        matrixStackIn.translate(0.5, 0.625, 0.5);
-        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(45 + coeff * 360));
-        matrixStackIn.translate(0, -0.125 * Math.sin(coeff * Math.PI), 0.125);
-        stirrer.rotateAngleX = (float)Math.PI / 8 * (1.0f - (float)Math.sin(coeff * Math.PI));
-        stirrer.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntitySolid(STIRRER_TEXTURE)), combinedLightIn, combinedOverlayIn);
-        matrixStackIn.pop();
+        if (!tile.getWorld().getBlockState(tile.getPos().up()).isSolidSide(tile.getWorld(), tile.getPos().up(), Direction.DOWN)) {
+            matrixStackIn.push();
+            matrixStackIn.translate(0.5, 0.625, 0.5);
+            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(45 + coeff * 360));
+            matrixStackIn.translate(0, -0.125 * Math.sin(coeff * Math.PI), 0.125);
+            stirrer.rotateAngleX = (float) Math.PI / 8 * (1.0f - (float) Math.sin(coeff * Math.PI));
+            stirrer.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntitySolid(STIRRER_TEXTURE)), combinedLightIn, combinedOverlayIn);
+            matrixStackIn.pop();
+        }
         if (tile.hasWater) {
             CauldronBlock block;
             TextureAtlasSprite water = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
@@ -68,10 +71,10 @@ public class CrucibleTileRenderer extends TileEntityRenderer<CrucibleTileEntity>
                 g = (int)(tile.getGreen() * 255);
                 b = (int)(tile.getBlue() * 255);
             }
-            builder.pos(mat, 0.125f, 0.75f, 0.125f).color(r, g, b, 255).tex(water.getMinU(), water.getMinV()).lightmap(combinedLightIn).normal(0, 1, 0).endVertex();
-            builder.pos(mat, 0.125f, 0.75f, 0.875f).color(r, g, b, 255).tex(water.getMaxU(), water.getMinV()).lightmap(combinedLightIn).normal(0, 1, 0).endVertex();
-            builder.pos(mat, 0.875f, 0.75f, 0.875f).color(r, g, b, 255).tex(water.getMaxU(), water.getMaxV()).lightmap(combinedLightIn).normal(0, 1, 0).endVertex();
-            builder.pos(mat, 0.875f, 0.75f, 0.125f).color(r, g, b, 255).tex(water.getMinU(), water.getMaxV()).lightmap(combinedLightIn).normal(0, 1, 0).endVertex();
+            builder.pos(mat, 0.125f, 0.75f, 0.125f).color(r, g, b, 192).tex(water.getInterpolatedU(2), water.getInterpolatedV(2)).lightmap(combinedLightIn).normal(0, 1, 0).endVertex();
+            builder.pos(mat, 0.125f, 0.75f, 0.875f).color(r, g, b, 192).tex(water.getInterpolatedU(14), water.getInterpolatedV(2)).lightmap(combinedLightIn).normal(0, 1, 0).endVertex();
+            builder.pos(mat, 0.875f, 0.75f, 0.875f).color(r, g, b, 192).tex(water.getInterpolatedU(14), water.getInterpolatedV(14)).lightmap(combinedLightIn).normal(0, 1, 0).endVertex();
+            builder.pos(mat, 0.875f, 0.75f, 0.125f).color(r, g, b, 192).tex(water.getInterpolatedU(2), water.getInterpolatedV(14)).lightmap(combinedLightIn).normal(0, 1, 0).endVertex();
         }
     }
 }

@@ -3,9 +3,11 @@ buildscript {
         maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
+        maven {url='https://dist.creeper.host/Sponge/maven'}
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -36,6 +38,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            arg "-mixin.config="+archivesBaseName+".mixins.json"
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -51,7 +54,9 @@ minecraft {
         }
 
         server {
+            property 'mixin.env.disableRefMap', 'true'
             workingDirectory project.file('run')
+            arg "-mixin.config="+archivesBaseName+".mixins.json"
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -97,6 +102,11 @@ repositories {
     maven {
         url = "https://maven.theillusivec4.top/"
     }
+
+    maven {
+        name 'JEI maven'
+        url = "https://dvs1.progwml6.com/files/maven"
+    }
 }
 
 dependencies {
@@ -104,6 +114,9 @@ dependencies {
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.2-4.0.0.1:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.2-4.0.0.1")
+
+    compileOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.0.58')
+    runtimeOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.0.58')
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -138,4 +151,10 @@ publishing {
             url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
+}
+
+apply plugin: 'org.spongepowered.mixin'
+
+mixin {
+    add sourceSets.main, "eidolon.mixins.json"
 }

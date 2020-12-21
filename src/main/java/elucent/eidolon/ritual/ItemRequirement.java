@@ -61,4 +61,8 @@ public class ItemRequirement implements IRequirement {
             Networking.sendToTracking(world, pos.up(2), new RitualConsumePacket(info.getPos(), pos.up(2), ritual.getRed(), ritual.getGreen(), ritual.getBlue()));
         }
     }
+
+    public Object getMatch() {
+        return match;
+    }
 }

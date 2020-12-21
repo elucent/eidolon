@@ -1,0 +1,21 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"1": "eidolon:block/stone_altar_side",
+		"particle": "eidolon:block/stone_altar_bottom"
+	},
+	"elements": [
+		{
+			"from": [13, 0, 1],
+			"to": [15, 2, 3],
+			"faces": {
+				"north": {"uv": [1, 14, 3, 16], "texture": "#1"},
+				"east": {"uv": [13, 14, 15, 16], "texture": "#1"},
+				"south": {"uv": [13, 14, 15, 16], "texture": "#1"},
+				"west": {"uv": [1, 14, 3, 16], "texture": "#1"},
+				"down": {"uv": [11, 14, 13, 16], "rotation": 270, "texture": "#1"}
+			}
+		}
+	]
+}

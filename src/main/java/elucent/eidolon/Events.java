@@ -1,54 +1,57 @@
 package elucent.eidolon;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.systems.RenderSystem;
 import elucent.eidolon.capability.IKnowledge;
 import elucent.eidolon.capability.KnowledgeProvider;
 import elucent.eidolon.capability.ReputationProvider;
 import elucent.eidolon.entity.ai.GenericBarterGoal;
 import elucent.eidolon.entity.ai.WitchBarterGoal;
+import elucent.eidolon.event.SpeedFactorEvent;
 import elucent.eidolon.item.CleavingAxeItem;
 import elucent.eidolon.item.CodexItem;
 import elucent.eidolon.item.ReaperScytheItem;
+import elucent.eidolon.item.WarlockRobesItem;
 import elucent.eidolon.network.CrystallizeEffectPacket;
 import elucent.eidolon.network.KnowledgeUpdatePacket;
 import elucent.eidolon.network.Networking;
+import elucent.eidolon.ritual.Ritual;
 import elucent.eidolon.spell.Signs;
-import elucent.eidolon.util.RenderUtil;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.LivingEntity;
+import elucent.eidolon.tile.GobletTileEntity;
+import elucent.eidolon.util.EntityUtil;
+import net.minecraft.entity.*;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.potion.Effects;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.MobSpawnInfo;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import sun.net.www.content.text.Generic;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Comparator;
+import java.util.List;
 
 public class Events {
     @SubscribeEvent
@@ -78,7 +81,28 @@ public class Events {
     }
 
     @SubscribeEvent
+    public void onTarget(LivingSetAttackTargetEvent event) {
+        if (EntityUtil.isEnthralledBy(event.getEntityLiving(), event.getTarget()))
+            ((MobEntity)event.getEntityLiving()).setAttackTarget(null);
+    }
+
+    @SubscribeEvent
     public void onDeath(LivingDropsEvent event) {
+        if (!(event.getEntityLiving() instanceof MonsterEntity)) {
+            World world = event.getEntity().world;
+            BlockPos pos = event.getEntity().getPosition();
+            List<GobletTileEntity> goblets = Ritual.getTilesWithinAABB(GobletTileEntity.class, world, new AxisAlignedBB(pos.add(-1, -1, -1), pos.add(2, 2, 2)));
+            if (goblets.size() > 0) {
+                GobletTileEntity goblet = goblets.stream().min(Comparator.comparingDouble((g) -> g.getPos().distanceSq(pos))).get();
+                goblet.setEntityType(event.getEntity().getType());
+            }
+        }
+
+        if (EntityUtil.isEnthralled(event.getEntityLiving())) {
+            event.getDrops().clear();
+            return;
+        }
+
         if (event.getSource().getTrueSource() != null && event.getSource().getTrueSource() instanceof LivingEntity) {
             LivingEntity source = (LivingEntity) event.getSource().getTrueSource();
             ItemStack held = source.getHeldItemMainhand();
@@ -87,7 +111,7 @@ public class Events {
                 int looting = ForgeHooks.getLootingLevel(entity, source, event.getSource());
                 event.getDrops().clear();
                 ItemEntity drop = new ItemEntity(source.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(),
-                    new ItemStack(Registry.SOUL_SHARD.get(), 1 + source.world.rand.nextInt(2 + looting)));
+                    new ItemStack(Registry.SOUL_SHARD.get(), source.world.rand.nextInt(2 + looting)));
                 drop.setDefaultPickupDelay();
                 event.getDrops().add(drop);
                 Networking.sendToTracking(entity.world, entity.getPosition(), new CrystallizeEffectPacket(entity.getPosition()));
@@ -159,48 +183,32 @@ public class Events {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    static IRenderTypeBuffer.Impl DELAYED_RENDER = null;
-
-    @OnlyIn(Dist.CLIENT)
-    public static IRenderTypeBuffer.Impl getDelayedRender() {
-        if (DELAYED_RENDER == null) {
-            Map<RenderType, BufferBuilder> buffers = new HashMap<>();
-            for (RenderType type : new RenderType[]{
-                RenderUtil.DELAYED_PARTICLE,
-                RenderUtil.GLOWING_PARTICLE,
-                RenderUtil.GLOWING_BLOCK_PARTICLE,
-                RenderUtil.GLOWING,
-                RenderUtil.GLOWING_SPRITE}) {
-                buffers.put(type, new BufferBuilder(type.getBufferSize()));
-            }
-            DELAYED_RENDER = IRenderTypeBuffer.getImpl(buffers, new BufferBuilder(256));
-        }
-        return DELAYED_RENDER;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    static float clientTicks = 0;
-
-    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onRenderLast(RenderWorldLastEvent event) {
-        if (ClientConfig.BETTER_LAYERING.get()) {
-            RenderSystem.pushMatrix(); // this feels...cheaty
-            RenderSystem.multMatrix(event.getMatrixStack().getLast().getMatrix());
-            getDelayedRender().finish(RenderUtil.DELAYED_PARTICLE);
-            getDelayedRender().finish(RenderUtil.GLOWING_PARTICLE);
-            getDelayedRender().finish(RenderUtil.GLOWING_BLOCK_PARTICLE);
-            RenderSystem.popMatrix();
-
-            getDelayedRender().finish(RenderUtil.GLOWING_SPRITE);
-            getDelayedRender().finish(RenderUtil.GLOWING);
+    public void onApplyPotion(PotionEvent.PotionApplicableEvent event) {
+        if (event.getPotionEffect().getPotion() == Effects.SLOWNESS && event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.FEET).getItem() instanceof WarlockRobesItem) {
+            event.setResult(Event.Result.DENY);
         }
-        clientTicks += event.getPartialTicks();
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public static float getClientTicks() {
-        return clientTicks;
+    @SubscribeEvent
+    public void onLivingHurt(LivingHurtEvent event) {
+        if ((event.getSource().getDamageType() == DamageSource.WITHER.getDamageType() || event.getSource().isMagicDamage())) {
+            if (event.getSource().getTrueSource() instanceof LivingEntity
+                && ((LivingEntity)event.getSource().getTrueSource()).getItemStackFromSlot(EquipmentSlotType.HEAD).getItem() instanceof WarlockRobesItem) {
+                event.setAmount(event.getAmount() * 1.5f);
+                if (event.getSource().getDamageType() == DamageSource.WITHER.getDamageType())
+                    ((LivingEntity) event.getSource().getTrueSource()).heal(event.getAmount() / 2);
+            }
+            if (event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof WarlockRobesItem)
+                event.setAmount(event.getAmount() / 2);
+        }
+    }
+
+    @SubscribeEvent
+    public void onGetSpeedFactor(SpeedFactorEvent event) {
+        if (event.getSpeedFactor() < 1.0f && event.getEntity() instanceof LivingEntity && ((LivingEntity)event.getEntity()).getItemStackFromSlot(EquipmentSlotType.FEET).getItem() instanceof WarlockRobesItem) {
+            float diff = 1.0f - event.getSpeedFactor();
+            event.setSpeedFactor(1.0f - diff / 2);
+        }
     }
 }

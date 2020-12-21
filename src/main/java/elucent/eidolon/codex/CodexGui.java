@@ -3,6 +3,7 @@ package elucent.eidolon.codex;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import elucent.eidolon.ClientEvents;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Events;
 import elucent.eidolon.network.AttemptCastPacket;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CodexGui extends Screen {
+    public static final CodexGui DUMMY = new CodexGui();
     public static final ResourceLocation CODEX_BACKGROUND = new ResourceLocation(Eidolon.MODID, "textures/gui/codex_bg.png");
     static int xSize = 312, ySize = 208;
     List<Sign> chant = new ArrayList<>();
@@ -106,7 +108,7 @@ public class CodexGui extends Screen {
         }
         bgx = baseX + 16;
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        float flicker = 0.875f + 0.125f * (float)Math.sin(Math.toRadians(12 * Events.getClientTicks()));
+        float flicker = 0.875f + 0.125f * (float)Math.sin(Math.toRadians(12 * ClientEvents.getClientTicks()));
         for (int i = 0; i < chant.size(); i ++) {
             Sign sign = chant.get(i);
             RenderUtil.litQuad(mStack, IRenderTypeBuffer.getImpl(tess.getBuffer()), bgx + 4, baseY + 4, 16, 16,
@@ -157,6 +159,12 @@ public class CodexGui extends Screen {
         }
 
         if (chant.size() > 0) renderChant(matrixStack, guiLeft, guiTop, mouseX, mouseY, partialTicks);
+
+
+        for (int i = 0; i < CodexChapters.categories.size(); i ++) {
+            int y = guiTop + 28 + (i % 8) * 20;
+            CodexChapters.categories.get(i).drawTooltip(this, matrixStack, guiLeft + (i >= 8 ? 304 : 8), y, i >= 8, mouseX, mouseY);
+        }
     }
 
     protected boolean interactChant(int x, int y, int mouseX, int mouseY) {

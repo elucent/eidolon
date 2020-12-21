@@ -1,11 +1,13 @@
 package elucent.eidolon.capability;
 
 import elucent.eidolon.spell.Sign;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.*;
 
 public class KnowledgeImpl implements IKnowledge {
     Set<Sign> signs = new HashSet<>();
+    Set<ResourceLocation> facts = new HashSet<>();
 
     @Override
     public boolean knowsSign(Sign sign) {
@@ -20,5 +22,20 @@ public class KnowledgeImpl implements IKnowledge {
     @Override
     public Set<Sign> getKnownSigns() {
         return signs;
+    }
+
+    @Override
+    public boolean knowsFact(ResourceLocation fact) {
+        return facts.contains(fact);
+    }
+
+    @Override
+    public void addFact(ResourceLocation fact) {
+        facts.add(fact);
+    }
+
+    @Override
+    public Set<ResourceLocation> getKnownFacts() {
+        return facts;
     }
 }

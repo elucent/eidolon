@@ -20,4 +20,9 @@ public class ServerProxy implements ISidedProxy {
     public void init() {
         //
     }
+
+    @Override
+    public void openCodexGui() {
+        //
+    }
 }

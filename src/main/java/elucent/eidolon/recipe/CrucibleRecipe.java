@@ -6,6 +6,7 @@ import elucent.eidolon.ritual.Ritual;
 import elucent.eidolon.ritual.RitualRegistry;
 import elucent.eidolon.tile.CrucibleTileEntity;
 import elucent.eidolon.tile.CrucibleTileEntity.CrucibleStep;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
@@ -28,8 +29,8 @@ public class CrucibleRecipe {
     }
 
     public static class Step {
-        List<Object> matches = new ArrayList<>();
-        int stirs;
+        public List<Object> matches = new ArrayList<>();
+        public int stirs;
 
         public Step(int stirs, List<Object> matches) {
             this.stirs = stirs;
@@ -39,6 +40,10 @@ public class CrucibleRecipe {
 
     public CrucibleRecipe(ItemStack result) {
         this.result = result;
+    }
+
+    public List<Step> getSteps() {
+        return steps;
     }
 
     public ResourceLocation getRegistryName() {
@@ -56,16 +61,16 @@ public class CrucibleRecipe {
     }
 
     public CrucibleRecipe addStep(Object... matches) {
-        addStep(0, matches);
+        addStirringStep(0, matches);
         return this;
     }
 
     public CrucibleRecipe addStep(int stirs) {
-        addStep(stirs, new Object[]{});
+        addStirringStep(stirs, new Object[]{});
         return this;
     }
 
-    public CrucibleRecipe addStep(int stirs, Object... matches) {
+    public CrucibleRecipe addStirringStep(int stirs, Object... matches) {
         steps.add(new Step(stirs, Arrays.asList(matches)));
         return this;
     }
@@ -77,6 +82,9 @@ public class CrucibleRecipe {
         else if (match instanceof Item) {
             if ((Item)match == sacrifice.getItem()) return true;
         }
+        else if (match instanceof Block) {
+            if (((Block)match).asItem() == sacrifice.getItem()) return true;
+        }
         else if (match instanceof ITag) {
             if (((ITag<Item>)match).contains(sacrifice.getItem())) return true;
         }
@@ -84,19 +92,15 @@ public class CrucibleRecipe {
     }
 
     public boolean matches(List<CrucibleStep> items) {
-        System.out.println("testing against recipe for " + result);
         if (steps.size() != items.size()) return false;
-        System.out.println(" - passed step count check");
 
         List<Object> matchList = new ArrayList<>();
         List<ItemStack> itemList = new ArrayList<>();
 
         for (int i = 0; i < steps.size(); i ++) {
-            System.out.println(" - checking step " + i);
             Step correct = steps.get(i);
             CrucibleStep provided = items.get(i);
             if (correct.stirs != provided.getStirs()) return false;
-            System.out.println("    - passed stir check");
 
             matchList.clear();
             itemList.clear();
@@ -113,7 +117,6 @@ public class CrucibleRecipe {
                 }
             }
 
-            System.out.println("    - matchList.size() = " + matchList.size());
             if (matchList.size() != 0) return false;
         }
 

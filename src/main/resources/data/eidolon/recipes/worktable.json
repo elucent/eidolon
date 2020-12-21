@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    "xxx",
+    "yzy",
+    "zzz"
+  ],
+  "key": {
+    "x": {
+      "item": "minecraft:red_carpet"
+    },
+    "y": {
+      "item": "eidolon:pewter_ingot"
+    },
+    "z": {
+      "tag": "planks"
+    }
+  },
+  "result": {
+    "item": "eidolon:worktable"
+  }
+}

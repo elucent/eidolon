@@ -75,7 +75,7 @@ public class ChantCasterEntity extends Entity {
                     }
                     else world.playSound(null, getPosition(), SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 1.0f, 1.0f);
                 }
-                setDead();
+                if (!world.isRemote) setDead();
                 return;
             }
         }
@@ -95,7 +95,7 @@ public class ChantCasterEntity extends Entity {
             if (index + 1 >= signs.size()) {
                 timer = 40;
             }
-            getDataManager().set(INDEX, index + 1);
+            if (!world.isRemote) getDataManager().set(INDEX, index + 1);
         }
     }
 

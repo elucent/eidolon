@@ -40,14 +40,14 @@ public class AttemptCastPacket {
 
     public static void encode(AttemptCastPacket object, PacketBuffer buffer) {
         buffer.writeInt(object.signs.size());
-        for (int i = 0; i < object.signs.size(); i ++) buffer.writeString(object.signs.get(i).getRegistryName().toString());
+        for (int i = 0; i < object.signs.size(); i ++) buffer.writeString(object.signs.get(i).getRegistryName().toString(), 255);
         buffer.writeUniqueId(object.uuid);
     }
 
     public static AttemptCastPacket decode(PacketBuffer buffer) {
         int n = buffer.readInt();
         List<Sign> signs = new ArrayList<>();
-        for (int i = 0; i < n; i ++) signs.add(Signs.find(new ResourceLocation(buffer.readString())));
+        for (int i = 0; i < n; i ++) signs.add(Signs.find(new ResourceLocation(buffer.readString(255))));
         return new AttemptCastPacket(buffer.readUniqueId(), signs);
     }
 

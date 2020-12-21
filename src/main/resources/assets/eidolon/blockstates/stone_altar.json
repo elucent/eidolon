@@ -1,0 +1,83 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "eidolon:block/stone_altar_main"
+      }
+    },
+    {
+      "when": {
+        "px": "false",
+        "nz": "false"
+      },
+      "apply": {
+        "model": "eidolon:block/stone_altar_corner"
+      }
+    },
+    {
+      "when": {
+        "px": "false",
+        "pz": "false"
+      },
+      "apply": {
+        "model": "eidolon:block/stone_altar_corner",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "nx": "false",
+        "pz": "false"
+      },
+      "apply": {
+        "model": "eidolon:block/stone_altar_corner",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "nx": "false",
+        "nz": "false"
+      },
+      "apply": {
+        "model": "eidolon:block/stone_altar_corner",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "nz": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/stone_altar_end"
+      }
+    },
+    {
+      "when": {
+        "px": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/stone_altar_end",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "pz": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/stone_altar_end",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "nx": "true"
+      },
+      "apply": {
+        "model": "eidolon:block/stone_altar_end",
+        "y": 270
+      }
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import elucent.eidolon.ClientEvents;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Events;
 import net.minecraft.client.Minecraft;
@@ -25,7 +26,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Random;
 
 public class RenderUtil {
-    protected static final RenderState.TransparencyState ADDITIVE_TRANSPARENCY = new RenderState.TransparencyState("lightning_transparency", () -> {
+    public static final RenderState.TransparencyState ADDITIVE_TRANSPARENCY = new RenderState.TransparencyState("lightning_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
     }, () -> {
@@ -33,7 +34,7 @@ public class RenderUtil {
         RenderSystem.defaultBlendFunc();
     });
 
-    protected static final RenderState.TransparencyState NORMAL_TRANSPARENCY = new RenderState.TransparencyState("lightning_transparency", () -> {
+    public static final RenderState.TransparencyState NORMAL_TRANSPARENCY = new RenderState.TransparencyState("lightning_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }, () -> {
@@ -167,7 +168,7 @@ public class RenderUtil {
         mStack.push();
         mStack.translate(x, y, z);
 
-        float rotation = (float)(Events.getClientTicks() / 200);
+        float rotation = (float)(ClientEvents.getClientTicks() / 200);
 
         for(int i = 0; (float)i < (f5 + f5 * f5) / 2.0F * 60.0F; ++i) {
             mStack.rotate(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));

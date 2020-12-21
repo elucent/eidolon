@@ -16,7 +16,7 @@ public class EffigyTileEntity extends TileEntityBase {
     }
 
     public boolean ready() {
-        return world.getGameTime() - previous >= 24000;
+        return true; // world.getGameTime() - previous >= 24000;
     }
 
     public void pray() {

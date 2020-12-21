@@ -86,6 +86,15 @@ public class Category {
         Minecraft.getInstance().getTextureManager().bindTexture(CodexGui.CODEX_BACKGROUND);
         colorBlit(mStack, x, y, 208, right ? 208 : 227, 48, 19, 512, 512, color);
         Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(icon, x + (right ? 23 : 9), y + 1);
+    }
+
+    public void drawTooltip(CodexGui gui, MatrixStack mStack, int x, int y, boolean right, int mouseX, int mouseY) {
+        int w = 36;
+        if (!right) x -= 36;
+        w += hoveramount * 12;
+        if (!right) x -= hoveramount * 12;
+
+        boolean hover = mouseX >= x && mouseY >= y && mouseX <= x + w && mouseY <= y + 19;
         if (hover) gui.renderTooltip(mStack, new TranslationTextComponent("eidolon.codex.category." + key), mouseX, mouseY);
     }
 }

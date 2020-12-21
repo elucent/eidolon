@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "eidolon:item/unholy_effigy"
+    },
+    "facing=west": {
+      "model": "eidolon:item/unholy_effigy",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "eidolon:item/unholy_effigy",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "eidolon:item/unholy_effigy",
+      "y": 90
+    }
+  }
+}

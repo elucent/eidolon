@@ -3,6 +3,7 @@ package elucent.eidolon.codex;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import elucent.eidolon.ClientEvents;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Events;
 import elucent.eidolon.Registry;
@@ -107,7 +108,7 @@ public class SignIndexPage extends Page {
                 if (hover && !infoHover) {
                     mStack.push();
                     mStack.translate(xx + 24, yy + 24, 0);
-                    mStack.rotate(Vector3f.ZP.rotationDegrees(Events.getClientTicks() * 1.5f));
+                    mStack.rotate(Vector3f.ZP.rotationDegrees(ClientEvents.getClientTicks() * 1.5f));
                     colorBlit(mStack, -18, -18, 128, 48, 36, 36, 256, 256, sign.getColor());
                     mStack.pop();
                 }

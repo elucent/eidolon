@@ -2,6 +2,7 @@ package elucent.eidolon.proxy;
 
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
+import elucent.eidolon.codex.CodexGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
@@ -22,5 +23,10 @@ public class ClientProxy implements ISidedProxy {
     public void init() {
         Registry.clientInit();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(Eidolon::clientSetup);
+    }
+
+    @Override
+    public void openCodexGui() {
+        Minecraft.getInstance().displayGuiScreen(CodexGui.getInstance());
     }
 }

@@ -88,6 +88,10 @@ public abstract class Ritual {
         return ColorUtil.getBlue(color) / 255.0f;
     }
 
+    public List<IRequirement> getRequirements() {
+        return stepRequirements;
+    }
+
     public enum SetupResult {
         FAIL,
         PASS,
@@ -131,8 +135,8 @@ public abstract class Ritual {
 
     public static <T> List<T> getTilesWithinAABB(Class<T> type, World world, AxisAlignedBB bb) {
         List<T> tileList = new ArrayList<>();
-        for (int i = (int)Math.floor(bb.minX); i < (int)Math.ceil(bb.maxX); i += 16) {
-            for (int j = (int)Math.floor(bb.minZ); j < (int)Math.ceil(bb.maxZ); j += 16) {
+        for (int i = (int)Math.floor(bb.minX); i < (int)Math.ceil(bb.maxX) + 16; i += 16) {
+            for (int j = (int)Math.floor(bb.minZ); j < (int)Math.ceil(bb.maxZ) + 16; j += 16) {
                 IChunk c = world.getChunk(new BlockPos(i, 0, j));
                 Set<BlockPos> tiles = c.getTileEntitiesPos();
                 for (BlockPos p : tiles) if (bb.contains(p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5)) {

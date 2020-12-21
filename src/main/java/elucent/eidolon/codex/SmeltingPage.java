@@ -17,7 +17,7 @@ public class SmeltingPage extends Page {
     }
 
     @Override
-    public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
+    public void renderIngredients(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         drawItem(gui, mStack, input, x + 56, y + 34, mouseX, mouseY);
         drawItem(gui, mStack, result,x + 56, y + 107, mouseX, mouseY);
     }

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "minecraft:rotten_flesh"
+  },
+  "result": "eidolon:tallow",
+  "count": 1,
+  "experience": 0.5,
+  "cookingtime": 100
+}

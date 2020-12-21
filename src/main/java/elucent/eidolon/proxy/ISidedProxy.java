@@ -7,4 +7,6 @@ public interface ISidedProxy {
     PlayerEntity getPlayer();
     World getWorld();
     void init();
+
+    void openCodexGui();
 }

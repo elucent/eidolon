@@ -1,6 +1,7 @@
 package elucent.eidolon.particle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import elucent.eidolon.ClientEvents;
 import elucent.eidolon.Events;
 import elucent.eidolon.util.RenderUtil;
 import net.minecraft.client.Minecraft;
@@ -41,7 +42,7 @@ public class GlowParticleRenderType implements IParticleRenderType {
     @Override
     public void finishRender(Tessellator t) {
         t.draw();
-        Events.getDelayedRender().getBuffer(RenderUtil.GLOWING_PARTICLE);
+        ClientEvents.getDelayedRender().getBuffer(RenderUtil.GLOWING_PARTICLE);
         RenderSystem.enableDepthTest();
         endRenderCommon();
     }

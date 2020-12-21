@@ -67,7 +67,8 @@ public class LabStructure extends Structure<NoFeatureConfig> {
             int i = chunkX * 16;
             int j = chunkZ * 16;
             int k = generator.getNoiseHeight(i, j, Heightmap.Type.OCEAN_FLOOR_WG);
-            BlockPos blockpos = new BlockPos(i + rand.nextInt(16), rand.nextInt(k - 24) + 16, j + rand.nextInt(16));
+            if (k < 33) k = 33;
+            BlockPos blockpos = new BlockPos(i + rand.nextInt(16), rand.nextInt(k - 32) + 8, j + rand.nextInt(16));
             Rotation rotation = Rotation.randomRotation(rand);
 
             components.add(new Piece(templateManager, PART, blockpos, rotation, rand));

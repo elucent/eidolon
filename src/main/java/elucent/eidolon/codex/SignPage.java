@@ -3,6 +3,7 @@ package elucent.eidolon.codex;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import elucent.eidolon.ClientEvents;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Events;
 import elucent.eidolon.spell.Sign;
@@ -60,7 +61,7 @@ public class SignPage extends Page {
         mStack.push();
         mStack.translate(x + 64, y + 80, 0);
         // mStack.scale(0.9f, 0.9f, 0.9f);
-        mStack.rotate(Vector3f.ZP.rotationDegrees(Events.getClientTicks() * 1.5f));
+        mStack.rotate(Vector3f.ZP.rotationDegrees(ClientEvents.getClientTicks() * 1.5f));
         colorBlit(mStack, -40, -40, 128, 96, 80, 80, 256, 256, sign.getColor());
         mStack.pop();
         Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);

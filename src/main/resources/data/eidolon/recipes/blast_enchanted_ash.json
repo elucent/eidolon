@@ -1,10 +1,12 @@
 {
   "type": "minecraft:blasting",
   "ingredient": {
-    "item": "minecraft:bone_meal"
+    "item": "minecraft:bone"
   },
-  "result": "eidolon:enchanted_ash",
-  "count": 2,
+  "result": {
+    "item": "eidolon:enchanted_ash",
+    "count": 2
+  },
   "experience": 0.1,
   "cookingtime": 100
 }

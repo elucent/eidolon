@@ -1,8 +1,7 @@
 package elucent.eidolon.spell;
 
 import elucent.eidolon.Eidolon;
-import elucent.eidolon.capability.Deities;
-import elucent.eidolon.util.ColorUtil;
+import elucent.eidolon.deity.Deities;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -36,7 +35,21 @@ public class Spells {
     public static Spell
         DARK_PRAYER = register(new PrayerSpell(
             new ResourceLocation(Eidolon.MODID, "dark_prayer"),
-            Deities.DARK,
+            Deities.DARK_DEITY,
             Signs.WICKED_SIGN, Signs.WICKED_SIGN, Signs.WICKED_SIGN
+        )),
+        DARK_ANIMAL_SACRIFICE = register(new AnimalSacrificeSpell(
+            new ResourceLocation(Eidolon.MODID, "dark_animal_sacrifice"),
+            Deities.DARK_DEITY,
+            Signs.WICKED_SIGN, Signs.BLOOD_SIGN, Signs.WICKED_SIGN
+        )),
+        DARK_TOUCH = register(new DarkTouchSpell(
+            new ResourceLocation(Eidolon.MODID, "dark_touch"),
+            Signs.WICKED_SIGN, Signs.SOUL_SIGN, Signs.WICKED_SIGN, Signs.SOUL_SIGN
+        )),
+        DARK_VILLAGER_SACRIFICE = register(new VillagerSacrificeSpell(
+            new ResourceLocation(Eidolon.MODID, "dark_villager_sacrifice"),
+            Deities.DARK_DEITY,
+            Signs.BLOOD_SIGN, Signs.WICKED_SIGN, Signs.BLOOD_SIGN, Signs.SOUL_SIGN
         ));
 }

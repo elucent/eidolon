@@ -40,6 +40,40 @@ public class Tiers {
         public static PewterTier INSTANCE = new PewterTier();
     }
 
+    public static class MagicToolTier implements IItemTier {
+        @Override
+        public int getMaxUses() {
+            return 1170;
+        }
+
+        @Override
+        public float getEfficiency() {
+            return 7.0f;
+        }
+
+        @Override
+        public float getAttackDamage() {
+            return 3;
+        }
+
+        @Override
+        public int getHarvestLevel() {
+            return 3;
+        }
+
+        @Override
+        public int getEnchantability() {
+            return 30;
+        }
+
+        @Override
+        public Ingredient getRepairMaterial() {
+            return Ingredient.EMPTY;
+        }
+
+        public static MagicToolTier INSTANCE = new MagicToolTier();
+    }
+
     public static class SanguineTier implements IItemTier {
         @Override
         public int getMaxUses() {

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    " x ",
+    "yyy"
+  ],
+  "key": {
+    "x": {
+      "item": "minecraft:stick"
+    },
+    "y": {
+      "item": "eidolon:pewter_ingot"
+    }
+  },
+  "result": {
+    "item": "eidolon:wooden_brewing_stand"
+  }
+}

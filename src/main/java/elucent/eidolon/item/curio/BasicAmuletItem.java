@@ -24,7 +24,10 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
+import java.util.UUID;
+
 public class BasicAmuletItem extends Item {
+    UUID ATTR_ID = new UUID(1821688469367197801l, 2986247575840977557l);
     public BasicAmuletItem(Properties properties) {
         super(properties);
     }
@@ -35,7 +38,7 @@ public class BasicAmuletItem extends Item {
             @Override
             public Multimap<Attribute, AttributeModifier> getAttributeModifiers(String identifier) {
                 Multimap<Attribute, AttributeModifier> map = HashMultimap.create();
-                map.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(identifier, 1.0f, AttributeModifier.Operation.ADDITION));
+                map.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(ATTR_ID, Eidolon.MODID + ":basic_amulet", 1.0f, AttributeModifier.Operation.ADDITION));
                 return map;
             }
 

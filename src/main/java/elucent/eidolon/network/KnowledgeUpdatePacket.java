@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -54,15 +55,11 @@ public class KnowledgeUpdatePacket {
         ctx.get().enqueueWork(() -> {
             assert ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT;
 
-            World world = Minecraft.getInstance().world;
+            World world = Eidolon.proxy.getWorld();
             PlayerEntity player = world.getPlayerByUuid(packet.uuid);
             if (player != null) {
                 player.getCapability(KnowledgeProvider.CAPABILITY, null).ifPresent((k) -> {
-                    Set<Sign> before = new HashSet<>(), after = new HashSet<>();
-                    for (Sign s : k.getKnownSigns()) before.add(s);
                     KnowledgeProvider.CAPABILITY.getStorage().readNBT(KnowledgeProvider.CAPABILITY, k, null, packet.tag);
-                    for (Sign s : k.getKnownSigns()) after.add(s);
-                    for (Sign s : before) after.remove(s);
                     if (packet.playSound) player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1.0f, 0.5f);
                 });
             }

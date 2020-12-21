@@ -111,7 +111,7 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
     @Override
     public ActionResultType onActivated(BlockState state, BlockPos pos, PlayerEntity player, Hand hand) {
         if (hand == Hand.MAIN_HAND) {
-            if (player.isSneaking() && player.getHeldItem(hand).isEmpty()) {
+            if (player.isSneaking() && player.getHeldItem(hand).isEmpty() && hasWater) {
                 boiling = false;
                 hasWater = false;
                 stirs = 0;
@@ -225,21 +225,7 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
                     item.remove();
                 }
                 if (stirs == 0 && contents.isEmpty()) { // no action done; end recipe
-                    for (CrucibleStep step : steps) {
-                        System.out.println("step: ");
-                        System.out.println("\t" + step.getStirs() + " stirs");
-                        for (ItemStack stack : step.getContents()) System.out.println("\tcontains " + stack);
-                    }
-                    CrucibleRecipe recipe = CrucibleRegistry.find(steps);
-                    if (recipe != null) {
-                        Networking.sendToTracking(world, pos, new CrucibleSuccessPacket(pos, steamR, steamG, steamB));
-                        double angle = world.rand.nextDouble() * Math.PI * 2;
-                        ItemEntity entity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.75, pos.getZ() + 0.5, recipe.getResult().copy());
-                        entity.setMotion(Math.sin(angle) * 0.125, 0.25, Math.cos(angle) * 0.125);
-                        entity.setPickupDelay(10);
-                        world.addEntity(entity);
-                    }
-                    else Networking.sendToTracking(world, pos, new CrucibleFailPacket(pos));
+                    Networking.sendToTracking(world, pos, new CrucibleFailPacket(pos));
                     contents.clear();
                     steps.clear();
                     stirs = 0;
@@ -247,11 +233,26 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
                     sync();
                 }
                 else {
-                    world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0f, 1.0f);
                     CrucibleStep step = new CrucibleStep(stirs, contents);
                     steps.add(step);
+
+                    CrucibleRecipe recipe = CrucibleRegistry.find(steps);
+                    if (recipe != null) { // if recipe found
+                        Networking.sendToTracking(world, pos, new CrucibleSuccessPacket(pos, steamR, steamG, steamB));
+                        double angle = world.rand.nextDouble() * Math.PI * 2;
+                        ItemEntity entity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.75, pos.getZ() + 0.5, recipe.getResult().copy());
+                        entity.setMotion(Math.sin(angle) * 0.125, 0.25, Math.cos(angle) * 0.125);
+                        entity.setPickupDelay(10);
+                        world.addEntity(entity);
+                        contents.clear();
+                        steps.clear();
+                        hasWater = boiling = false;
+                    }
+                    else {
+                        world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0f, 1.0f); // try continue
+                        stepCounter = 100;
+                    }
                     stirs = 0;
-                    stepCounter = 100;
                     sync();
                 }
             }

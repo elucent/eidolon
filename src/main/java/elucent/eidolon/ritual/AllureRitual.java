@@ -37,7 +37,6 @@ public class AllureRitual extends Ritual {
                     List<Goal> goals = a.goalSelector.getRunningGoals().filter((goal) -> goal.getGoal() instanceof GoToPositionGoal)
                         .collect(Collectors.toList());
                     for (Goal g : goals) a.goalSelector.removeGoal(g);
-                    System.out.println("removed " + goals.size() + " goals");
                 }
             }
         }

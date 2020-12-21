@@ -21,7 +21,7 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class BlockBase extends Block {
     VoxelShape shape = null;
-    TileEntityType<? extends TileEntityBase> tileEntityType = null;
+    TileEntityType<? extends TileEntity> tileEntityType = null;
 
     public BlockBase(Properties properties) {
         super(properties);
@@ -32,7 +32,7 @@ public class BlockBase extends Block {
         return this;
     }
 
-    public BlockBase setTile(TileEntityType<? extends TileEntityBase> type) {
+    public BlockBase setTile(TileEntityType<? extends TileEntity> type) {
         this.tileEntityType = type;
         return this;
     }
@@ -76,14 +76,20 @@ public class BlockBase extends Block {
 
     public void breakBlock(BlockState state, IBlockReader world, BlockPos pos) {
         if (hasTileEntity(state)) {
-            ((TileEntityBase)world.getTileEntity(pos)).onDestroyed(state, pos);
+            TileEntity te = world.getTileEntity(pos);
+            if (te instanceof TileEntityBase) {
+                ((TileEntityBase) world.getTileEntity(pos)).onDestroyed(state, pos);
+            }
         }
     }
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult ray) {
         if (hasTileEntity(state)) {
-            return ((TileEntityBase)world.getTileEntity(pos)).onActivated(state, pos, player, hand);
+            TileEntity te = world.getTileEntity(pos);
+            if (te instanceof TileEntityBase) {
+                return ((TileEntityBase) world.getTileEntity(pos)).onActivated(state, pos, player, hand);
+            }
         }
         return super.onBlockActivated(state, world, pos, player, hand, ray);
     }

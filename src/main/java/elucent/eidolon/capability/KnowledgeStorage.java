@@ -14,23 +14,39 @@ import java.util.UUID;
 public class KnowledgeStorage implements Capability.IStorage<IKnowledge> {
     @Override
     public INBT writeNBT(Capability<IKnowledge> capability, IKnowledge instance, Direction side) {
-        ListNBT list = new ListNBT();
+        ListNBT signs = new ListNBT();
         for (Sign s : instance.getKnownSigns()) {
-            list.add(StringNBT.valueOf(s.getRegistryName().toString()));
+            signs.add(StringNBT.valueOf(s.getRegistryName().toString()));
+        }
+        ListNBT facts = new ListNBT();
+        for (ResourceLocation s : instance.getKnownFacts()) {
+            facts.add(StringNBT.valueOf(s.toString()));
         }
         CompoundNBT wrapper = new CompoundNBT();
-        wrapper.put("list", list);
+        wrapper.put("signs", signs);
+        wrapper.put("facts", facts);
         return wrapper;
     }
 
     @Override
     public void readNBT(Capability<IKnowledge> capability, IKnowledge instance, Direction side, INBT nbt) {
-        ListNBT list = ((CompoundNBT)nbt).getList("list", Constants.NBT.TAG_STRING);
         instance.getKnownSigns().clear();
-        for (int i = 0; i < list.size(); i ++) {
-            ResourceLocation loc = new ResourceLocation(list.getString(i));
-            Sign s = Signs.find(loc);
-            if (s != null) instance.addSign(s);
+        instance.getKnownFacts().clear();
+
+        if (((CompoundNBT)nbt).contains("signs")) {
+            ListNBT signs = ((CompoundNBT) nbt).getList("signs", Constants.NBT.TAG_STRING);
+            for (int i = 0; i < signs.size(); i++) {
+                ResourceLocation loc = new ResourceLocation(signs.getString(i));
+                Sign s = Signs.find(loc);
+                if (s != null) instance.addSign(s);
+            }
+        }
+
+        if (((CompoundNBT)nbt).contains("facts")) {
+            ListNBT facts = ((CompoundNBT) nbt).getList("facts", Constants.NBT.TAG_STRING);
+            for (int i = 0; i < facts.size(); i++) {
+                instance.addFact(new ResourceLocation(facts.getString(i)));
+            }
         }
     }
 }

@@ -1,7 +1,16 @@
 {
   "variants": {
-    "": {
+    "top=false,bottom=false": {
       "model": "eidolon:item/plinth"
+    },
+    "top=true,bottom=false": {
+      "model": "eidolon:block/plinth_bottom"
+    },
+    "top=true,bottom=true": {
+      "model": "eidolon:block/plinth_mid"
+    },
+    "top=false,bottom=true": {
+      "model": "eidolon:block/plinth_top"
     }
   }
 }

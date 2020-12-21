@@ -27,30 +27,41 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 public class TableBlockBase extends BlockBase {
-    static VoxelShape NORMAL = VoxelShapes.create(0, 0.75, 0, 1, 1, 1),
+    VoxelShape NORMAL = VoxelShapes.create(0, 0.75, 0, 1, 1, 1),
         CORNER = VoxelShapes.combine(
             NORMAL,
             VoxelShapes.create(0.0625, 0, 0.0625, 0.9375, 0.75, 0.9375),
             IBooleanFunction.OR
         );
-    public static BooleanProperty NXNY_CORNER = BooleanProperty.create("nxny"),
-        PXNY_CORNER = BooleanProperty.create("pxny"),
-        PXPY_CORNER = BooleanProperty.create("pxpy"),
-        NXPY_CORNER = BooleanProperty.create("nxpy");
+
+    public static BooleanProperty NX = BooleanProperty.create("nx"),
+        PX = BooleanProperty.create("px"),
+        NZ = BooleanProperty.create("nz"),
+        PZ = BooleanProperty.create("pz");
 
     public TableBlockBase(Properties properties) {
         super(properties);
         setDefaultState(super.getDefaultState()
-            .with(NXNY_CORNER, false)
-            .with(PXNY_CORNER, false)
-            .with(PXPY_CORNER, false)
-            .with(NXPY_CORNER, false));
+            .with(NX, false)
+            .with(PX, false)
+            .with(NZ, false)
+            .with(PZ, false));
+    }
+
+    public TableBlockBase setMainShape(VoxelShape shape) {
+        NORMAL = shape;
+        CORNER = VoxelShapes.combine(
+            NORMAL,
+            VoxelShapes.create(0.0625, 0, 0.0625, 0.9375, 0.75, 0.9375),
+            IBooleanFunction.OR
+        );
+        return this;
     }
 
     @Override
     public VoxelShape getRaytraceShape(BlockState state, IBlockReader world, BlockPos pos) {
-        if (state.get(NXNY_CORNER) || state.get(PXNY_CORNER)
-            || state.get(PXPY_CORNER) || state.get(NXPY_CORNER)) return CORNER;
+        boolean nx = state.get(NX), px = state.get(PX), nz = state.get(NZ), pz = state.get(PZ);
+        if ((!nx && !nz) || (!nx && !pz) || (!px && !pz) || (!px && !nz)) return CORNER;
         return NORMAL;
     }
 
@@ -64,8 +75,8 @@ public class TableBlockBase extends BlockBase {
             conn3 = blockstate2.getBlock() == this,
             conn4 = blockstate3.getBlock() == this;
         return state
-            .with(NXNY_CORNER, !conn1 && !conn4).with(PXNY_CORNER, !conn1 && !conn2)
-            .with(PXPY_CORNER, !conn3 && !conn2).with(NXPY_CORNER, !conn3 && !conn4);
+            .with(NZ, conn1).with(PX, conn2)
+            .with(PZ, conn3).with(NX, conn4);
     }
 
     @Override
@@ -82,6 +93,6 @@ public class TableBlockBase extends BlockBase {
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(NXNY_CORNER, PXNY_CORNER, PXPY_CORNER, NXPY_CORNER);
+        builder.add(NX, PX, NZ, PZ);
     }
 }

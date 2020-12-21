@@ -1,8 +1,6 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "side": "eidolon:block/lead_block",
-    "top": "eidolon:block/lead_block_top",
-    "bottom": "eidolon:block/lead_block_bottom"
+    "all": "eidolon:block/lead_block"
   }
 }

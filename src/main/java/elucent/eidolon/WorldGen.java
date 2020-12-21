@@ -3,9 +3,11 @@ package elucent.eidolon;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import elucent.eidolon.world.LabStructure;
+import elucent.eidolon.world.StrayTowerStructure;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.Dimension;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.*;
@@ -37,7 +39,6 @@ public class WorldGen {
     static Map<ResourceLocation, StructureSeparationSettings> STRUCTURE_SETTINGS = new HashMap<>();
     static RuleTest IN_STONE = new TagMatchRuleTest(Tags.Blocks.STONE);
 
-    public static IStructurePieceType LAB_PIECE;
 
     static IStructurePieceType register(IStructurePieceType type, String name) {
         net.minecraft.util.registry.Registry.register(net.minecraft.util.registry.Registry.STRUCTURE_PIECE, new ResourceLocation(Eidolon.MODID, name), type);
@@ -61,12 +62,19 @@ public class WorldGen {
         return STRUCTURES.register(name, () -> structure);
     }
 
+    public static IStructurePieceType LAB_PIECE, STRAY_TOWER_PIECE;
+
     public static RegistryObject<Structure<NoFeatureConfig>> LAB_STRUCTURE = addStructure("lab",
         new LabStructure(NoFeatureConfig.field_236558_a_),
         GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
-        new StructureSeparationSettings(5, 2, 1337));
+        new StructureSeparationSettings(7, 5, 1337));
 
-    public static StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> LAB_FEATURE;
+    public static RegistryObject<Structure<NoFeatureConfig>> STRAY_TOWER_STRUCTURE = addStructure("stray_tower",
+        new StrayTowerStructure(NoFeatureConfig.field_236558_a_),
+        GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
+        new StructureSeparationSettings(16, 8, 1341));
+
+    public static StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> LAB_FEATURE, STRAY_TOWER_FEATURE;
 
     public static void preInit() {
         STRUCTURES.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -83,6 +91,9 @@ public class WorldGen {
 
         LAB_PIECE = register(LabStructure.Piece::new, "lab");
         LAB_FEATURE = register(LAB_STRUCTURE.get().withConfiguration(NoFeatureConfig.field_236559_b_), "lab");
+
+        STRAY_TOWER_PIECE = register(StrayTowerStructure.Piece::new, "stray_tower");
+        STRAY_TOWER_FEATURE = register(STRAY_TOWER_STRUCTURE.get().withConfiguration(NoFeatureConfig.field_236559_b_), "stray_tower");
 
         for (Structure<?> s : STRUCTURE_LIST) {
             DimensionStructuresSettings.field_236191_b_ = // Default structures
@@ -101,5 +112,6 @@ public class WorldGen {
             event.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, feature);
         }
         event.getGeneration().withStructure(LAB_FEATURE);
+        if (event.getCategory() == Biome.Category.ICY) event.getGeneration().withStructure(STRAY_TOWER_FEATURE);
     }
 }

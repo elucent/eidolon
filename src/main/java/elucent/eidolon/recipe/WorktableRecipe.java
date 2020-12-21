@@ -1,5 +1,6 @@
 package elucent.eidolon.recipe;
 
+import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,12 +34,23 @@ public class WorktableRecipe {
         return this;
     }
 
+    public Object[] getCore() {
+        return core;
+    }
+
+    public Object[] getOuter() {
+        return extras;
+    }
+
     static boolean matches(Object match, ItemStack sacrifice) {
         if (match instanceof ItemStack) {
             if (ItemStack.areItemStacksEqual((ItemStack)match, sacrifice)) return true;
         }
         else if (match instanceof Item) {
             if ((Item)match == sacrifice.getItem()) return true;
+        }
+        else if (match instanceof Block) {
+            if (((Block)match).asItem() == sacrifice.getItem()) return true;
         }
         else if (match instanceof ITag) {
             if (((ITag<Item>)match).contains(sacrifice.getItem())) return true;

@@ -19,7 +19,7 @@ public class CraftingPage extends Page {
     }
 
     @Override
-    public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
+    public void renderIngredients(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         for (int i = 0; i < 3; i ++) {
             for (int j = 0; j < 3; j ++) {
                 int index = i * 3 + j;

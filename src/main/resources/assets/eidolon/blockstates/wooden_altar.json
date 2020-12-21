@@ -7,7 +7,8 @@
     },
     {
       "when": {
-        "pxny": "true"
+        "px": "false",
+        "nz": "false"
       },
       "apply": {
         "model": "eidolon:block/wooden_altar_corner"
@@ -15,7 +16,8 @@
     },
     {
       "when": {
-        "pxpy": "true"
+        "px": "false",
+        "pz": "false"
       },
       "apply": {
         "model": "eidolon:block/wooden_altar_corner",
@@ -24,7 +26,8 @@
     },
     {
       "when": {
-        "nxpy": "true"
+        "nx": "false",
+        "pz": "false"
       },
       "apply": {
         "model": "eidolon:block/wooden_altar_corner",
@@ -33,7 +36,8 @@
     },
     {
       "when": {
-        "nxny": "true"
+        "nx": "false",
+        "nz": "false"
       },
       "apply": {
         "model": "eidolon:block/wooden_altar_corner",
@@ -42,8 +46,9 @@
     },
     {
       "when": {
-        "nxny": "true",
-        "pxny": "true"
+        "nx": "false",
+        "nz": "false",
+        "px": "false"
       },
       "apply": {
         "model": "eidolon:block/wooden_altar_end"
@@ -51,8 +56,9 @@
     },
     {
       "when": {
-        "pxpy": "true",
-        "pxny": "true"
+        "nz": "false",
+        "px": "false",
+        "pz": "false"
       },
       "apply": {
         "model": "eidolon:block/wooden_altar_end",
@@ -61,8 +67,9 @@
     },
     {
       "when": {
-        "nxpy": "true",
-        "pxpy": "true"
+        "nx": "false",
+        "pz": "false",
+        "px": "false"
       },
       "apply": {
         "model": "eidolon:block/wooden_altar_end",
@@ -71,8 +78,9 @@
     },
     {
       "when": {
-        "nxpy": "true",
-        "nxny": "true"
+        "nz": "false",
+        "nx": "false",
+        "pz": "false"
       },
       "apply": {
         "model": "eidolon:block/wooden_altar_end",

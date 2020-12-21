@@ -1,6 +1,7 @@
 package elucent.eidolon.tile;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import elucent.eidolon.ClientEvents;
 import elucent.eidolon.Events;
 import elucent.eidolon.ritual.Ritual;
 import elucent.eidolon.util.RenderUtil;
@@ -33,7 +34,7 @@ public class BrazierTileRenderer extends TileEntityRenderer<BrazierTileEntity> {
         }
 
         if (tileEntityIn.ritual != null) {
-            IRenderTypeBuffer buffer = Events.getDelayedRender();
+            IRenderTypeBuffer buffer = ClientEvents.getDelayedRender();
 
             Ritual ritual = tileEntityIn.ritual;
             float r = ritual.getRed(), g = ritual.getGreen(), b = ritual.getBlue();

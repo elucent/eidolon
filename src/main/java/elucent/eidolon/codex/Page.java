@@ -63,13 +63,20 @@ public abstract class Page {
 
     public void fullRender(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         Minecraft.getInstance().getTextureManager().bindTexture(bg);
-        gui.blit(mStack, x, y, 0, 0, 128, 160);
+        renderBackground(gui, mStack, x, y, mouseX, mouseY);
         render(gui, mStack, x, y, mouseX, mouseY);
+        renderIngredients(gui, mStack, x, y, mouseX, mouseY);
+    }
+
+    public void renderBackground(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
+        Minecraft.getInstance().getTextureManager().bindTexture(bg);
+        gui.blit(mStack, x, y, 0, 0, 128, 160);
     }
 
     public boolean click(CodexGui gui, int x, int y, int mouseX, int mouseY) {
         return false;
     }
 
-    public abstract void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY);
+    public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {}
+    public void renderIngredients(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {}
 }
