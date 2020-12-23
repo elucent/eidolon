@@ -211,6 +211,11 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
                 .spawn(world, pos.getX() + 0.5, pos.getY() + 0.625, pos.getZ() + 0.5);
         }
 
+        if (!world.isRemote && boiling && hasWater && world.getGameTime() % 8 == 0) {
+            List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(pos).shrink(0.125));
+            for (ItemEntity item : items) item.setPickupDelay(20);
+        }
+
         if (!world.isRemote && stepCounter > 0) {
             -- stepCounter;
             if (stepCounter == 0) {

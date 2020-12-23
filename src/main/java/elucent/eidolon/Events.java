@@ -5,6 +5,7 @@ import elucent.eidolon.capability.IKnowledge;
 import elucent.eidolon.capability.KnowledgeProvider;
 import elucent.eidolon.capability.ReputationProvider;
 import elucent.eidolon.entity.ai.GenericBarterGoal;
+import elucent.eidolon.entity.ai.PriestBarterGoal;
 import elucent.eidolon.entity.ai.WitchBarterGoal;
 import elucent.eidolon.event.SpeedFactorEvent;
 import elucent.eidolon.item.CleavingAxeItem;
@@ -88,17 +89,23 @@ public class Events {
 
     @SubscribeEvent
     public void onDeath(LivingDropsEvent event) {
-        if (!(event.getEntityLiving() instanceof MonsterEntity)) {
-            World world = event.getEntity().world;
-            BlockPos pos = event.getEntity().getPosition();
+        LivingEntity entity = event.getEntityLiving();
+        if (!(entity instanceof MonsterEntity)) {
+            World world = entity.world;
+            BlockPos pos = entity.getPosition();
             List<GobletTileEntity> goblets = Ritual.getTilesWithinAABB(GobletTileEntity.class, world, new AxisAlignedBB(pos.add(-1, -1, -1), pos.add(2, 2, 2)));
             if (goblets.size() > 0) {
                 GobletTileEntity goblet = goblets.stream().min(Comparator.comparingDouble((g) -> g.getPos().distanceSq(pos))).get();
-                goblet.setEntityType(event.getEntity().getType());
+                goblet.setEntityType(entity.getType());
             }
         }
 
-        if (EntityUtil.isEnthralled(event.getEntityLiving())) {
+        if (entity instanceof WitchEntity || entity instanceof VillagerEntity) {
+            if (entity.getHeldItemMainhand().getItem() instanceof CodexItem)
+                event.getDrops().add(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.getHeldItemMainhand().copy()));
+        }
+
+        if (EntityUtil.isEnthralled(entity)) {
             event.getDrops().clear();
             return;
         }
@@ -106,8 +113,7 @@ public class Events {
         if (event.getSource().getTrueSource() != null && event.getSource().getTrueSource() instanceof LivingEntity) {
             LivingEntity source = (LivingEntity) event.getSource().getTrueSource();
             ItemStack held = source.getHeldItemMainhand();
-            LivingEntity entity = event.getEntityLiving();
-            if (!event.getEntity().world.isRemote && held.getItem() instanceof ReaperScytheItem && entity.isEntityUndead()) {
+            if (!entity.world.isRemote && held.getItem() instanceof ReaperScytheItem && entity.isEntityUndead()) {
                 int looting = ForgeHooks.getLootingLevel(entity, source, event.getSource());
                 event.getDrops().clear();
                 ItemEntity drop = new ItemEntity(source.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(),
@@ -146,7 +152,8 @@ public class Events {
                 }
             }
         }
-        if (event.getSource().getDamageType() == Registry.RITUAL_DAMAGE.getDamageType())
+        if (event.getSource().getDamageType() == Registry.RITUAL_DAMAGE.getDamageType()
+            && !(entity instanceof PlayerEntity))
             event.getDrops().clear();
     }
 
@@ -174,7 +181,7 @@ public class Events {
                 ));
             }
             if (event.getEntity() instanceof VillagerEntity) {
-                ((VillagerEntity)event.getEntity()).goalSelector.addGoal(1, new GenericBarterGoal<VillagerEntity>(
+                ((VillagerEntity)event.getEntity()).goalSelector.addGoal(1, new PriestBarterGoal(
                     (VillagerEntity)event.getEntity(),
                     (stack) -> stack.getItem() == Registry.CODEX.get(),
                     (stack) -> CodexItem.withSign(stack, Signs.SACRED_SIGN)

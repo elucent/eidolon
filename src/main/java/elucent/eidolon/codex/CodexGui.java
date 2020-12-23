@@ -239,6 +239,6 @@ public class CodexGui extends Screen {
 
     @Override
     public void renderTooltip(MatrixStack mStack, ItemStack stack, int x, int y) {
-        super.renderTooltip(mStack, stack, x, y);
+        if (!stack.isEmpty()) super.renderTooltip(mStack, stack, x, y);
     }
 }

@@ -1,0 +1,17 @@
+0.1 - alpha testing version, disregard
+
+0.2 -
+
+Added: existence
+
+0.2.1 -
+
+Added:
+ - Items in the crucible have their pickup delay extended. If you really need your items back, break the crucible!
+
+Fixed:
+ - Sanguine rituals delete player drops when sacrificing players.
+ - "Air" tooltips display when hovering over empty slots in the Ars Ecclesia.
+ - Sacred sign is obtainable from non-cleric villagers.
+ - Sign-teaching entities don't drop the Ars Ecclesia if killed (#1).
+ - Server StackOverflow crash from using any crucible recipe (#2).

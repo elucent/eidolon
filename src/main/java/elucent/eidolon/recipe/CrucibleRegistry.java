@@ -24,9 +24,7 @@ import javax.annotation.Resource;
 import java.util.*;
 
 public class CrucibleRegistry {
-    @OnlyIn(Dist.CLIENT)
     static Map<ResourceLocation, Page> linkedPages = new HashMap<>();
-
     static Map<ResourceLocation, CrucibleRecipe> recipes = new HashMap<>();
 
     public static void register(CrucibleRecipe recipe) {
