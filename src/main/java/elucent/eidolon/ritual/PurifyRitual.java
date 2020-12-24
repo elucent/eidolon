@@ -2,6 +2,7 @@ package elucent.eidolon.ritual;
 
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.entity.ai.GoToPositionGoal;
+import elucent.eidolon.mixin.ZombieVillagerEntityMixin;
 import elucent.eidolon.util.ColorUtil;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
@@ -41,13 +42,7 @@ public class PurifyRitual extends Ritual {
         if (purifiable.size() > 0 && !world.isRemote) world.playSound(null, pos, SoundEvents.ENTITY_ZOMBIE_VILLAGER_CURE, SoundCategory.PLAYERS, 1.0f, 1.0f);
         if (!world.isRemote) for (CreatureEntity entity : purifiable) {
             if (entity instanceof ZombieVillagerEntity) {
-                try {
-                    Method cure = ObfuscationReflectionHelper.findMethod(ZombieVillagerEntity.class, "cureZombie", ServerWorld.class);
-                    cure.setAccessible(true);
-                    cure.invoke(entity, world);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+                ((ZombieVillagerEntityMixin)entity).callCureZombie((ServerWorld)world);
             }
             if (entity instanceof ZombifiedPiglinEntity) {
                 entity.remove();

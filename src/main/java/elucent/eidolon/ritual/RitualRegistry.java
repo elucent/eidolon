@@ -205,9 +205,9 @@ public class RitualRegistry {
             .addRequirement(new ItemRequirement(Items.ROTTEN_FLESH))
             .addRequirement(new ItemRequirement(Tags.Items.SAND))
             .addRequirement(new ItemRequirement(Registry.SOUL_SHARD.get())));
-        SUMMON_DROWNED = register(new MultiItemSacrifice(Items.CHARCOAL, Tags.Items.GEMS_PRISMARINE), new SummonRitual(EntityType.DROWNED).setRegistryName(Eidolon.MODID, "summon_drowned")
+        SUMMON_DROWNED = register(new MultiItemSacrifice(Items.CHARCOAL, Tags.Items.DUSTS_PRISMARINE), new SummonRitual(EntityType.DROWNED).setRegistryName(Eidolon.MODID, "summon_drowned")
             .addRequirement(new ItemRequirement(Items.ROTTEN_FLESH))
-            .addRequirement(new ItemRequirement(Tags.Items.GEMS_PRISMARINE))
+            .addRequirement(new ItemRequirement(Tags.Items.DUSTS_PRISMARINE))
             .addRequirement(new ItemRequirement(Registry.SOUL_SHARD.get())));
         SUMMON_STRAY = register(new MultiItemSacrifice(Items.CHARCOAL, Items.STRING), new SummonRitual(EntityType.STRAY).setRegistryName(Eidolon.MODID, "summon_stray")
             .addRequirement(new ItemRequirement(Items.BONE))

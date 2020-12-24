@@ -30,7 +30,7 @@ public class AllureRitual extends Ritual {
                 boolean hasGoal = a.goalSelector.getRunningGoals()
                     .filter((goal) -> goal.getGoal() instanceof GoToPositionGoal)
                     .count() > 0;
-                if (!hasGoal && a.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()) >= 12 * 12 && world.rand.nextInt(20) == 0) {
+                if (!hasGoal && a.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()) >= 12 * 12 && world.rand.nextInt(40) == 0) {
                     BlockPos target = pos.down().add(world.rand.nextInt(9) - 4, 0, world.rand.nextInt(9) - 4);
                     a.goalSelector.addGoal(1, new GoToPositionGoal(a, target, 1.0));
                 } else if (hasGoal && a.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()) < 8 * 8) {

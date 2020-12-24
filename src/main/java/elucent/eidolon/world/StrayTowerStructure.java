@@ -1,6 +1,7 @@
 package elucent.eidolon.world;
 
 import com.mojang.serialization.Codec;
+import elucent.eidolon.Config;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.WorldGen;
 import net.minecraft.nbt.CompoundNBT;
@@ -47,8 +48,7 @@ public class StrayTowerStructure extends Structure<NoFeatureConfig> {
         int i = chunkX >> 4;
         int j = chunkZ >> 4;
         rand.setSeed((long) (i ^ j << 4) ^ seed);
-        rand.nextInt();
-        return rand.nextDouble() < 0.25;
+        return rand.nextDouble() < (1 / Config.STRAY_TOWER_RARITY.get());
     }
 
     @Override

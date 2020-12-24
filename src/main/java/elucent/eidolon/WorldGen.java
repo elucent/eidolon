@@ -87,7 +87,7 @@ public class WorldGen {
             .func_242731_b(Config.LEAD_VEIN_COUNT.get()) // per chunk
             .range(Config.LEAD_MAX_Y.get()) // maximum Y
             ;
-        ORES.add(LEAD_ORE_GEN);
+        if (Config.LEAD_ENABLED.get()) ORES.add(LEAD_ORE_GEN);
 
         LAB_PIECE = register(LabStructure.Piece::new, "lab");
         LAB_FEATURE = register(LAB_STRUCTURE.get().withConfiguration(NoFeatureConfig.field_236559_b_), "lab");
@@ -111,7 +111,9 @@ public class WorldGen {
         for (ConfiguredFeature<?, ?> feature : ORES) {
             event.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, feature);
         }
-        event.getGeneration().withStructure(LAB_FEATURE);
-        if (event.getCategory() == Biome.Category.ICY) event.getGeneration().withStructure(STRAY_TOWER_FEATURE);
+        if (Config.LAB_ENABLED.get())
+            event.getGeneration().withStructure(LAB_FEATURE);
+        if (event.getCategory() == Biome.Category.ICY && Config.STRAY_TOWER_ENABLED.get())
+            event.getGeneration().withStructure(STRAY_TOWER_FEATURE);
     }
 }
