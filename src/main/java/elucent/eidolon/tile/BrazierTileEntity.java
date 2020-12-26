@@ -1,8 +1,11 @@
 package elucent.eidolon.tile;
 
 import elucent.eidolon.Registry;
-import elucent.eidolon.network.*;
-import elucent.eidolon.particle.GenericParticleData;
+import elucent.eidolon.network.ExtinguishEffectPacket;
+import elucent.eidolon.network.FlameEffectPacket;
+import elucent.eidolon.network.IgniteEffectPacket;
+import elucent.eidolon.network.Networking;
+import elucent.eidolon.network.RitualCompletePacket;
 import elucent.eidolon.particle.Particles;
 import elucent.eidolon.ritual.Ritual;
 import elucent.eidolon.ritual.Ritual.RitualResult;
@@ -22,8 +25,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.network.PacketDispatcher;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 public class BrazierTileEntity extends TileEntityBase implements ITickableTileEntity {
     ItemStack stack = ItemStack.EMPTY;

@@ -1,7 +1,5 @@
 package elucent.eidolon.proxy;
 
-import elucent.eidolon.Registry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 

@@ -1,13 +1,13 @@
 package elucent.eidolon.spell;
 
-import elucent.eidolon.Eidolon;
-import elucent.eidolon.util.ColorUtil;
-import net.minecraft.util.ResourceLocation;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import elucent.eidolon.Eidolon;
+import elucent.eidolon.util.ColorUtil;
+import net.minecraft.util.ResourceLocation;
 
 public class Signs {
     static List<Sign> signs = new ArrayList<>();

@@ -1,5 +1,12 @@
 package elucent.eidolon.spell;
 
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
 import elucent.eidolon.block.TableBlockBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -8,8 +15,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.*;
 
 public class AltarInfo {
     static class AltarAttributes {

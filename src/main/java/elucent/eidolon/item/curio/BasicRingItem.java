@@ -1,7 +1,10 @@
 package elucent.eidolon.item.curio;
 
+import java.util.UUID;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+
 import elucent.eidolon.Eidolon;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -10,9 +13,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import top.theillusivec4.curios.api.type.capability.ICurio;
-
-import java.util.UUID;
 
 public class BasicRingItem extends Item {
     UUID ATTR_ID = new UUID(7207179027447911419l, 1628308750126455317l);

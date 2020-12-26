@@ -1,17 +1,12 @@
 package elucent.eidolon.codex;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import elucent.eidolon.Eidolon;
-import elucent.eidolon.spell.KnowledgeUtil;
-import elucent.eidolon.spell.Sign;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ListPage extends Page {
     public static final ResourceLocation BACKGROUND = new ResourceLocation(Eidolon.MODID, "textures/gui/codex_index_page.png");

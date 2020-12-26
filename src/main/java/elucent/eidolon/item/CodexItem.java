@@ -1,13 +1,17 @@
 package elucent.eidolon.item;
 
 import elucent.eidolon.Eidolon;
-import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.KnowledgeUtil;
+import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 
 public class CodexItem extends ItemBase {

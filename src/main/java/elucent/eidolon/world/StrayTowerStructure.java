@@ -1,11 +1,17 @@
 package elucent.eidolon.world;
 
+import java.util.Random;
+
 import com.mojang.serialization.Codec;
+
 import elucent.eidolon.Config;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.WorldGen;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -25,8 +31,6 @@ import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-
-import java.util.Random;
 
 public class StrayTowerStructure extends Structure<NoFeatureConfig> {
     public StrayTowerStructure(Codec<NoFeatureConfig> codec) {

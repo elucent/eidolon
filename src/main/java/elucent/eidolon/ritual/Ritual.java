@@ -1,32 +1,16 @@
 package elucent.eidolon.ritual;
 
-import com.google.common.eventbus.Subscribe;
-import elucent.eidolon.particle.GenericParticle;
-import elucent.eidolon.particle.GenericParticleData;
-import elucent.eidolon.particle.Particles;
-import elucent.eidolon.potion.ChilledEffect;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.AtlasTexture.SheetData;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ColorHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 public abstract class Ritual {
     ResourceLocation name = null;

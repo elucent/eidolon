@@ -1,8 +1,10 @@
 package elucent.eidolon.entity;
 
+import java.util.UUID;
+
 import elucent.eidolon.Registry;
-import elucent.eidolon.deity.Deities;
 import elucent.eidolon.capability.ReputationProvider;
+import elucent.eidolon.deity.Deities;
 import elucent.eidolon.network.MagicBurstEffectPacket;
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.particle.Particles;
@@ -14,18 +16,24 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.monster.*;
+import net.minecraft.entity.ai.goal.HurtByTargetGoal;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.monster.SpellcastingIllagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.UUID;
 
 public class NecromancerEntity extends SpellcastingIllagerEntity {
     public NecromancerEntity(EntityType<? extends SpellcastingIllagerEntity> type, World worldIn) {

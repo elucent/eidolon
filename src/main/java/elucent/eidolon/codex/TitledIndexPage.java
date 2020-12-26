@@ -1,11 +1,9 @@
 package elucent.eidolon.codex;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import elucent.eidolon.Eidolon;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 public class TitledIndexPage extends IndexPage {
     String title;

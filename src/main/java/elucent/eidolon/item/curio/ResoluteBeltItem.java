@@ -1,7 +1,11 @@
 package elucent.eidolon.item.curio;
 
+import java.util.Random;
+import java.util.UUID;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.item.ItemBase;
@@ -9,22 +13,16 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import top.theillusivec4.curios.api.CuriosApi;
-
-import java.util.Random;
-import java.util.UUID;
 
 public class ResoluteBeltItem extends ItemBase {
     UUID ATTR_ID = new UUID(3701779382882225399l, 5035874982077300549l);

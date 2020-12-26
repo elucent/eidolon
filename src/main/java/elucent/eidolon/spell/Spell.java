@@ -1,11 +1,11 @@
 package elucent.eidolon.spell;
 
+import java.util.List;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public abstract class Spell {
     ResourceLocation registryName;

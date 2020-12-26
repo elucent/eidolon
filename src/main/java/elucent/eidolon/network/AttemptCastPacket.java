@@ -1,28 +1,22 @@
 package elucent.eidolon.network;
 
-import elucent.eidolon.Eidolon;
-import elucent.eidolon.Registry;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Supplier;
+
 import elucent.eidolon.capability.IKnowledge;
 import elucent.eidolon.capability.KnowledgeProvider;
 import elucent.eidolon.entity.ChantCasterEntity;
-import elucent.eidolon.particle.Particles;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Supplier;
 
 public class AttemptCastPacket {
     List<Sign> signs = new ArrayList<>();

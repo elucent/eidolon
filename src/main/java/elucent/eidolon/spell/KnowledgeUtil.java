@@ -7,10 +7,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.STitlePacket;
-import net.minecraft.network.play.server.SUpdateTimePacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.GameRules;
 
 public class KnowledgeUtil {
     public static void grantSign(Entity entity, Sign sign) {

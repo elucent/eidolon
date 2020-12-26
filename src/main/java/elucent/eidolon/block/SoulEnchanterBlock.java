@@ -1,9 +1,7 @@
 package elucent.eidolon.block;
 
 import elucent.eidolon.gui.SoulEnchanterContainer;
-import elucent.eidolon.gui.WorktableContainer;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.stats.Stats;

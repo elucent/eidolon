@@ -1,13 +1,13 @@
 package elucent.eidolon.util;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class StackUtil {
     public static Ingredient ingredientFromObject(Object object) {

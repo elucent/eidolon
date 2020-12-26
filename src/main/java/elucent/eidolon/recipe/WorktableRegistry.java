@@ -1,31 +1,24 @@
 package elucent.eidolon.recipe;
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
-import elucent.eidolon.codex.CruciblePage;
 import elucent.eidolon.codex.Page;
 import elucent.eidolon.codex.WorktablePage;
 import elucent.eidolon.gui.jei.RecipeWrappers;
-import elucent.eidolon.tile.CrucibleTileEntity;
 import elucent.eidolon.util.StackUtil;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeTagHandler;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.ForgeBlockTagsProvider;
-import net.minecraftforge.common.data.ForgeItemTagsProvider;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class WorktableRegistry {
     static Map<ResourceLocation, WorktableRecipe> recipes = new HashMap<>();

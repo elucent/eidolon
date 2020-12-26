@@ -5,11 +5,10 @@ package elucent.eidolon.item.model;// Made with Blockbench 3.7.4
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.math.MathHelper;
 
 public abstract class ArmorModel extends BipedModel {
 	EquipmentSlotType slot;

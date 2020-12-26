@@ -1,13 +1,13 @@
 package elucent.eidolon.spell;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import elucent.eidolon.Registry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SkullBlock;
 import net.minecraft.state.properties.BlockStateProperties;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AltarEntries {
     static Map<BlockState, AltarEntry> entries = new HashMap<>();

@@ -1,6 +1,7 @@
 package elucent.eidolon.tile;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import elucent.eidolon.block.HorizontalBlockBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

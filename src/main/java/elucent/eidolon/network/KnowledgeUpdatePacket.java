@@ -1,26 +1,17 @@
 package elucent.eidolon.network;
 
-import elucent.eidolon.Eidolon;
-import elucent.eidolon.capability.IKnowledge;
-import elucent.eidolon.capability.KnowledgeProvider;
-import elucent.eidolon.spell.Sign;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
-
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
+
+import elucent.eidolon.Eidolon;
+import elucent.eidolon.capability.KnowledgeProvider;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 public class KnowledgeUpdatePacket {
     UUID uuid;

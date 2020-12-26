@@ -1,36 +1,36 @@
 package elucent.eidolon.ritual;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.codex.Page;
 import elucent.eidolon.codex.RitualPage;
-import elucent.eidolon.codex.WorktablePage;
 import elucent.eidolon.gui.jei.RecipeWrappers;
-import elucent.eidolon.recipe.WorktableRecipe;
 import elucent.eidolon.util.StackUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 public class RitualRegistry {
     static Map<ResourceLocation, Ritual> rituals = new HashMap<>();

@@ -1,6 +1,9 @@
 package elucent.eidolon.particle;
 
+import java.util.Random;
+
 import com.mojang.serialization.Codec;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
@@ -9,8 +12,6 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.ParticleType;
-
-import java.util.Random;
 
 public class SignParticleType extends ParticleType<SignParticleData> {
     public SignParticleType() {

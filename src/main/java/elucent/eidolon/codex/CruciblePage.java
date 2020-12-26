@@ -1,8 +1,8 @@
 package elucent.eidolon.codex;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import elucent.eidolon.Eidolon;
-import elucent.eidolon.recipe.CrucibleRecipe;
 import elucent.eidolon.recipe.CrucibleRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

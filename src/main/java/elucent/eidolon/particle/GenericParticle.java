@@ -1,12 +1,12 @@
 package elucent.eidolon.particle;
 
+import java.awt.Color;
+
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.ColorHelper;
 import net.minecraft.util.math.MathHelper;
-
-import java.awt.*;
 
 public class GenericParticle extends SpriteTexturedParticle {
     GenericParticleData data;

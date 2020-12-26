@@ -1,12 +1,9 @@
 package elucent.eidolon.ritual;
 
 import elucent.eidolon.Eidolon;
-import elucent.eidolon.network.Networking;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.block.BedBlock;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SUpdateTimePacket;
-import net.minecraft.tileentity.BedTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;

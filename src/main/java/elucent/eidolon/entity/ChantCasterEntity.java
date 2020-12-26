@@ -1,5 +1,10 @@
 package elucent.eidolon.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import elucent.eidolon.Registry;
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.network.SpellCastPacket;
@@ -24,8 +29,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
-
-import java.util.*;
 
 public class ChantCasterEntity extends Entity {
     public static final DataParameter<CompoundNBT> SIGNS = EntityDataManager.<CompoundNBT>createKey(ChantCasterEntity.class, DataSerializers.COMPOUND_NBT);

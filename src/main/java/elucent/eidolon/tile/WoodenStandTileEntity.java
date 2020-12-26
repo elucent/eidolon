@@ -1,5 +1,9 @@
 package elucent.eidolon.tile;
 
+import java.util.Arrays;
+
+import javax.annotation.Nullable;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.block.WoodenStandBlock;
@@ -24,16 +28,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-
-import javax.annotation.Nullable;
-import java.util.Arrays;
 
 public class WoodenStandTileEntity extends LockableTileEntity implements ISidedInventory, ITickableTileEntity {
     private static final int[] SLOTS_FOR_UP = new int[]{3};

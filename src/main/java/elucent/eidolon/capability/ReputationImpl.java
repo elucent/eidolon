@@ -1,12 +1,10 @@
 package elucent.eidolon.capability;
 
-import elucent.eidolon.deity.Deities;
-import elucent.eidolon.deity.Deity;
-import net.minecraft.util.ResourceLocation;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import net.minecraft.util.ResourceLocation;
 
 public class ReputationImpl implements IReputation {
     Map<UUID, Map<ResourceLocation, ReputationEntry>> reputationMap = new HashMap<>();

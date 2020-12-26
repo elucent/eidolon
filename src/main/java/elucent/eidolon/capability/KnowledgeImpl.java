@@ -1,9 +1,10 @@
 package elucent.eidolon.capability;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import elucent.eidolon.spell.Sign;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.*;
 
 public class KnowledgeImpl implements IKnowledge {
     Set<Sign> signs = new HashSet<>();

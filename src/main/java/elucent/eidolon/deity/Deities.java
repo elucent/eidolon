@@ -1,11 +1,10 @@
 package elucent.eidolon.deity;
 
-import elucent.eidolon.Eidolon;
-import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+
+import elucent.eidolon.Eidolon;
+import net.minecraft.util.ResourceLocation;
 
 public class Deities {
     static Map<ResourceLocation, Deity> deities = new HashMap<>();

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "eidolon:prestigious_palm"
+    "eidolon:prestigious_palm",
+	"eidolon:warded_mail"
   ]
 }

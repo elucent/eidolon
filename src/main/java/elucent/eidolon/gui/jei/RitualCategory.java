@@ -1,6 +1,10 @@
 package elucent.eidolon.gui.jei;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.codex.CodexGui;
@@ -19,9 +23,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RitualCategory implements IRecipeCategory<RecipeWrappers.RitualRecipe> {
     static final ResourceLocation UID = new ResourceLocation(Eidolon.MODID, "ritual");

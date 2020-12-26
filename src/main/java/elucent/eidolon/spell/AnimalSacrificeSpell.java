@@ -1,5 +1,8 @@
 package elucent.eidolon.spell;
 
+import java.util.Comparator;
+import java.util.List;
+
 import elucent.eidolon.Registry;
 import elucent.eidolon.block.HorizontalBlockBase;
 import elucent.eidolon.capability.ReputationProvider;
@@ -20,9 +23,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.Comparator;
-import java.util.List;
 
 public class AnimalSacrificeSpell extends StaticSpell {
     Deity deity;

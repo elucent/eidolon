@@ -1,9 +1,8 @@
 package elucent.eidolon.codex;
 
-import com.google.common.collect.Lists;
-
-import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 public class Chapter {
     String titleKey;

@@ -1,15 +1,14 @@
 package elucent.eidolon.capability;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.Capability;
-
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.Capability;
 
 public class ReputationStorage implements Capability.IStorage<IReputation> {
     @Override

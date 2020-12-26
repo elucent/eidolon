@@ -1,27 +1,25 @@
 package elucent.eidolon.recipe;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.codex.CruciblePage;
 import elucent.eidolon.codex.Page;
-import elucent.eidolon.gui.jei.CrucibleCategory;
 import elucent.eidolon.gui.jei.RecipeWrappers;
-import elucent.eidolon.ritual.Ritual;
-import elucent.eidolon.tile.CrucibleTileEntity;
 import elucent.eidolon.tile.CrucibleTileEntity.CrucibleStep;
 import elucent.eidolon.util.StackUtil;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
-
-import javax.annotation.Resource;
-import java.util.*;
 
 public class CrucibleRegistry {
     static Map<ResourceLocation, Page> linkedPages = new HashMap<>();

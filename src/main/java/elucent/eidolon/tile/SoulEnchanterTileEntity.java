@@ -1,19 +1,12 @@
 package elucent.eidolon.tile;
 
+import java.util.Random;
+
 import elucent.eidolon.Registry;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-
-import java.util.Random;
 
 public class SoulEnchanterTileEntity extends TileEntityBase implements ITickableTileEntity {
     public float field_195523_f;

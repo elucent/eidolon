@@ -1,10 +1,13 @@
 package elucent.eidolon;
 
+import java.util.Comparator;
+import java.util.List;
+
 import com.mojang.authlib.GameProfile;
+
 import elucent.eidolon.capability.IKnowledge;
 import elucent.eidolon.capability.KnowledgeProvider;
 import elucent.eidolon.capability.ReputationProvider;
-import elucent.eidolon.entity.ai.GenericBarterGoal;
 import elucent.eidolon.entity.ai.PriestBarterGoal;
 import elucent.eidolon.entity.ai.WitchBarterGoal;
 import elucent.eidolon.event.SpeedFactorEvent;
@@ -19,11 +22,19 @@ import elucent.eidolon.ritual.Ritual;
 import elucent.eidolon.spell.Signs;
 import elucent.eidolon.tile.GobletTileEntity;
 import elucent.eidolon.util.EntityUtil;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.monster.*;
+import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.WitchEntity;
+import net.minecraft.entity.monster.WitherSkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -50,9 +61,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-import java.util.Comparator;
-import java.util.List;
 
 public class Events {
     @SubscribeEvent
@@ -206,8 +214,9 @@ public class Events {
                 if (event.getSource().getDamageType() == DamageSource.WITHER.getDamageType())
                     ((LivingEntity) event.getSource().getTrueSource()).heal(event.getAmount() / 2);
             }
-            if (event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof WarlockRobesItem)
+            if (event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof WarlockRobesItem) {
                 event.setAmount(event.getAmount() / 2);
+            }
         }
     }
 

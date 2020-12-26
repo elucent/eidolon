@@ -1,6 +1,7 @@
 package elucent.eidolon.codex;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import elucent.eidolon.Eidolon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

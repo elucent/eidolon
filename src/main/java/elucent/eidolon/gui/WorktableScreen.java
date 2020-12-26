@@ -1,6 +1,7 @@
 package elucent.eidolon.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import elucent.eidolon.Eidolon;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;

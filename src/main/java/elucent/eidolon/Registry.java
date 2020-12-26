@@ -1,20 +1,82 @@
 package elucent.eidolon;
 
-import com.google.common.collect.Lists;
-import elucent.eidolon.block.*;
-import elucent.eidolon.entity.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
+import elucent.eidolon.block.BlockBase;
+import elucent.eidolon.block.CandleBlock;
+import elucent.eidolon.block.CandlestickBlock;
+import elucent.eidolon.block.EnchantedAshBlock;
+import elucent.eidolon.block.HorizontalBlockBase;
+import elucent.eidolon.block.NecroticFocusBlock;
+import elucent.eidolon.block.PlinthBlockBase;
+import elucent.eidolon.block.SoulEnchanterBlock;
+import elucent.eidolon.block.TableBlockBase;
+import elucent.eidolon.block.WoodenStandBlock;
+import elucent.eidolon.block.WorktableBlock;
+import elucent.eidolon.entity.BonechillProjectileEntity;
+import elucent.eidolon.entity.ChantCasterEntity;
+import elucent.eidolon.entity.NecromancerEntity;
+import elucent.eidolon.entity.NecromancerSpellEntity;
+import elucent.eidolon.entity.SoulfireProjectileEntity;
+import elucent.eidolon.entity.WraithEntity;
+import elucent.eidolon.entity.ZombieBruteEntity;
 import elucent.eidolon.gui.SoulEnchanterContainer;
 import elucent.eidolon.gui.WoodenBrewingStandContainer;
 import elucent.eidolon.gui.WorktableContainer;
-import elucent.eidolon.item.*;
-import elucent.eidolon.item.curio.*;
-import elucent.eidolon.particle.*;
+import elucent.eidolon.item.BonechillWandItem;
+import elucent.eidolon.item.CleavingAxeItem;
+import elucent.eidolon.item.CodexItem;
+import elucent.eidolon.item.ItemBase;
+import elucent.eidolon.item.ReaperScytheItem;
+import elucent.eidolon.item.ReversalPickItem;
+import elucent.eidolon.item.SappingSwordItem;
+import elucent.eidolon.item.SoulfireWandItem;
+import elucent.eidolon.item.TopHatItem;
+import elucent.eidolon.item.UnholySymbolItem;
+import elucent.eidolon.item.WarlockRobesItem;
+import elucent.eidolon.item.curio.BasicAmuletItem;
+import elucent.eidolon.item.curio.BasicBeltItem;
+import elucent.eidolon.item.curio.BasicRingItem;
+import elucent.eidolon.item.curio.GlassHandItem;
+import elucent.eidolon.item.curio.GravityBeltItem;
+import elucent.eidolon.item.curio.MindShieldingPlateItem;
+import elucent.eidolon.item.curio.PrestigiousPalmItem;
+import elucent.eidolon.item.curio.ResoluteBeltItem;
+import elucent.eidolon.item.curio.SanguineAmuletItem;
+import elucent.eidolon.item.curio.VoidAmuletItem;
+import elucent.eidolon.item.curio.WardedMailItem;
+import elucent.eidolon.particle.BubbleParticleType;
+import elucent.eidolon.particle.FlameParticleType;
+import elucent.eidolon.particle.LineWispParticleType;
+import elucent.eidolon.particle.SignParticleType;
+import elucent.eidolon.particle.SmokeParticleType;
+import elucent.eidolon.particle.SparkleParticleType;
+import elucent.eidolon.particle.SteamParticleType;
+import elucent.eidolon.particle.WispParticleType;
 import elucent.eidolon.potion.AnchoredEffect;
 import elucent.eidolon.potion.ChilledEffect;
-import elucent.eidolon.ritual.*;
+import elucent.eidolon.ritual.AllureRitual;
+import elucent.eidolon.ritual.CrystalRitual;
+import elucent.eidolon.ritual.DaylightRitual;
+import elucent.eidolon.ritual.DeceitRitual;
+import elucent.eidolon.ritual.MoonlightRitual;
+import elucent.eidolon.ritual.PurifyRitual;
+import elucent.eidolon.ritual.RepellingRitual;
+import elucent.eidolon.ritual.SanguineRitual;
+import elucent.eidolon.ritual.SummonRitual;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
-import elucent.eidolon.tile.*;
+import elucent.eidolon.tile.BrazierTileEntity;
+import elucent.eidolon.tile.CrucibleTileEntity;
+import elucent.eidolon.tile.EffigyTileEntity;
+import elucent.eidolon.tile.GobletTileEntity;
+import elucent.eidolon.tile.HandTileEntity;
+import elucent.eidolon.tile.NecroticFocusTileEntity;
+import elucent.eidolon.tile.SoulEnchanterTileEntity;
+import elucent.eidolon.tile.SoulEnchanterTileRenderer;
+import elucent.eidolon.tile.WoodenStandTileEntity;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -26,22 +88,32 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Food;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.MusicDiscItem;
+import net.minecraft.item.Rarity;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.potion.*;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.RegistryEvent;
@@ -51,10 +123,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
 
 public class Registry {
     static Map<String, Block> BLOCK_MAP = new HashMap<>();
@@ -147,6 +215,12 @@ public class Registry {
         CAST_BONECHILL_EVENT = addSound("cast_bonechill"),
         SPLASH_SOULFIRE_EVENT = addSound("splash_soulfire"),
         SPLASH_BONECHILL_EVENT = addSound("splash_bonechill"),
+        BRUTE_LIVING = addSound("brute_living"),
+        BRUTE_HURT = addSound("brute_hurt"),
+        BRUTE_DEATH = addSound("brute_death"),
+		WRAITH_LIVING = addSound("wraith_living"),
+        WRAITH_HURT = addSound("wraith_hurt"),
+        WRAITH_DEATH = addSound("wraith_death"),
         SELECT_SIGN = addSound("select_sign"),
         CHANT_WORD = addSound("chant_word"),
         PAROUSIA = addSound("parousia");

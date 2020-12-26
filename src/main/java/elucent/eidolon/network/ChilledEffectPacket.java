@@ -1,8 +1,9 @@
 package elucent.eidolon.network;
 
+import java.util.function.Supplier;
+
 import elucent.eidolon.Eidolon;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.BlockParticleData;
@@ -12,8 +13,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 public class ChilledEffectPacket {
     double x, y, z;

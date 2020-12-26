@@ -1,35 +1,25 @@
 package elucent.eidolon.potion;
 
+import java.util.Random;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
-import elucent.eidolon.network.ChilledEffectPacket;
-import elucent.eidolon.network.Networking;
-import io.netty.util.NetUtil;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.DisplayEffectsScreen;
-import net.minecraft.client.gui.IngameGui;
-import net.minecraft.data.advancements.AdventureAdvancements;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.NetworkSystem;
-import net.minecraft.network.PacketThreadUtil;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.*;
-import net.minecraft.util.ColorHelper;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.EffectType;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.gen.feature.structure.StrongholdStructure;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -40,13 +30,6 @@ import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.fml.network.PacketDispatcher;
-import net.minecraftforge.fml.network.PacketDistributor;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-
-import javax.annotation.Resource;
-import java.util.Random;
 
 public class ChilledEffect extends Effect implements IForgeEffect {
     static int packColor(int alpha, int red, int green, int blue) {

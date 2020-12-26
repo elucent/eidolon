@@ -1,31 +1,24 @@
 package elucent.eidolon.entity;
 
 import elucent.eidolon.Registry;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.goal.HurtByTargetGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.entity.item.ArmorStandEntity;
 import net.minecraft.entity.item.BoatEntity;
-import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.monster.SpiderEntity;
-import net.minecraft.entity.monster.ZombieEntity;
-import net.minecraft.entity.passive.ChickenEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.pathfinding.SwimmerPathNavigator;
-import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -47,13 +40,17 @@ public class WraithEntity extends MonsterEntity {
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entityIn) {
-        boolean flag = super.attackEntityAsMob(entityIn);
-        if (flag && entityIn instanceof LivingEntity) {
-            float f = this.world.getDifficultyForLocation(this.getPosition()).getAdditionalDifficulty();
-            ((LivingEntity)entityIn).addPotionEffect(new EffectInstance(Registry.CHILLED_EFFECT.get(), 100 + (int)(100 * world.getDifficulty().getId())));
+    public boolean attackEntityAsMob(Entity target) {
+        // if (flag && entity instanceof LivingEntity) {
+        //     ((LivingEntity)entity).addPotionEffect(new EffectInstance(Registry.CHILLED_EFFECT.get(), 100 + (int)(100 * world.getDifficulty().getId())));
+        // }
+        for(LivingEntity livingentity : this.world.getEntitiesWithinAABB(LivingEntity.class, target.getBoundingBox().grow(1.25D, 0.75D, 1.25D))) {
+            if (livingentity != this && livingentity != target && !this.isOnSameTeam(livingentity) && (!(livingentity instanceof ArmorStandEntity) || !((ArmorStandEntity)livingentity).hasMarker()) && this.getDistanceSq(livingentity) < 9.0D) {
+               livingentity.attackEntityFrom(DamageSource.MAGIC, 12F);
+            }
         }
-        return flag;
+
+        return false;
     }
 
     protected void registerGoals() {
@@ -67,6 +64,7 @@ public class WraithEntity extends MonsterEntity {
             .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.2F)
             .createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D)
             .createMutableAttribute(Attributes.ARMOR, 0.0D)
+            .createMutableAttribute(Attributes.ATTACK_SPEED, 0.5D)
             .create();
     }
 
@@ -99,11 +97,14 @@ public class WraithEntity extends MonsterEntity {
             this.setOnGround(true);
             if (getPosY() + motion.y < getPositionUnderneath().getY() + below.getHeight()) {
                 setNoGravity(true);
-                if (motion.y < 0) setMotion(motion.mul(1, 0, 1));
+                if (motion.y < 0) {
+                	setMotion(motion.mul(1, 0, 1));
+                }
                 setPosition(getPosX(), getPositionUnderneath().getY() + below.getHeight(), getPosZ());
             }
+        } else {
+        	setNoGravity(false);
         }
-        else setNoGravity(false);
 
         // slow fall
         this.fallDistance = 0;
@@ -114,19 +115,23 @@ public class WraithEntity extends MonsterEntity {
 
         super.livingTick();
     }
+    
+    public SoundEvent getScreamSound() {
+    	return Registry.WRAITH_DEATH.get();
+    }
 
     @Override
     public SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_STRAY_DEATH;
+    	return Registry.WRAITH_DEATH.get();
     }
 
     @Override
     public SoundEvent getAmbientSound() {
-        return SoundEvents.ENTITY_STRAY_AMBIENT;
+    	return Registry.WRAITH_LIVING.get();
     }
 
     @Override
     public SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.ENTITY_STRAY_HURT;
+    	return Registry.WRAITH_HURT.get();
     }
 }
