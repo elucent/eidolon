@@ -86,7 +86,7 @@ public class TableBlockBase extends BlockBase implements IWaterLoggable {
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         IBlockReader iblockreader = context.getWorld();
         BlockPos blockpos = context.getPos();
-        return updateCorners(iblockreader, blockpos, super.getStateForPlacement(context));
+        return updateCorners(iblockreader, blockpos, super.getStateForPlacement(context)).with(WATERLOGGED, false);
     }
 
     @Override
