@@ -3,12 +3,16 @@ package elucent.eidolon.item;
 import elucent.eidolon.Registry;
 import elucent.eidolon.entity.SoulfireProjectileEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.item.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.gen.feature.template.PlacementSettings;
+import net.minecraft.world.gen.feature.template.Template;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.List;
 
 public class SoulfireWandItem extends WandItem {
     public SoulfireWandItem(Properties builderIn) {
@@ -29,6 +33,17 @@ public class SoulfireWandItem extends WandItem {
                 stack.damageItem(1, entity, (player) -> {
                     player.sendBreakAnimation(hand);
                 });
+
+                try {
+                    Template t = ((ServerWorld)world).getStructureTemplateManager().getTemplate(new ResourceLocation("eidolon", "corridor"));
+                    BlockPos d = t.getSize();
+                    Rotation r = Rotation.values()[entity.getHorizontalFacing().getHorizontalIndex()];
+                    BlockPos o = new BlockPos(-d.getX() / 2, -d.getY() / 2, -d.getZ() / 2);
+                    BlockPos s = new BlockPos(Math.max(o.getX(), o.getZ()), o.getY(), Math.max(o.getX(), o.getZ()));
+                    t.func_237152_b_((ServerWorld)world, entity.getPosition().down(8).add(o.rotate(r)).subtract(s), new PlacementSettings().setRotation(r), random);
+                } catch (Exception e) {
+                    //
+                }
             }
             entity.swingArm(hand);
             return ActionResult.resultSuccess(stack);

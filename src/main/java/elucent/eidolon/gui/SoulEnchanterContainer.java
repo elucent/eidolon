@@ -158,7 +158,7 @@ public class SoulEnchanterContainer extends Container {
         ItemStack itemstack = this.tableInventory.getStackInSlot(0);
         ItemStack itemstack1 = this.tableInventory.getStackInSlot(1);
         int i = id + 1;
-        if ((itemstack1.isEmpty() || itemstack1.getCount() < worldClue[id]) && !playerIn.abilities.isCreativeMode) {
+        if ((itemstack1.isEmpty() || itemstack1.getCount() < 1) && !playerIn.abilities.isCreativeMode) {
             return false;
         } else if (itemstack.isEmpty() || playerIn.experienceLevel < this.worldClue[id] && !playerIn.abilities.isCreativeMode) {
             return false;

@@ -75,8 +75,7 @@ public class RitualRegistry {
         return ritual;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    static Page getDefaultPage(Ritual ritual, Object sacrifice) {
+    public static Page getDefaultPage(Ritual ritual, Object sacrifice) {
         List<RitualPage.RitualIngredient> inputs = new ArrayList<>();
         List<ItemStack> foci = new ArrayList<>();
         if (sacrifice instanceof MultiItemSacrifice) for (Object o : ((MultiItemSacrifice)sacrifice).items) {
@@ -105,7 +104,6 @@ public class RitualRegistry {
         return new RitualPage(ritual, center, inputs.toArray(new RitualPage.RitualIngredient[inputs.size()]));
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static List<RecipeWrappers.RitualRecipe> getWrappedRecipes() {
         List<RecipeWrappers.RitualRecipe> wrappers = new ArrayList<>();
         for (Map.Entry<ResourceLocation, Ritual> entry : rituals.entrySet()) {
@@ -113,7 +111,7 @@ public class RitualRegistry {
             Page page = null; // linkedPages.getOrDefault(entry.getKey(), null);
             wrappers.add(new RecipeWrappers.RitualRecipe(
                 entry.getValue(),
-                page != null ? page : getDefaultPage(entry.getValue(), sacrifice),
+                page,
                 sacrifice
             ));
         }

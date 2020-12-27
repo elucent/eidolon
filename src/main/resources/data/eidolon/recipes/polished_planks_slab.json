@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": {
+      "item": "eidolon:polished_planks"
+    }
+  },
+  "result": {
+    "item": "eidolon:polished_planks_slab",
+    "count": 6
+  }
+}

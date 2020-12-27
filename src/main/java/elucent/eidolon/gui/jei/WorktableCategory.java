@@ -57,6 +57,8 @@ public class WorktableCategory implements IRecipeCategory<RecipeWrappers.Worktab
 
     @Override
     public void setIngredients(RecipeWrappers.Worktable wrapper, IIngredients ingredients) {
+        if (wrapper.page == null) wrapper.page = WorktableRegistry.getDefaultPage(wrapper.recipe);
+
         List<Ingredient> inputs = new ArrayList<>();
         for (Object o : wrapper.recipe.getCore()) inputs.add(StackUtil.ingredientFromObject(o));
         for (Object o : wrapper.recipe.getOuter()) inputs.add(StackUtil.ingredientFromObject(o));

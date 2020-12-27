@@ -1,0 +1,25 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:dusts/lead",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:smelting",
+        "ingredient": {
+          "tag": "forge:dusts/lead"
+        },
+        "result": "eidolon:lead_ingot",
+        "experience": 0.5,
+        "cookingtime": 200
+      }
+    }
+  ]
+}

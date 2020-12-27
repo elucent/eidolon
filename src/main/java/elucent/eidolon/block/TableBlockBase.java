@@ -2,9 +2,18 @@ package elucent.eidolon.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.FenceGateBlock;
+import net.minecraft.block.IWaterLoggable;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -13,7 +22,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 
-public class TableBlockBase extends BlockBase {
+public class TableBlockBase extends BlockBase implements IWaterLoggable {
     VoxelShape NORMAL = VoxelShapes.create(0, 0.75, 0, 1, 1, 1),
         CORNER = VoxelShapes.combine(
             NORMAL,
@@ -21,6 +30,7 @@ public class TableBlockBase extends BlockBase {
             IBooleanFunction.OR
         );
 
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static BooleanProperty NX = BooleanProperty.create("nx"),
         PX = BooleanProperty.create("px"),
         NZ = BooleanProperty.create("nz"),
@@ -70,16 +80,29 @@ public class TableBlockBase extends BlockBase {
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         IBlockReader iblockreader = context.getWorld();
         BlockPos blockpos = context.getPos();
-        return updateCorners(iblockreader, blockpos, super.getStateForPlacement(context));
+        return updateCorners(iblockreader, blockpos, super.getStateForPlacement(context)).with(WATERLOGGED, false);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-        return updateCorners(worldIn, currentPos, stateIn);
+    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
+        if (state.get(WATERLOGGED)) {
+            world.getPendingFluidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        }
+        return updateCorners(world, pos, state);
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(NX, PX, NZ, PZ);
+        builder.add(NX, PX, NZ, PZ, WATERLOGGED);
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+    }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+        return !state.get(WATERLOGGED);
     }
 }
