@@ -15,8 +15,7 @@ import elucent.eidolon.ritual.*;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
 import elucent.eidolon.tile.*;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.Minecraft;
@@ -104,6 +103,39 @@ public class Registry {
         BLOCK_MAP.put(name, block);
         ITEMS.register(name, () -> new BlockItem(block, itemProps()));
         return BLOCKS.register(name, () -> block);
+    }
+
+    public static class DecoBlockPack {
+        DeferredRegister<Block> registry;
+        String basename;
+        AbstractBlock.Properties props;
+        RegistryObject<Block> full = null, slab = null, stair = null, wall = null, fence = null, fence_gate = null;
+
+        public DecoBlockPack(DeferredRegister<Block> blocks, String basename, AbstractBlock.Properties props) {
+            this.registry = blocks;
+            this.basename = basename;
+            this.props = props;
+            full = addBlock(basename, new Block(props));
+            slab = addBlock(basename + "_slab", new SlabBlock(props));
+            stair = addBlock(basename + "_stairs", new StairsBlock(() -> full.get().getDefaultState(), props));
+        }
+
+        public DecoBlockPack addWall() {
+            wall = addBlock(basename + "_wall", new WallBlock(props));
+            return this;
+        }
+
+        public DecoBlockPack addFence() {
+            fence = addBlock(basename + "_fence", new FenceBlock(props));
+            fence = addBlock(basename + "_fence_gate", new FenceGateBlock(props));
+            return this;
+        }
+
+        public Block getBlock() { return full.get(); }
+        public Block getSlab() { return slab.get(); }
+        public Block getStairs() { return stair.get(); }
+        public Block getWall() { return wall.get(); }
+        public Block getFence() { return fence.get(); }
     }
 
     static <T extends Entity> RegistryObject<EntityType<T>> addEntity(String name, float width, float height, EntityType.IFactory<T> factory, EntityClassification kind) {
@@ -256,7 +288,7 @@ public class Registry {
             .setLightLevel((state) -> 15).hardnessAndResistance(0.6f, 0.8f).notSolid())),
         CANDLESTICK = addBlock("candlestick", new CandlestickBlock(blockProps(Material.IRON, MaterialColor.GOLD)
             .setLightLevel((state) -> 15).hardnessAndResistance(1.2f, 2.0f).notSolid())),
-        STRAW_EFFIGY = addBlock("straw_effigy", new HorizontalBlockBase(blockProps(Material.PLANTS, MaterialColor.YELLOW)
+        STRAW_EFFIGY = addBlock("straw_effigy", new HorizontalWaterloggableBlock(blockProps(Material.PLANTS, MaterialColor.YELLOW)
             .hardnessAndResistance(1.4f, 2.0f)
             .notSolid()).setShape(
                 VoxelShapes.create(0.28125, 0, 0.28125, 0.71875, 1, 0.71875)
@@ -264,7 +296,7 @@ public class Registry {
         GOBLET = addBlock("goblet", new BlockBase(blockProps(Material.IRON, MaterialColor.GOLD)
             .hardnessAndResistance(1.4f, 2.0f).setRequiresTool().harvestTool(ToolType.PICKAXE)
             .notSolid()).setShape(VoxelShapes.create(0.3125, 0, 0.3125, 0.6875, 0.5, 0.6875))),
-        UNHOLY_EFFIGY = addBlock("unholy_effigy", new HorizontalBlockBase(blockProps(Material.ROCK, MaterialColor.STONE)
+        UNHOLY_EFFIGY = addBlock("unholy_effigy", new HorizontalWaterloggableBlock(blockProps(Material.ROCK, MaterialColor.STONE)
             .hardnessAndResistance(2.8f, 3.0f)
             .setRequiresTool().harvestTool(ToolType.PICKAXE)
             .notSolid()).setShape(
@@ -300,7 +332,7 @@ public class Registry {
                 VoxelShapes.create(0, 0.125, 0.875, 1, 0.875, 1),
                 VoxelShapes.create(0.0625, 0, 0.0625, 0.9375, 0.125, 0.9375)
             ))),
-        STONE_HAND = addBlock("stone_hand", new HorizontalBlockBase(blockProps(Material.ROCK, MaterialColor.STONE)
+        STONE_HAND = addBlock("stone_hand", new HorizontalWaterloggableBlock(blockProps(Material.ROCK, MaterialColor.STONE)
             .hardnessAndResistance(2.0f, 3.0f)
             .setRequiresTool().harvestTool(ToolType.PICKAXE).notSolid())
             .setShape(VoxelShapes.create(0.25, 0, 0.25, 0.75, 0.75, 0.75))),
@@ -318,6 +350,18 @@ public class Registry {
         WOODEN_STAND = addBlock("wooden_brewing_stand", new WoodenStandBlock(blockProps(Material.IRON, MaterialColor.WOOD)
             .hardnessAndResistance(2.0f, 3.0f)
             .harvestTool(ToolType.PICKAXE).notSolid()));
+    public static DecoBlockPack
+        SMOOTH_STONE_BRICK = new DecoBlockPack(BLOCKS, "smooth_stone_bricks", blockProps(Material.ROCK, MaterialColor.STONE)
+            .setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(2.0f, 3.0f))
+            .addWall(),
+        SMOOTH_STONE_TILES = new DecoBlockPack(BLOCKS, "smooth_stone_tiles", blockProps(Material.ROCK, MaterialColor.STONE)
+            .setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(2.0f, 3.0f)),
+        POLISHED_PLANKS = new DecoBlockPack(BLOCKS, "polished_planks", blockProps(Material.WOOD, MaterialColor.WOOD)
+            .harvestTool(ToolType.AXE).hardnessAndResistance(1.6f, 3.0f))
+            .addFence();
+    public static RegistryObject<Block>
+        POLISHED_WOOD_PILLAR = addBlock("polished_wood_pillar", new RotatedPillarBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
+            .harvestTool(ToolType.AXE).hardnessAndResistance(1.6f, 3.0f)));
 
     public static RegistryObject<EntityType<ZombieBruteEntity>>
         ZOMBIE_BRUTE = addEntity("zombie_brute", 7969893, 44975, 1.2f, 2.5f, ZombieBruteEntity::new, EntityClassification.MONSTER);

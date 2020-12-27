@@ -15,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -48,8 +49,7 @@ public class CrucibleRegistry {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    static Page getDefaultPage(CrucibleRecipe recipe) {
+    public static Page getDefaultPage(CrucibleRecipe recipe) {
         List<CruciblePage.CrucibleStep> steps = new ArrayList<>();
         for (CrucibleRecipe.Step step : recipe.getSteps()) {
             List<ItemStack> stacks = StackUtil.stacksFromObjects(step.matches);
@@ -59,19 +59,17 @@ public class CrucibleRegistry {
         return new CruciblePage(recipe.result.copy(), steps.toArray(new CruciblePage.CrucibleStep[steps.size()]));
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static void linkPage(ResourceLocation recipe, Page page) {
         linkedPages.put(recipe, page);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static List<RecipeWrappers.Crucible> getWrappedRecipes() {
         List<RecipeWrappers.Crucible> wrappers = new ArrayList<>();
         for (Map.Entry<ResourceLocation, CrucibleRecipe> entry : recipes.entrySet()) {
             Page page = linkedPages.getOrDefault(entry.getKey(), null);
             wrappers.add(new RecipeWrappers.Crucible(
                 entry.getValue(),
-                page != null ? page : getDefaultPage(entry.getValue())
+                page
             ));
         }
         return wrappers;
@@ -152,5 +150,15 @@ public class CrucibleRegistry {
             .addStep(Blocks.WARPED_FUNGUS)
             .addStirringStep(2, Registry.ENDER_CALX.get())
             .addStep(Items.NETHER_WART));
+        register(new CrucibleRecipe(new ItemStack(Registry.POLISHED_PLANKS.getBlock(), 32)).setRegistryName(Eidolon.MODID, "polished_planks")
+            .addStep(ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS,
+                ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS,
+                ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS,
+                ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS,
+                ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS,
+                ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS,
+                ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS,
+                ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS, ItemTags.PLANKS)
+            .addStirringStep(1, Registry.SOUL_SHARD.get(), Registry.ENCHANTED_ASH.get()));
     }
 }

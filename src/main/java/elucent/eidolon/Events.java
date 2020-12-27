@@ -93,7 +93,7 @@ public class Events {
         if (!(entity instanceof MonsterEntity)) {
             World world = entity.world;
             BlockPos pos = entity.getPosition();
-            List<GobletTileEntity> goblets = Ritual.getTilesWithinAABB(GobletTileEntity.class, world, new AxisAlignedBB(pos.add(-1, -1, -1), pos.add(2, 2, 2)));
+            List<GobletTileEntity> goblets = Ritual.getTilesWithinAABB(GobletTileEntity.class, world, new AxisAlignedBB(pos.add(-2, -2, -2), pos.add(3, 3, 3)));
             if (goblets.size() > 0) {
                 GobletTileEntity goblet = goblets.stream().min(Comparator.comparingDouble((g) -> g.getPos().distanceSq(pos))).get();
                 goblet.setEntityType(entity.getType());

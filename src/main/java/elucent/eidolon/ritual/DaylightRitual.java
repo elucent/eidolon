@@ -29,9 +29,9 @@ public class DaylightRitual extends Ritual {
 
     @Override
     public RitualResult tick(World world, BlockPos pos) {
-        if (world.getDayTime() < 1000 || world.getDayTime() >= 12000) {
+        if (world.getDayTime() % 24000 < 1000 || world.getDayTime() % 24000 >= 12000) {
             if (!world.isRemote) {
-                ((ServerWorldInfo) world.getWorldInfo()).setDayTime((world.getDayTime() + 100) % 24000);
+                ((ServerWorldInfo) world.getWorldInfo()).setDayTime(world.getDayTime() + 100);
                 for (ServerPlayerEntity player : ((ServerWorld) world).getPlayers()) {
                     player.connection.sendPacket(new SUpdateTimePacket(world.getGameTime(), world.getDayTime(), world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)));
                 }

@@ -24,7 +24,6 @@ public class MindShieldingPlateItem extends ItemBase {
     public MindShieldingPlateItem(Properties properties) {
         super(properties);
         MinecraftForge.EVENT_BUS.addListener(MindShieldingPlateItem::onPotion);
-        MinecraftForge.EVENT_BUS.addListener(MindShieldingPlateItem::onXPDrop);
         MinecraftForge.EVENT_BUS.addListener(MindShieldingPlateItem::onClone);
     }
 
@@ -36,15 +35,8 @@ public class MindShieldingPlateItem extends ItemBase {
     }
 
     @SubscribeEvent
-    public static void onXPDrop(LivingExperienceDropEvent event) {
-        if (CuriosApi.getCuriosHelper().findEquippedCurio(Registry.MIND_SHIELDING_PLATE.get(), event.getEntityLiving()).isPresent()) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
     public static void onClone(PlayerEvent.Clone event) {
-        if (event.getOriginal().experienceLevel > 0) {
+        if (event.getOriginal().experienceLevel > 0 && CuriosApi.getCuriosHelper().findEquippedCurio(Registry.MIND_SHIELDING_PLATE.get(), event.getEntityLiving()).isPresent()) {
             event.getPlayer().experienceLevel = event.getOriginal().experienceLevel * 3 / 4;
             event.getPlayer().experience = event.getOriginal().experience * 3 / 4;
         }

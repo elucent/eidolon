@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    "xxx"
+  ],
+  "key": {
+    "x": {
+      "item": "eidolon:smooth_stone_bricks"
+    }
+  },
+  "result": {
+    "item": "eidolon:smooth_stone_bricks_slab",
+    "count": 6
+  }
+}

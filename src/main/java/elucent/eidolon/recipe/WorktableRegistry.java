@@ -36,22 +36,20 @@ public class WorktableRegistry {
         recipes.put(loc, recipe);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    static Page getDefaultPage(WorktableRecipe recipe) {
+    public static Page getDefaultPage(WorktableRecipe recipe) {
         List<ItemStack> stacks = new ArrayList<>();
         for (Object o : recipe.core) stacks.add(StackUtil.stackFromObject(o));
         for (Object o : recipe.extras) stacks.add(StackUtil.stackFromObject(o));
         return new WorktablePage(recipe.result.copy(), stacks.toArray(new ItemStack[stacks.size()]));
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static List<RecipeWrappers.Worktable> getWrappedRecipes() {
         List<RecipeWrappers.Worktable> wrappers = new ArrayList<>();
         for (Map.Entry<ResourceLocation, WorktableRecipe> entry : recipes.entrySet()) {
             Page page = null; // linkedPages.getOrDefault(entry.getKey(), null);
             wrappers.add(new RecipeWrappers.Worktable(
                 entry.getValue(),
-                page != null ? page : getDefaultPage(entry.getValue())
+                page
             ));
         }
         return wrappers;
@@ -248,7 +246,7 @@ public class WorktableRegistry {
             ItemStack.EMPTY
         }, new ItemStack(Registry.MIND_SHIELDING_PLATE.get())).setRegistryName(Eidolon.MODID, "mind_shielding_plate"));
         register(new WorktableRecipe(new Object[]{
-            ItemStack.EMPTY, Blocks.DIAMOND_BLOCK, ItemStack.EMPTY,
+            ItemStack.EMPTY, Tags.Items.STORAGE_BLOCKS_DIAMOND, ItemStack.EMPTY,
             ItemStack.EMPTY, Registry.BASIC_AMULET.get(), ItemStack.EMPTY,
             ItemStack.EMPTY, Blocks.GLASS, ItemStack.EMPTY
         }, new Object[]{

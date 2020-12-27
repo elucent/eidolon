@@ -2,8 +2,7 @@ package elucent.eidolon;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import elucent.eidolon.world.LabStructure;
-import elucent.eidolon.world.StrayTowerStructure;
+import elucent.eidolon.world.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.Dimension;
@@ -74,7 +73,12 @@ public class WorldGen {
         GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
         new StructureSeparationSettings(16, 8, 1341));
 
-    public static StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> LAB_FEATURE, STRAY_TOWER_FEATURE;
+    public static RegistryObject<Structure<NoFeatureConfig>> CATACOMB_STRUCTURE = addStructure("catacomb",
+        new CatacombStructure(NoFeatureConfig.field_236558_a_),
+        GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
+        new StructureSeparationSettings(11, 7, 1347));
+
+    public static StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> LAB_FEATURE, STRAY_TOWER_FEATURE, CATACOMB_FEATURE;
 
     public static void preInit() {
         STRUCTURES.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -95,6 +99,20 @@ public class WorldGen {
         STRAY_TOWER_PIECE = register(StrayTowerStructure.Piece::new, "stray_tower");
         STRAY_TOWER_FEATURE = register(STRAY_TOWER_STRUCTURE.get().withConfiguration(NoFeatureConfig.field_236559_b_), "stray_tower");
 
+        CatacombPieces.CORRIDOR_CENTER = register(CatacombPieces.CorridorCenter::new, CatacombPieces.CORRIDOR_CENTER_ID.getPath());
+        CatacombPieces.CORRIDOR_DOOR = register(CatacombPieces.CorridorDoor::new, CatacombPieces.CORRIDOR_DOOR_ID.getPath());
+        CatacombPieces.SMALL_ROOM = register(CatacombPieces.SmallRoom::new, CatacombPieces.SMALL_ROOM_ID.getPath());
+        CatacombPieces.SHRINE = register(CatacombPieces.Shrine::new, CatacombPieces.SHRINE_ID.getPath());
+        CatacombPieces.TRAP = register(CatacombPieces.Trap::new, CatacombPieces.TRAP_ID.getPath());
+        CatacombPieces.SKULL = register(CatacombPieces.Skull::new, CatacombPieces.SKULL_ID.getPath());
+        CatacombPieces.SPAWNER = register(CatacombPieces.Spawner::new, CatacombPieces.SPAWNER_ID.getPath());
+        CatacombPieces.COFFIN = register(CatacombPieces.Coffin::new, CatacombPieces.COFFIN_ID.getPath());
+        CatacombPieces.MEDIUM_ROOM = register(CatacombPieces.MediumRoom::new, CatacombPieces.MEDIUM_ROOM_ID.getPath());
+        CatacombPieces.GRAVEYARD = register(CatacombPieces.Graveyard::new, CatacombPieces.GRAVEYARD_ID.getPath());
+        CatacombPieces.TURNAROUND = register(CatacombPieces.Turnaround::new, CatacombPieces.TURNAROUND_ID.getPath());
+        CatacombPieces.LAB = register(CatacombPieces.Lab::new, CatacombPieces.LAB_ID.getPath());
+        CATACOMB_FEATURE = register(CATACOMB_STRUCTURE.get().withConfiguration(NoFeatureConfig.field_236559_b_), "catacomb");
+
         for (Structure<?> s : STRUCTURE_LIST) {
             DimensionStructuresSettings.field_236191_b_ = // Default structures
                 ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
@@ -113,6 +131,8 @@ public class WorldGen {
         }
         if (Config.LAB_ENABLED.get())
             event.getGeneration().withStructure(LAB_FEATURE);
+        if (Config.CATACOMB_ENABLED.get())
+            event.getGeneration().withStructure(CATACOMB_FEATURE);
         if (event.getCategory() == Biome.Category.ICY && Config.STRAY_TOWER_ENABLED.get())
             event.getGeneration().withStructure(STRAY_TOWER_FEATURE);
     }

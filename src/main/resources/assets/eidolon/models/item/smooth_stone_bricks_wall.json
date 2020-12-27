@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "eidolon:block/smooth_stone_bricks"
+  }
+}

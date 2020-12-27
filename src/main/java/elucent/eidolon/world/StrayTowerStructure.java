@@ -48,7 +48,8 @@ public class StrayTowerStructure extends Structure<NoFeatureConfig> {
         int i = chunkX >> 4;
         int j = chunkZ >> 4;
         rand.setSeed((long) (i ^ j << 4) ^ seed);
-        return rand.nextDouble() < (1 / Config.STRAY_TOWER_RARITY.get());
+        double prob = rand.nextInt(10000) / 10000.0f;
+        return prob < (1 / Config.STRAY_TOWER_RARITY.get());
     }
 
     @Override

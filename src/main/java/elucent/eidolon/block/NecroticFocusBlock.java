@@ -14,7 +14,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
-public class NecroticFocusBlock extends HorizontalBlockBase {
+public class NecroticFocusBlock extends HorizontalWaterloggableBlock {
     VoxelShape SOUTH = VoxelShapes.create(0, 0, 0, 1, 1, 0.5),
                NORTH = VoxelShapes.create(0, 0, 0.5, 1, 1, 1),
                WEST = VoxelShapes.create(0.5, 0, 0, 1, 1, 1),

@@ -8,6 +8,9 @@ import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
@@ -215,10 +218,21 @@ public class EnchantedAshBlock extends BlockBase {
         return entity instanceof LivingEntity && ((LivingEntity)entity).isEntityUndead();
     }
 
+    boolean isBlocked(Entity entity) {
+        if (entity == null) return false;
+        if (entity instanceof LivingEntity) {
+            LivingEntity living = (LivingEntity)entity;
+            if (living.isEntityUndead()) return true;
+        }
+        if (entity.getPassengers().stream().anyMatch((e) -> e instanceof LivingEntity && ((LivingEntity)e).isEntityUndead()))
+            return true;
+
+        return false;
+    }
+
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext ctx) {
-        return ctx.getEntity() != null && ctx.getEntity() instanceof LivingEntity && ((LivingEntity)ctx.getEntity()).isEntityUndead()
-            ? BARRIER_SHAPE : super.getCollisionShape(state, world, pos, ctx);
+        return isBlocked(ctx.getEntity()) ? BARRIER_SHAPE : super.getCollisionShape(state, world, pos, ctx);
     }
 
     @Override

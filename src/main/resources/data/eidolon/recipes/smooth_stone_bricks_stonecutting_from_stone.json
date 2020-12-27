@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:stonecutting",
+  "group": "eidolon",
+  "ingredient": {
+    "item": "minecraft:smooth_stone"
+  },
+  "result": "eidolon:smooth_stone_bricks",
+  "count": 1
+}

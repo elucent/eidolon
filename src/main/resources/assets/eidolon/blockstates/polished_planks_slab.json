@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "eidolon:item/polished_planks_slab"
+    },
+    "type=double": {
+      "model": "eidolon:item/polished_planks"
+    },
+    "type=top": {
+      "model": "eidolon:block/polished_planks_slab_top"
+    }
+  }
+}

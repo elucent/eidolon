@@ -5,6 +5,7 @@ import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.codex.CodexGui;
 import elucent.eidolon.recipe.CrucibleRecipe;
+import elucent.eidolon.recipe.CrucibleRegistry;
 import elucent.eidolon.util.StackUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -81,6 +82,8 @@ public class CrucibleCategory implements IRecipeCategory<RecipeWrappers.Crucible
 
     @Override
     public void setIngredients(RecipeWrappers.Crucible wrapper, IIngredients ingredients) {
+        if (wrapper.page == null) wrapper.page = CrucibleRegistry.getDefaultPage(wrapper.recipe);
+
         List<List<ItemStack>> inputs = new ArrayList<>();
         for (CrucibleRecipe.Step step : wrapper.recipe.getSteps()) {
             List<StackIngredient> stepInputs = new ArrayList<>();

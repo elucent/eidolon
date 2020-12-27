@@ -10,8 +10,8 @@ public class Config {
 
     // world
     public static ConfigValue<Integer> LEAD_MIN_Y, LEAD_MAX_Y, LEAD_VEIN_SIZE, LEAD_VEIN_COUNT;
-    public static ConfigValue<Double> LAB_RARITY, STRAY_TOWER_RARITY;
-    public static ConfigValue<Boolean> LEAD_ENABLED, LAB_ENABLED, STRAY_TOWER_ENABLED;
+    public static ConfigValue<Double> LAB_RARITY, STRAY_TOWER_RARITY, CATACOMB_RARITY;
+    public static ConfigValue<Boolean> LEAD_ENABLED, LAB_ENABLED, STRAY_TOWER_ENABLED, CATACOMB_ENABLED;
 
     public Config(ForgeConfigSpec.Builder builder) {
         builder.comment("Mob settings").push("mobs");
@@ -40,6 +40,10 @@ public class Config {
             .define("strayTowerEnabled", true);
         STRAY_TOWER_RARITY = builder.comment("Rarity of the stray tower structure. Higher numbers mean rarer structures.")
             .defineInRange("strayTowerRarity", 4.0f, 1.0f, 1000f);
+        CATACOMB_ENABLED = builder.comment("Whether the catacomb structure is enabled. Set to false to disable spawning.")
+            .define("catacombEnabled", true);
+        CATACOMB_RARITY = builder.comment("Rarity of the catacomb structure. Higher numbers mean rarer structures.")
+            .defineInRange("catacombRarity", 3.0f, 1.0f, 1000f);
         builder.pop();
     }
 
