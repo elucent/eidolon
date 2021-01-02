@@ -253,7 +253,6 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
                 && !Tags.Items.DUSTS_REDSTONE.contains(stack.getItem())
                 && !Tags.Items.DUSTS_GLOWSTONE.contains(stack.getItem());
         } else {
-            Item item = stack.getItem();
             return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidInput(stack) && this.getStackInSlot(index).isEmpty();
         }
     }

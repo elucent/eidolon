@@ -81,7 +81,7 @@ public class CatacombStructure extends Structure<NoFeatureConfig> {
             EMPTY
         }
 
-        static interface ICatacombFactory {
+        interface ICatacombFactory {
             StructurePiece create(TemplateManager tm, BlockPos pos, Random random);
         }
 

@@ -32,12 +32,14 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.MobSpawnInfo;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -50,6 +52,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Comparator;
 import java.util.List;
@@ -159,7 +162,8 @@ public class Events {
 
     @SubscribeEvent
     public void registerSpawns(BiomeLoadingEvent ev) {
-        if (ev.getCategory() != Biome.Category.MUSHROOM && ev.getCategory() != Biome.Category.OCEAN && ev.getCategory() != Biome.Category.NETHER && ev.getCategory() != Biome.Category.THEEND) {
+        RegistryKey<Biome> key = RegistryKey.<Biome>getOrCreateKey(ForgeRegistries.Keys.BIOMES, ev.getName());
+        if (BiomeDictionary.hasType(key, BiomeDictionary.Type.OVERWORLD) && ev.getCategory() != Biome.Category.MUSHROOM) {
             ev.getSpawns().withSpawner(EntityClassification.MONSTER,
                 new MobSpawnInfo.Spawners(Registry.WRAITH.get(), Config.WRAITH_SPAWN_WEIGHT.get(), 1, 2));
             ev.getSpawns().withSpawner(EntityClassification.MONSTER,

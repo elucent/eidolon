@@ -22,7 +22,7 @@ public class GenericBarterGoal<E extends CreatureEntity> extends Goal {
     static Random rand = new Random();
     Predicate<ItemStack> valid;
     Function<ItemStack, ItemStack> result;
-    int progress = 0, cooldown = 0;
+    int progress = 0, cooldown = 0, lastTick = 0;
     E entity;
     ItemStack backupHack = ItemStack.EMPTY;
 
@@ -75,7 +75,8 @@ public class GenericBarterGoal<E extends CreatureEntity> extends Goal {
     @Override
     public boolean shouldExecute() {
         if (-- cooldown > 0) return false;
-        if (progress > 0 || entity.ticksExisted % 20 != 0) return false;
+        if (progress > 0 || entity.ticksExisted < lastTick + 20) return false;
+        lastTick = entity.ticksExisted;
         List<ItemEntity> items = entity.world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.getPosition().add(-8, -8, -8), entity.getPosition().add(8, 8, 8)), (item) -> valid.test(item.getItem()));
         return items.size() > 0;
     }

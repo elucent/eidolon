@@ -15,6 +15,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import java.util.function.Supplier;
@@ -30,6 +32,7 @@ public class EntityPage extends Page {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         Entity e = type.create(Minecraft.getInstance().world);
         EntityRenderer renderer = Minecraft.getInstance().getRenderManager().getRenderer(e);

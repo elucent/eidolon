@@ -28,6 +28,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 public class SignIndexPage extends Page {
@@ -50,6 +52,7 @@ public class SignIndexPage extends Page {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public boolean click(CodexGui gui, int x, int y, int mouseX, int mouseY) {
         PlayerEntity entity = Minecraft.getInstance().player;
         IKnowledge knowledge = entity.getCapability(KnowledgeProvider.CAPABILITY, null).resolve().get();
@@ -69,6 +72,7 @@ public class SignIndexPage extends Page {
         return false;
     }
 
+    @OnlyIn(Dist.CLIENT)
     static void colorBlit(MatrixStack mStack, int x, int y, int uOffset, int vOffset, int width, int height, int textureWidth, int textureHeight, int color) {
         Matrix4f matrix = mStack.getLast().getMatrix();
         int maxX = x + width, maxY = y + height;
@@ -89,6 +93,7 @@ public class SignIndexPage extends Page {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         PlayerEntity entity = Minecraft.getInstance().player;
         IKnowledge knowledge = entity.getCapability(KnowledgeProvider.CAPABILITY, null).resolve().get();

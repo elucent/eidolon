@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -40,8 +41,8 @@ public class ResoluteBeltItem extends ItemBase {
     public static void onHurt(LivingHurtEvent event) {
         if (event.getSource().getTrueSource() instanceof LivingEntity && CuriosApi.getCuriosHelper().findEquippedCurio(Registry.RESOLUTE_BELT.get(), event.getEntityLiving()).isPresent()) {
             LivingEntity entity = (LivingEntity)event.getSource().getTrueSource();
-            float yaw = (float)(Math.PI - Math.toRadians(event.getEntityLiving().attackedAtYaw));
-            entity.applyKnockback(0.4f, MathHelper.sin(yaw), MathHelper.cos(yaw));
+            Vector3d diff = event.getEntityLiving().getPositionVec().subtract(entity.getPositionVec()).mul(1, 0, 1).normalize();
+            entity.applyKnockback(0.8f, diff.x, diff.z);
             if (!entity.world.isRemote) entity.world.playSound(null, entity.getPosition(), SoundEvents.ENTITY_IRON_GOLEM_HURT, SoundCategory.PLAYERS, 1.0f, 1.9f + 0.2f * random.nextFloat());
         }
     }

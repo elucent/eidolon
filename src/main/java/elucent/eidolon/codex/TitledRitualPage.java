@@ -5,6 +5,8 @@ import elucent.eidolon.ritual.Ritual;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TitledRitualPage extends RitualPage {
     String title;
@@ -15,6 +17,7 @@ public class TitledRitualPage extends RitualPage {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         Minecraft.getInstance().getTextureManager().bindTexture(BACKGROUND);
         gui.blit(mStack, x, y, 128, 64, 128, 24);

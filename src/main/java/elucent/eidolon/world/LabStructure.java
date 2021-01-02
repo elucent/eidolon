@@ -67,7 +67,7 @@ public class LabStructure extends Structure<NoFeatureConfig> {
         public void func_230364_a_(DynamicRegistries registries, ChunkGenerator generator, TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
             int i = chunkX * 16;
             int j = chunkZ * 16;
-            int k = generator.getNoiseHeight(i, j, Heightmap.Type.OCEAN_FLOOR_WG);
+            int k = Math.min(generator.getSeaLevel(), generator.getNoiseHeight(i, j, Heightmap.Type.OCEAN_FLOOR_WG));
             if (k < 33) k = 33;
             BlockPos blockpos = new BlockPos(i + rand.nextInt(16), rand.nextInt(k - 32) + 8, j + rand.nextInt(16));
             Rotation rotation = Rotation.randomRotation(rand);

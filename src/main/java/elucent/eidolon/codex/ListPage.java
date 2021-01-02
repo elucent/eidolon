@@ -36,6 +36,7 @@ public class ListPage extends Page {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         Minecraft.getInstance().getTextureManager().bindTexture(BACKGROUND);
         for (int i = 0; i < entries.length; i ++) {

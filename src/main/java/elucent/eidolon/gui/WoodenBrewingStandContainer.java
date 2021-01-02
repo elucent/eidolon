@@ -82,7 +82,7 @@ public class WoodenBrewingStandContainer extends Container {
                     if (!this.mergeItemStack(itemstack1, 5, 32, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (!this.mergeItemStack(itemstack1, 5, 41, false)) {
+                } else if (!this.mergeItemStack(itemstack1, 5, 40, false)) {
                     return ItemStack.EMPTY;
                 }
             } else {

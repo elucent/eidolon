@@ -21,6 +21,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 public class SignPage extends Page {
@@ -32,6 +34,7 @@ public class SignPage extends Page {
         this.sign = sign;
     }
 
+    @OnlyIn(Dist.CLIENT)
     static void colorBlit(MatrixStack mStack, int x, int y, int uOffset, int vOffset, int width, int height, int textureWidth, int textureHeight, int color) {
         Matrix4f matrix = mStack.getLast().getMatrix();
         int maxX = x + width, maxY = y + height;
@@ -52,6 +55,7 @@ public class SignPage extends Page {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         Minecraft.getInstance().getTextureManager().bindTexture(BACKGROUND);
         Tessellator tess = Tessellator.getInstance();

@@ -9,6 +9,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class CruciblePage extends Page {
     public static final ResourceLocation BACKGROUND = new ResourceLocation(Eidolon.MODID, "textures/gui/codex_crucible_page.png");
@@ -40,6 +42,7 @@ public class CruciblePage extends Page {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         int h = steps.length * 20 + 32;
         int yoff = 80 - h / 2;
@@ -70,6 +73,7 @@ public class CruciblePage extends Page {
 
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void renderIngredients(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         int h = steps.length * 20 + 32;
         int yoff = 80 - h / 2;

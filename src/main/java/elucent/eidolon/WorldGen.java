@@ -44,6 +44,11 @@ public class WorldGen {
         return type;
     }
 
+    static <C extends IFeatureConfig, F extends Feature<C>> ConfiguredFeature<C, F> register(ConfiguredFeature<C, F> feature, String name) {
+        WorldGenRegistries.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(Eidolon.MODID, name), feature);
+        return feature;
+    }
+
     static <C extends IFeatureConfig, S extends Structure<C>> StructureFeature<C, S> register(StructureFeature<C, S> feature, String name) {
         WorldGenRegistries.register(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE, new ResourceLocation(Eidolon.MODID, name), feature);
         return feature;
@@ -85,12 +90,12 @@ public class WorldGen {
     }
 
     public static void init() {
-        LEAD_ORE_GEN = Feature.ORE.withConfiguration(new OreFeatureConfig(IN_STONE,
+        LEAD_ORE_GEN = register(Feature.ORE.withConfiguration(new OreFeatureConfig(IN_STONE,
             Registry.LEAD_ORE.get().getDefaultState(), Config.LEAD_VEIN_SIZE.get()))
             .square()
             .func_242731_b(Config.LEAD_VEIN_COUNT.get()) // per chunk
-            .range(Config.LEAD_MAX_Y.get()) // maximum Y
-            ;
+            .range(Config.LEAD_MAX_Y.get() // maximum Y
+            ), "lead_ore");
         if (Config.LEAD_ENABLED.get()) ORES.add(LEAD_ORE_GEN);
 
         LAB_PIECE = register(LabStructure.Piece::new, "lab");

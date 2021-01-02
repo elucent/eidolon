@@ -14,6 +14,8 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 public class RitualPage extends Page {
@@ -40,6 +42,7 @@ public class RitualPage extends Page {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         float angleStep = Math.min(30, 180 / inputs.length);
         double rootAngle = 90 - (inputs.length - 1) * angleStep / 2;
@@ -75,6 +78,7 @@ public class RitualPage extends Page {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void renderIngredients(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         float angleStep = Math.min(30, 180 / inputs.length);
         double rootAngle = 90 - (inputs.length - 1) * angleStep / 2;

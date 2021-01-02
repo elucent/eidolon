@@ -9,6 +9,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public abstract class Page {
         //
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static void drawItem(CodexGui gui, MatrixStack mStack, ItemStack stack, int x, int y, int mouseX, int mouseY) {
         ItemRenderer ir = Minecraft.getInstance().getItemRenderer();
         ir.renderItemAndEffectIntoGUI(stack, x, y);
@@ -34,6 +37,7 @@ public abstract class Page {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static void drawText(CodexGui gui, MatrixStack mStack, String text, int x, int y) {
         FontRenderer font = Minecraft.getInstance().fontRenderer;
         font.drawString(mStack, text, x, y - 1, ColorUtil.packColor(128, 255, 255, 255));
@@ -43,6 +47,7 @@ public abstract class Page {
         font.drawString(mStack, text, x, y, ColorUtil.packColor(255, 79, 59, 47));
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static void drawWrappingText(CodexGui gui, MatrixStack mStack, String text, int x, int y, int w) {
         FontRenderer font = Minecraft.getInstance().fontRenderer;
         List<String> lines = new ArrayList<>();
@@ -61,6 +66,7 @@ public abstract class Page {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void fullRender(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         Minecraft.getInstance().getTextureManager().bindTexture(bg);
         renderBackground(gui, mStack, x, y, mouseX, mouseY);
@@ -68,15 +74,20 @@ public abstract class Page {
         renderIngredients(gui, mStack, x, y, mouseX, mouseY);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void renderBackground(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         Minecraft.getInstance().getTextureManager().bindTexture(bg);
         gui.blit(mStack, x, y, 0, 0, 128, 160);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public boolean click(CodexGui gui, int x, int y, int mouseX, int mouseY) {
         return false;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {}
+
+    @OnlyIn(Dist.CLIENT)
     public void renderIngredients(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {}
 }

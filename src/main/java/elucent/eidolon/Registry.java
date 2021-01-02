@@ -8,9 +8,11 @@ import elucent.eidolon.gui.WoodenBrewingStandContainer;
 import elucent.eidolon.gui.WorktableContainer;
 import elucent.eidolon.item.*;
 import elucent.eidolon.item.curio.*;
+import elucent.eidolon.mixin.PotionBrewingMixin;
 import elucent.eidolon.particle.*;
 import elucent.eidolon.potion.AnchoredEffect;
 import elucent.eidolon.potion.ChilledEffect;
+import elucent.eidolon.potion.StrictBrewingRecipe;
 import elucent.eidolon.ritual.*;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
@@ -263,47 +265,47 @@ public class Registry {
 
     public static RegistryObject<Block>
         LEAD_ORE = addBlock("lead_ore", blockProps(Material.ROCK, MaterialColor.STONE)
-            .hardnessAndResistance(2.8f, 3.0f)
+            .sound(SoundType.STONE).hardnessAndResistance(2.8f, 3.0f)
             .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
         LEAD_BLOCK = addBlock("lead_block", blockProps(Material.ROCK, MaterialColor.PURPLE_TERRACOTTA)
-            .hardnessAndResistance(3.0f, 3.0f)
+            .sound(SoundType.METAL).hardnessAndResistance(3.0f, 3.0f)
             .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
         PEWTER_BLOCK = addBlock("pewter_block", blockProps(Material.ROCK, MaterialColor.LIGHT_GRAY)
-            .hardnessAndResistance(4.0f, 4.0f)
+            .sound(SoundType.METAL).hardnessAndResistance(4.0f, 4.0f)
             .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
         ARCANE_GOLD_BLOCK = addBlock("arcane_gold_block", blockProps(Material.ROCK, MaterialColor.GOLD)
-            .hardnessAndResistance(3.0f, 4.0f)
+            .sound(SoundType.METAL).hardnessAndResistance(3.0f, 4.0f)
             .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
         WOODEN_ALTAR = addBlock("wooden_altar", new TableBlockBase(blockProps(Material.WOOD, MaterialColor.WOOD)
-            .hardnessAndResistance(1.6f, 3.0f)
+            .sound(SoundType.WOOD).hardnessAndResistance(1.6f, 3.0f)
             .harvestTool(ToolType.AXE))),
         STONE_ALTAR = addBlock("stone_altar", new TableBlockBase(blockProps(Material.ROCK, MaterialColor.STONE)
-            .hardnessAndResistance(2.8f, 3.0f)
+            .sound(SoundType.STONE).hardnessAndResistance(2.8f, 3.0f)
             .setRequiresTool().harvestTool(ToolType.PICKAXE).notSolid())
             .setMainShape(VoxelShapes.or(
                 VoxelShapes.create(0, 0.375, 0, 1, 1, 1),
                 VoxelShapes.create(0.0625, 0.125, 0.0625, 0.9375, 0.375, 0.9375)
             ))),
         CANDLE = addBlock("candle", new CandleBlock(blockProps(Material.MISCELLANEOUS, MaterialColor.WHITE_TERRACOTTA)
-            .setLightLevel((state) -> 15).hardnessAndResistance(0.6f, 0.8f).notSolid())),
+            .sound(SoundType.STONE).setLightLevel((state) -> 15).hardnessAndResistance(0.6f, 0.8f).notSolid())),
         CANDLESTICK = addBlock("candlestick", new CandlestickBlock(blockProps(Material.IRON, MaterialColor.GOLD)
-            .setLightLevel((state) -> 15).hardnessAndResistance(1.2f, 2.0f).notSolid())),
+            .sound(SoundType.STONE).setLightLevel((state) -> 15).hardnessAndResistance(1.2f, 2.0f).notSolid())),
         STRAW_EFFIGY = addBlock("straw_effigy", new HorizontalWaterloggableBlock(blockProps(Material.PLANTS, MaterialColor.YELLOW)
-            .hardnessAndResistance(1.4f, 2.0f)
+            .sound(SoundType.WOOD).hardnessAndResistance(1.4f, 2.0f)
             .notSolid()).setShape(
                 VoxelShapes.create(0.28125, 0, 0.28125, 0.71875, 1, 0.71875)
             )),
         GOBLET = addBlock("goblet", new BlockBase(blockProps(Material.IRON, MaterialColor.GOLD)
-            .hardnessAndResistance(1.4f, 2.0f).setRequiresTool().harvestTool(ToolType.PICKAXE)
+            .sound(SoundType.METAL).hardnessAndResistance(1.4f, 2.0f).setRequiresTool().harvestTool(ToolType.PICKAXE)
             .notSolid()).setShape(VoxelShapes.create(0.3125, 0, 0.3125, 0.6875, 0.5, 0.6875))),
         UNHOLY_EFFIGY = addBlock("unholy_effigy", new HorizontalWaterloggableBlock(blockProps(Material.ROCK, MaterialColor.STONE)
-            .hardnessAndResistance(2.8f, 3.0f)
+            .sound(SoundType.STONE).hardnessAndResistance(2.8f, 3.0f)
             .setRequiresTool().harvestTool(ToolType.PICKAXE)
             .notSolid()).setShape(
                 VoxelShapes.create(0.25, 0, 0.25, 0.75, 1, 0.75)
             )),
         WORKTABLE = addBlock("worktable", new WorktableBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
-            .hardnessAndResistance(1.6f, 3.0f)
+            .sound(SoundType.WOOD).hardnessAndResistance(1.6f, 3.0f)
             .harvestTool(ToolType.AXE).notSolid()).setShape(VoxelShapes.or(
                 VoxelShapes.create(0, 0, 0, 1, 0.25, 1),
                 VoxelShapes.create(0.125, 0.25, 0.125, 0.875, 0.625, 0.875),
@@ -311,15 +313,15 @@ public class Registry {
             )
         )),
         PLINTH = addBlock("plinth", new PlinthBlockBase(blockProps(Material.ROCK, MaterialColor.STONE)
-            .hardnessAndResistance(2.0f, 3.0f)
+            .sound(SoundType.STONE).hardnessAndResistance(2.0f, 3.0f)
             .setRequiresTool().harvestTool(ToolType.PICKAXE).notSolid())
             .setShape(VoxelShapes.create(0.25, 0, 0.25, 0.75, 1, 0.75))),
         BRAZIER = addBlock("brazier", new BlockBase(blockProps(Material.WOOD, MaterialColor.IRON)
-            .hardnessAndResistance(2.5f, 3.0f)
+            .sound(SoundType.METAL).hardnessAndResistance(2.5f, 3.0f)
             .notSolid())
             .setShape(VoxelShapes.create(0.1875, 0, 0.1875, 0.8125, 0.75, 0.8125))),
         CRUCIBLE = addBlock("crucible", new BlockBase(blockProps(Material.IRON, MaterialColor.IRON)
-            .hardnessAndResistance(4.0f, 3.0f)
+            .sound(SoundType.METAL).hardnessAndResistance(4.0f, 3.0f)
             .setRequiresTool().harvestTool(ToolType.PICKAXE).notSolid())
             .setShape(VoxelShapes.or(
                 VoxelShapes.create(0.0625, 0.875, 0.0625, 0.1875, 1, 0.9375),
@@ -333,31 +335,31 @@ public class Registry {
                 VoxelShapes.create(0.0625, 0, 0.0625, 0.9375, 0.125, 0.9375)
             ))),
         STONE_HAND = addBlock("stone_hand", new HorizontalWaterloggableBlock(blockProps(Material.ROCK, MaterialColor.STONE)
-            .hardnessAndResistance(2.0f, 3.0f)
+            .sound(SoundType.STONE).hardnessAndResistance(2.0f, 3.0f)
             .setRequiresTool().harvestTool(ToolType.PICKAXE).notSolid())
             .setShape(VoxelShapes.create(0.25, 0, 0.25, 0.75, 0.75, 0.75))),
         ENCHANTED_ASH = addBlock("enchanted_ash", new EnchantedAshBlock(blockProps(Material.MISCELLANEOUS, MaterialColor.WHITE_TERRACOTTA)
-            .hardnessAndResistance(0.0f, 0.75f).notSolid())
+            .sound(SoundType.STONE).hardnessAndResistance(0.0f, 0.75f).notSolid())
             .setShape(VoxelShapes.empty())),
         NECROTIC_FOCUS = addBlock("necrotic_focus", new NecroticFocusBlock(blockProps(Material.ROCK, MaterialColor.STONE)
-            .hardnessAndResistance(2.8f, 3.0f)
+            .sound(SoundType.STONE).hardnessAndResistance(2.8f, 3.0f)
             .setRequiresTool().harvestTool(ToolType.PICKAXE).notSolid())
             .setShape(VoxelShapes.create(0.25, 0, 0.25, 0.75, 0.75, 0.75))),
         SOUL_ENCHANTER = addBlock("soul_enchanter", new SoulEnchanterBlock(blockProps(Material.ROCK, MaterialColor.OBSIDIAN)
-            .hardnessAndResistance(5.0f, 1200.0f)
+            .sound(SoundType.STONE).hardnessAndResistance(5.0f, 1200.0f)
             .harvestTool(ToolType.PICKAXE).setRequiresTool().notSolid())
             .setShape(VoxelShapes.create(0, 0, 0, 1, 0.75, 1))),
         WOODEN_STAND = addBlock("wooden_brewing_stand", new WoodenStandBlock(blockProps(Material.IRON, MaterialColor.WOOD)
-            .hardnessAndResistance(2.0f, 3.0f)
+            .sound(SoundType.STONE).hardnessAndResistance(2.0f, 3.0f)
             .harvestTool(ToolType.PICKAXE).notSolid()));
     public static DecoBlockPack
         SMOOTH_STONE_BRICK = new DecoBlockPack(BLOCKS, "smooth_stone_bricks", blockProps(Material.ROCK, MaterialColor.STONE)
-            .setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(2.0f, 3.0f))
+            .sound(SoundType.STONE).setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(2.0f, 3.0f))
             .addWall(),
         SMOOTH_STONE_TILES = new DecoBlockPack(BLOCKS, "smooth_stone_tiles", blockProps(Material.ROCK, MaterialColor.STONE)
-            .setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(2.0f, 3.0f)),
+            .sound(SoundType.STONE).setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(2.0f, 3.0f)),
         POLISHED_PLANKS = new DecoBlockPack(BLOCKS, "polished_planks", blockProps(Material.WOOD, MaterialColor.WOOD)
-            .harvestTool(ToolType.AXE).hardnessAndResistance(1.6f, 3.0f))
+            .sound(SoundType.WOOD).harvestTool(ToolType.AXE).hardnessAndResistance(1.6f, 3.0f))
             .addFence();
     public static RegistryObject<Block>
         POLISHED_WOOD_PILLAR = addBlock("polished_wood_pillar", new RotatedPillarBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
@@ -397,38 +399,17 @@ public class Registry {
         CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public static void clientInit() {
+    public static void addBrewingRecipes() {
+        System.out.println("calling addBrewingRecipes");
+        PotionBrewingMixin.callAddMix(Potions.WATER, Registry.FUNGUS_SPROUTS.get(), Potions.AWKWARD);
+        PotionBrewingMixin.callAddMix(Potions.AWKWARD, Registry.WRAITH_HEART.get(), Registry.CHILLED_POTION.get());
+        PotionBrewingMixin.callAddMix(Registry.CHILLED_POTION.get(), Items.REDSTONE, Registry.LONG_CHILLED_POTION.get());
+        PotionBrewingMixin.callAddMix(Potions.AWKWARD, Registry.WARPED_SPROUTS.get(), Registry.ANCHORED_POTION.get());
+        PotionBrewingMixin.callAddMix(Registry.ANCHORED_POTION.get(), Items.REDSTONE, Registry.LONG_ANCHORED_POTION.get());
     }
 
-    public static void addBrewingRecipes() {
-        BrewingRecipeRegistry.addRecipe(
-            Ingredient.fromStacks(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.WATER)),
-            Ingredient.fromItems(Registry.FUNGUS_SPROUTS.get()),
-            PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.AWKWARD)
-        );
-
-        BrewingRecipeRegistry.addRecipe(
-            Ingredient.fromStacks(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.AWKWARD)),
-            Ingredient.fromItems(Registry.WRAITH_HEART.get()),
-            PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), CHILLED_POTION.get())
-        );
-        BrewingRecipeRegistry.addRecipe(
-            Ingredient.fromStacks(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), CHILLED_POTION.get())),
-            Ingredient.fromItems(Items.REDSTONE),
-            PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), LONG_CHILLED_POTION.get())
-        );
-
-        BrewingRecipeRegistry.addRecipe(
-            Ingredient.fromStacks(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.AWKWARD)),
-            Ingredient.fromItems(Registry.WARPED_SPROUTS.get()),
-            PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), ANCHORED_POTION.get())
-        );
-        BrewingRecipeRegistry.addRecipe(
-            Ingredient.fromStacks(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), ANCHORED_POTION.get())),
-            Ingredient.fromItems(Items.REDSTONE),
-            PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), LONG_ANCHORED_POTION.get())
-        );
+    @OnlyIn(Dist.CLIENT)
+    public static void clientInit() {
     }
 
     public static TileEntityType<HandTileEntity> HAND_TILE_ENTITY;

@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import elucent.eidolon.Eidolon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class WorktablePage extends Page {
     public static final ResourceLocation BACKGROUND = new ResourceLocation(Eidolon.MODID, "textures/gui/codex_worktable_page.png");
@@ -17,6 +19,7 @@ public class WorktablePage extends Page {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void renderIngredients(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         for (int i = 0; i < 3; i ++) {
             for (int j = 0; j < 3; j ++) {

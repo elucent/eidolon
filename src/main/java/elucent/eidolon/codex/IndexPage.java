@@ -40,7 +40,6 @@ public class IndexPage extends Page {
         }
 
         @Override
-        @OnlyIn(Dist.CLIENT)
         public boolean isUnlocked() {
             for (Sign sign : signs) if (!KnowledgeUtil.knowsSign(Eidolon.proxy.getPlayer(), sign)) return false;
             return true;
@@ -55,7 +54,6 @@ public class IndexPage extends Page {
         }
 
         @Override
-        @OnlyIn(Dist.CLIENT)
         public boolean isUnlocked() {
             for (ResourceLocation fact : facts) if (!KnowledgeUtil.knowsFact(Eidolon.proxy.getPlayer(), fact)) return false;
             return true;
@@ -68,6 +66,7 @@ public class IndexPage extends Page {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public boolean click(CodexGui gui, int x, int y, int mouseX, int mouseY) {
         for (int i = 0; i < entries.length; i ++) if (entries[i].isUnlocked()) {
             if (mouseX >= x + 2 && mouseX <= x + 124 && mouseY >= y + 8 + i * 20 && mouseY <= y + 26 + i * 20) {
@@ -80,6 +79,7 @@ public class IndexPage extends Page {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
         Minecraft.getInstance().getTextureManager().bindTexture(BACKGROUND);
         for (int i = 0; i < entries.length; i ++) {
