@@ -310,8 +310,7 @@ public class Registry {
                 VoxelShapes.create(0, 0, 0, 1, 0.25, 1),
                 VoxelShapes.create(0.125, 0.25, 0.125, 0.875, 0.625, 0.875),
                 VoxelShapes.create(0, 0.625, 0, 1, 1, 1)
-            )
-        )),
+            ))),
         PLINTH = addBlock("plinth", new PlinthBlockBase(blockProps(Material.ROCK, MaterialColor.STONE)
             .sound(SoundType.STONE).hardnessAndResistance(2.0f, 3.0f)
             .setRequiresTool().harvestTool(ToolType.PICKAXE).notSolid())
@@ -433,7 +432,7 @@ public class Registry {
         GOBLET_TILE_ENTITY = addTileEntity(evt.getRegistry(), "goblet", GobletTileEntity::new, GOBLET.get());
     }
 
-    public static DamageSource RITUAL_DAMAGE = (new DamageSource("ritual")).setMagicDamage().setDamageBypassesArmor();
+    public static DamageSource RITUAL_DAMAGE = new DamageSource("ritual").setDamageBypassesArmor().setDamageIsAbsolute();
     public static DamageSource FROST_DAMAGE = new DamageSource("frost");
 
     static DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, Eidolon.MODID);

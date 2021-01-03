@@ -24,12 +24,12 @@ public class DarkDeity extends Deity {
 
     @Override
     public void onReputationChange(PlayerEntity player, IReputation rep, double prev, double current) {
-        if (prev < 3 && current >= 3) {
+        if (!KnowledgeUtil.knowsSign(player, Signs.BLOOD_SIGN) && current >= 3) {
             rep.setReputation(player, id, 3);
             rep.lock(player, id, DeityLocks.SACRIFICE_MOB);
             KnowledgeUtil.grantSign(player, Signs.BLOOD_SIGN);
         }
-        else if (prev < 15 && current >= 15) {
+        else if (!KnowledgeUtil.knowsFact(player, Facts.VILLAGER_SACRIFICE) && current >= 15) {
             rep.setReputation(player, id, 15);
             rep.lock(player, id, DeityLocks.SACRIFICE_VILLAGER);
             KnowledgeUtil.grantFact(player, Facts.VILLAGER_SACRIFICE);

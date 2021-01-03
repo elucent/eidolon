@@ -5,6 +5,7 @@ import elucent.eidolon.network.MagicBurstEffectPacket;
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.particle.Particles;
 import elucent.eidolon.util.ColorUtil;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.datasync.DataParameter;
@@ -67,7 +68,7 @@ public class NecromancerSpellEntity extends SpellProjectileEntity {
     }
 
     @Override
-    protected void onImpact(RayTraceResult ray, LivingEntity target) {
+    protected void onImpact(RayTraceResult ray, Entity target) {
         target.attackEntityFrom(new IndirectEntityDamageSource(DamageSource.WITHER.getDamageType(), this, world.getEntityByID((int)casterId.getLeastSignificantBits())), 3.0f + world.getDifficulty().getId());
         onImpact(ray);
     }

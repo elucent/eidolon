@@ -70,17 +70,15 @@ public class Events {
 
     @SubscribeEvent
     public void onClone(PlayerEvent.Clone event) {
-        if (event.isWasDeath()) {
-            Capability<IKnowledge> KNOWLEDGE = KnowledgeProvider.CAPABILITY;
-            KNOWLEDGE.getStorage().readNBT(
-                KNOWLEDGE,
-                event.getPlayer().getCapability(KNOWLEDGE, null).resolve().get(),
-                null,
-                KNOWLEDGE.getStorage().writeNBT(KNOWLEDGE, event.getOriginal().getCapability(KNOWLEDGE, null).resolve().get(), null)
-            );
-            if (!event.getPlayer().world.isRemote) {
-                Networking.sendTo(event.getPlayer(), new KnowledgeUpdatePacket(event.getPlayer(), false));
-            }
+        Capability<IKnowledge> KNOWLEDGE = KnowledgeProvider.CAPABILITY;
+        KNOWLEDGE.getStorage().readNBT(
+            KNOWLEDGE,
+            event.getPlayer().getCapability(KNOWLEDGE, null).resolve().get(),
+            null,
+            KNOWLEDGE.getStorage().writeNBT(KNOWLEDGE, event.getOriginal().getCapability(KNOWLEDGE, null).resolve().get(), null)
+        );
+        if (!event.getPlayer().world.isRemote) {
+            Networking.sendTo(event.getPlayer(), new KnowledgeUpdatePacket(event.getPlayer(), false));
         }
     }
 
@@ -155,9 +153,6 @@ public class Events {
                 }
             }
         }
-        if (event.getSource().getDamageType() == Registry.RITUAL_DAMAGE.getDamageType()
-            && !(entity instanceof PlayerEntity))
-            event.getDrops().clear();
     }
 
     @SubscribeEvent

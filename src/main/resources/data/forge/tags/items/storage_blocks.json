@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "eidolon:lead_block"
+    "eidolon:lead_block",
+    "eidolon:pewter_block",
+    "eidolon:arcane_gold_block"
   ]
 }

@@ -53,7 +53,7 @@ public class SoulfireProjectileEntity extends SpellProjectileEntity {
     }
 
     @Override
-    protected void onImpact(RayTraceResult ray, LivingEntity target) {
+    protected void onImpact(RayTraceResult ray, Entity target) {
         target.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, world.getPlayerByUuid(casterId)), 7.0f);
         onImpact(ray);
     }

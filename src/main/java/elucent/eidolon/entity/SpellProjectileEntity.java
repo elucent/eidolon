@@ -52,9 +52,9 @@ public abstract class SpellProjectileEntity extends Entity {
         super.tick();
 
         if (!world.isRemote) {
-            RayTraceResult ray = ProjectileHelper.func_234618_a_(this, (e) -> e instanceof LivingEntity && ((LivingEntity)e).isAlive() && !e.getUniqueID().equals(casterId));
+            RayTraceResult ray = ProjectileHelper.func_234618_a_(this, (e) -> !e.isSpectator() && e.canBeCollidedWith() && !e.getUniqueID().equals(casterId));
             if (ray.getType() == RayTraceResult.Type.ENTITY) {
-                onImpact(ray, (LivingEntity)((EntityRayTraceResult)ray).getEntity());
+                onImpact(ray, ((EntityRayTraceResult)ray).getEntity());
             }
             else if (ray.getType() == RayTraceResult.Type.BLOCK) {
                 onImpact(ray);
@@ -68,7 +68,7 @@ public abstract class SpellProjectileEntity extends Entity {
         setPosition(pos.x + motion.x, pos.y + motion.y, pos.z + motion.z);
     }
 
-    protected abstract void onImpact(RayTraceResult ray, LivingEntity target);
+    protected abstract void onImpact(RayTraceResult ray, Entity target);
     protected abstract void onImpact(RayTraceResult ray);
 
     @Override

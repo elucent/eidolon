@@ -5,6 +5,7 @@ import elucent.eidolon.network.MagicBurstEffectPacket;
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.particle.Particles;
 import elucent.eidolon.util.ColorUtil;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.EffectInstance;
@@ -48,9 +49,10 @@ public class BonechillProjectileEntity extends SpellProjectileEntity {
     }
 
     @Override
-    protected void onImpact(RayTraceResult ray, LivingEntity target) {
+    protected void onImpact(RayTraceResult ray, Entity target) {
         target.attackEntityFrom(new IndirectEntityDamageSource(Registry.FROST_DAMAGE.getDamageType(), this, world.getPlayerByUuid(casterId)), 4.0f);
-        target.addPotionEffect(new EffectInstance(Registry.CHILLED_EFFECT.get(), 300, 0));
+        if (target instanceof LivingEntity)
+            ((LivingEntity)target).addPotionEffect(new EffectInstance(Registry.CHILLED_EFFECT.get(), 300, 0));
         onImpact(ray);
     }
 

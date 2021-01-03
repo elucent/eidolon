@@ -50,7 +50,7 @@ public class HealthRequirement implements IRequirement {
             float targetHealth = targets.get(i).getHealth();
             if (this.health - acc < targetHealth)
                 targets.get(i).attackEntityFrom(Registry.RITUAL_DAMAGE, this.health - acc);
-            else targets.get(i).attackEntityFrom(Registry.RITUAL_DAMAGE, targets.get(i).getMaxHealth() * 1000);
+            else targets.get(i).attackEntityFrom(Registry.RITUAL_DAMAGE, targetHealth);
 
             acc += targetHealth;
             if (!world.isRemote) Networking.sendToTracking(world, pos, new RitualConsumePacket(targets.get(i).getPosition(), pos, ritual.getRed(), ritual.getGreen(), ritual.getBlue()));

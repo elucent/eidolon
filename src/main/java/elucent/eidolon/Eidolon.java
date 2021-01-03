@@ -89,37 +89,12 @@ public class Eidolon {
         Networking.init();
         WorldGen.init();
         event.enqueueWork(() -> {
-            long time = System.nanoTime();
-
-            System.out.print("Registering crucible recipes took ");
             CrucibleRegistry.init();
-            System.out.println("" + (System.nanoTime() - time) + " nanoseconds");
-            time = System.nanoTime();
-
-            System.out.print("Registering worktable recipes took ");
             WorktableRegistry.init();
-            System.out.println("" + (System.nanoTime() - time) + " nanoseconds");
-            time = System.nanoTime();
-
-            System.out.print("Registering rituals took ");
             RitualRegistry.init();
-            System.out.println("" + (System.nanoTime() - time) + " nanoseconds");
-            time = System.nanoTime();
-
-            System.out.print("Registering codex pages took ");
             CodexChapters.init();
-            System.out.println("" + (System.nanoTime() - time) + " nanoseconds");
-            time = System.nanoTime();
-
-            System.out.print("Registering brewing recipes took ");
             Registry.addBrewingRecipes();
-            System.out.println("" + (System.nanoTime() - time) + " nanoseconds");
-            time = System.nanoTime();
-
-            System.out.print("Registering altar modifiers took ");
             AltarEntries.init();
-            System.out.println("" + (System.nanoTime() - time) + " nanoseconds");
-            time = System.nanoTime();
         });
         event.enqueueWork(this::defineAttributes);
 
