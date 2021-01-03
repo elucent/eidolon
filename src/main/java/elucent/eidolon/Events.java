@@ -116,7 +116,6 @@ public class Events {
             ItemStack held = source.getHeldItemMainhand();
             if (!entity.world.isRemote && held.getItem() instanceof ReaperScytheItem && entity.isEntityUndead()) {
                 int looting = ForgeHooks.getLootingLevel(entity, source, event.getSource());
-                event.getDrops().clear();
                 ItemEntity drop = new ItemEntity(source.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(),
                     new ItemStack(Registry.SOUL_SHARD.get(), source.world.rand.nextInt(2 + looting)));
                 drop.setDefaultPickupDelay();

@@ -2,6 +2,7 @@ package elucent.eidolon.mixin;
 
 import elucent.eidolon.Registry;
 import elucent.eidolon.event.SpeedFactorEvent;
+import elucent.eidolon.item.ReaperScytheItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -27,7 +28,9 @@ public class LivingEntityMixin {
     @Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
     protected void customDropLoot(DamageSource source, boolean hitRecently, CallbackInfo ci) {
         if (((LivingEntity)(Object)this).isEntityUndead()
-            && source.getDamageType() == Registry.RITUAL_DAMAGE.getDamageType()) {
+            && (source.getDamageType() == Registry.RITUAL_DAMAGE.getDamageType()
+                || source.getTrueSource() instanceof LivingEntity
+                    && ((LivingEntity) source.getTrueSource()).getHeldItemMainhand().getItem() instanceof ReaperScytheItem)) {
             ci.cancel();
         }
     }
