@@ -22,7 +22,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class NecromancerSpellEntity extends SpellProjectileEntity {
-    public static final DataParameter<Integer> DELAY = EntityDataManager.<Integer>createKey(NecromancerEntity.class, DataSerializers.VARINT);
+    public static final DataParameter<Integer> DELAY = EntityDataManager.<Integer>createKey(NecromancerSpellEntity.class, DataSerializers.VARINT);
 
     public NecromancerSpellEntity(EntityType<?> entityTypeIn, World worldIn) {
         super(entityTypeIn, worldIn);
