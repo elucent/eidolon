@@ -3,7 +3,7 @@
 
   "lore.eidolon.wraith_heart": "É bem gelado...",
   "lore.eidolon.zombie_heart": "Será que ainda palpita?",
-  "lore.eidolon.sapping_sword": "Rouba a vida o oponente.",
+  "lore.eidolon.sapping_sword": "Rouba a vida do oponente.",
   "lore.eidolon.sanguine_amulet": "Armazena vida para mais tarde.",
   "lore.eidolon.void_amulet": "Ocasionalmente absorve projéteis.",
   "lore.eidolon.warded_mail": "Defende de ataques mágicos.",
@@ -13,7 +13,7 @@
   "lore.eidolon.reaper_scythe": "Ceifeira de almas.",
   "lore.eidolon.cleaving_axe": "Ponta extremamente afiada.",
   "lore.eidolon.mind_shielding_plate": "Protege seu conhecimento.",
-  "lore.eidolon.prestigious_palm": "Alcance o além, toque os céus!",
+  "lore.eidolon.prestigious_palm": "Alcance o além, toque os céus.",
   "lore.eidolon.resolute_belt": "Parece pesado.",
   "lore.eidolon.gravity_belt": "Parece bem leve.",
   "lore.eidolon.glass_hand": "Risco e recompensa.",
@@ -58,7 +58,7 @@
   "item.eidolon.lesser_soul_gem": "Gema da Alma Inferior",
   "item.eidolon.unholy_symbol": "Símbolo Profano",
   "item.eidolon.reaper_scythe": "Foice do Ceifador",
-  "item.eidolon.cleaving_axe": "Machado do Carrasco",
+  "item.eidolon.cleaving_axe": "Machado de Carrasco",
   "item.eidolon.sapping_sword": "Espada da Ruína",
   "item.eidolon.sanguine_amulet": "Amuleto de Sangue",
   "item.eidolon.wicked_weave": "Tecido Maldito",
@@ -99,7 +99,7 @@
   "item.minecraft.lingering_potion.effect.long_chilled": "Poção Prolongada de Calafrio",
   "item.eidolon.spawn_raven": "Ovo Gerador de Corvo",
   "item.eidolon.raven_feather": "Pena de Corvo",
-  "item.eidolon.alchemists_tongs": "Pinças do Alquimista",
+  "item.eidolon.alchemists_tongs": "Pinças de Alquimista",
 
   "block.eidolon.lead_block": "Bloco de Chumbo",
   "block.eidolon.lead_ore": "Minério de Chumbo",
@@ -231,7 +231,7 @@
     "eidolon.codex.page.summon_ritual.4.title": "Invocar Zumbi-Múmia",
     "eidolon.codex.page.summon_ritual.5.title": "Invocar Afogado",
     "eidolon.codex.page.summon_ritual.6.title": "Invocar Esqueleto-Errante",
-    "eidolon.codex.page.summon_ritual.7.title": "Invocar Espectro ",
+    "eidolon.codex.page.summon_ritual.7.title": "Invocar Espectro",
   "eidolon.codex.chapter.allure_ritual": "Ritual da Atração",
     "eidolon.codex.page.allure_ritual.title": "Ritual Atraente",
     "eidolon.codex.page.allure_ritual": "O ritual da atração é supernaturalmente sedutor para criaturas pacíficas. Com um grande alcance, animais irão gradualmente se aproximar do seu epicentro.",
@@ -435,6 +435,6 @@
     "eidolon.codex.page.soul_sign": "Este signo espiritual é a gravura na qual as almas se anexam aos seres. Aqueles que o conhecem foram dados sabedoria do intangível, e aqueles que o trazem a diante devem se precaver do poder -do seu, e dos outros- que elus possam estar brincando.",
   "eidolon.codex.chapter.mind_sign": "Signo da Mente",
     "eidolon.codex.page.mind_sign.title": "Signo da Mente",
-    "eidolon.codex.page.mind_sign": "A mente é o que separa seres inteligentes das outras criaturas mundanas. É apenas com a mente, e o uso do signo mental, que magia complexa se torna possível para o praticante mortal.",
+    "eidolon.codex.page.mind_sign": "A mente é o que separa seres inteligentes das outras criaturas mundanas. É apenas com a mente, e o uso do signo mental, que magia complexa se torna possível para ê praticante mortal.",
   "eidolon.codex.category.signs": "Signos Místicos"
 }
