@@ -41,9 +41,9 @@ public class BonechillWandItem extends WandItem {
         if (!entity.isSwingInProgress) {
             if (!world.isRemote) {
                 if (hand == Hand.MAIN_HAND){
-                Vector3d pos = entity.getPositionVec().add(entity.getLookVec().scale(0.5)).add(0.5 * Math.sin(Math.toRadians(225 - entity.rotationYawHead)), entity.getHeight() * 2 / 3, 0.5 * Math.cos(Math.toRadians(225 - entity.rotationYawHead)));
+                    Vector3d pos = entity.getPositionVec().add(entity.getLookVec().scale(0.5)).add(0.5 * Math.sin(Math.toRadians(225 - entity.rotationYawHead)), entity.getHeight() * 2 / 3, 0.5 * Math.cos(Math.toRadians(225 - entity.rotationYawHead)));
                 }else{
-                Vector3d pos = entity.getPositionVec().add(entity.getLookVec().scale(0.5)).add(-0.5 * Math.sin(Math.toRadians(225 - entity.rotationYawHead)), entity.getHeight() * 2 / 3, -0.5 * Math.cos(Math.toRadians(225 - entity.rotationYawHead)));
+                    Vector3d pos = entity.getPositionVec().add(entity.getLookVec().scale(0.5)).add(-0.5 * Math.sin(Math.toRadians(225 - entity.rotationYawHead)), entity.getHeight() * 2 / 3, -0.5 * Math.cos(Math.toRadians(225 - entity.rotationYawHead)));
                 }    
                 Vector3d vel = entity.getEyePosition(0).add(entity.getLookVec().scale(40)).subtract(pos).scale(1.0 / 20);
                 world.addEntity(new BonechillProjectileEntity(Registry.BONECHILL_PROJECTILE.get(), world).shoot(
