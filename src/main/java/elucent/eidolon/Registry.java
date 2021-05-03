@@ -129,7 +129,7 @@ public class Registry {
 
         public DecoBlockPack addFence() {
             fence = addBlock(basename + "_fence", new FenceBlock(props));
-            fence = addBlock(basename + "_fence_gate", new FenceGateBlock(props));
+            fence_gate = addBlock(basename + "_fence_gate", new FenceGateBlock(props));
             return this;
         }
 
@@ -138,6 +138,8 @@ public class Registry {
         public Block getStairs() { return stair.get(); }
         public Block getWall() { return wall.get(); }
         public Block getFence() { return fence.get(); }
+        public Block getFenceGate() { return fence_gate.get(); }
+        
     }
 
     static <T extends Entity> RegistryObject<EntityType<T>> addEntity(String name, float width, float height, EntityType.IFactory<T> factory, EntityClassification kind) {
