@@ -1,9 +1,20 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven {
+          name "Forge"
+          url "https://files.minecraftforge.net/maven"
+        }
         jcenter()
         mavenCentral()
-        maven {url='https://dist.creeper.host/Sponge/maven'}
+        maven {
+          name "Sponge"
+          url "https://repo.spongepowered.org/repository/maven-public/"
+          content { includeGroup "org.spongepowered" }
+        }
+        maven {
+            name "curios"
+            url "https://maven.theillusivec4.top/"
+        }
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
@@ -30,7 +41,7 @@ minecraft {
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'snapshot', version: '20201028-1.16.3'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    
+
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
@@ -117,6 +128,8 @@ dependencies {
 
     compileOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.0.58')
     runtimeOnly fg.deobf('mezz.jei:jei-1.16.4:7.6.0.58')
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor' 
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -137,7 +150,7 @@ jar {
 
 // Example configuration to allow publishing using the maven-publish task
 // This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar') 
+jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 //publish.dependsOn('reobfJar')
 
