@@ -2,16 +2,17 @@ package elucent.eidolon;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import elucent.eidolon.world.*;
+import elucent.eidolon.world.CatacombPieces;
+import elucent.eidolon.world.CatacombStructure;
+import elucent.eidolon.world.LabStructure;
+import elucent.eidolon.world.StrayTowerStructure;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.Dimension;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
-import net.minecraft.world.gen.feature.structure.IglooStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.template.RuleTest;
 import net.minecraft.world.gen.feature.template.TagMatchRuleTest;
@@ -69,17 +70,17 @@ public class WorldGen {
     public static IStructurePieceType LAB_PIECE, STRAY_TOWER_PIECE;
 
     public static RegistryObject<Structure<NoFeatureConfig>> LAB_STRUCTURE = addStructure("lab",
-        new LabStructure(NoFeatureConfig.field_236558_a_),
+        new LabStructure(NoFeatureConfig.CODEC),
         GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
         new StructureSeparationSettings(7, 5, 1337));
 
     public static RegistryObject<Structure<NoFeatureConfig>> STRAY_TOWER_STRUCTURE = addStructure("stray_tower",
-        new StrayTowerStructure(NoFeatureConfig.field_236558_a_),
+        new StrayTowerStructure(NoFeatureConfig.CODEC),
         GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
         new StructureSeparationSettings(16, 8, 1341));
 
     public static RegistryObject<Structure<NoFeatureConfig>> CATACOMB_STRUCTURE = addStructure("catacomb",
-        new CatacombStructure(NoFeatureConfig.field_236558_a_),
+        new CatacombStructure(NoFeatureConfig.CODEC),
         GenerationStage.Decoration.UNDERGROUND_STRUCTURES,
         new StructureSeparationSettings(11, 7, 1347));
 
@@ -93,16 +94,16 @@ public class WorldGen {
         LEAD_ORE_GEN = register(Feature.ORE.withConfiguration(new OreFeatureConfig(IN_STONE,
             Registry.LEAD_ORE.get().getDefaultState(), Config.LEAD_VEIN_SIZE.get()))
             .square()
-            .func_242731_b(Config.LEAD_VEIN_COUNT.get()) // per chunk
+            .count(Config.LEAD_VEIN_COUNT.get()) // per chunk
             .range(Config.LEAD_MAX_Y.get() // maximum Y
             ), "lead_ore");
         if (Config.LEAD_ENABLED.get()) ORES.add(LEAD_ORE_GEN);
 
         LAB_PIECE = register(LabStructure.Piece::new, "lab");
-        LAB_FEATURE = register(LAB_STRUCTURE.get().withConfiguration(NoFeatureConfig.field_236559_b_), "lab");
+        LAB_FEATURE = register(LAB_STRUCTURE.get().withConfiguration(NoFeatureConfig.INSTANCE), "lab");
 
         STRAY_TOWER_PIECE = register(StrayTowerStructure.Piece::new, "stray_tower");
-        STRAY_TOWER_FEATURE = register(STRAY_TOWER_STRUCTURE.get().withConfiguration(NoFeatureConfig.field_236559_b_), "stray_tower");
+        STRAY_TOWER_FEATURE = register(STRAY_TOWER_STRUCTURE.get().withConfiguration(NoFeatureConfig.INSTANCE), "stray_tower");
 
         CatacombPieces.CORRIDOR_CENTER = register(CatacombPieces.CorridorCenter::new, CatacombPieces.CORRIDOR_CENTER_ID.getPath());
         CatacombPieces.CORRIDOR_DOOR = register(CatacombPieces.CorridorDoor::new, CatacombPieces.CORRIDOR_DOOR_ID.getPath());
@@ -116,7 +117,7 @@ public class WorldGen {
         CatacombPieces.GRAVEYARD = register(CatacombPieces.Graveyard::new, CatacombPieces.GRAVEYARD_ID.getPath());
         CatacombPieces.TURNAROUND = register(CatacombPieces.Turnaround::new, CatacombPieces.TURNAROUND_ID.getPath());
         CatacombPieces.LAB = register(CatacombPieces.Lab::new, CatacombPieces.LAB_ID.getPath());
-        CATACOMB_FEATURE = register(CATACOMB_STRUCTURE.get().withConfiguration(NoFeatureConfig.field_236559_b_), "catacomb");
+        CATACOMB_FEATURE = register(CATACOMB_STRUCTURE.get().withConfiguration(NoFeatureConfig.INSTANCE), "catacomb");
 
         for (Structure<?> s : STRUCTURE_LIST) {
             DimensionStructuresSettings.field_236191_b_ = // Default structures
@@ -125,7 +126,7 @@ public class WorldGen {
                     .put(s, STRUCTURE_SETTINGS.get(s.getRegistryName()))
                     .build();
 
-            DimensionSettings.field_242740_q.getStructures().field_236193_d_.put(s, STRUCTURE_SETTINGS.get(s.getRegistryName()));
+            DimensionSettings.DEFAULT_SETTINGS.getStructures().field_236193_d_.put(s, STRUCTURE_SETTINGS.get(s.getRegistryName()));
         }
     }
 

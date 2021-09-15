@@ -1,7 +1,5 @@
 package elucent.eidolon.codex;
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
-import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.capability.Facts;
 import elucent.eidolon.codex.CruciblePage.CrucibleStep;
@@ -12,11 +10,9 @@ import elucent.eidolon.codex.ListPage.ListEntry;
 import elucent.eidolon.codex.RitualPage.RitualIngredient;
 import elucent.eidolon.codex.SignIndexPage.SignEntry;
 import elucent.eidolon.ritual.RitualRegistry;
-import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
 import elucent.eidolon.util.ColorUtil;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.PotionUtils;

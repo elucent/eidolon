@@ -2,7 +2,6 @@ package elucent.eidolon.spell;
 
 import elucent.eidolon.Registry;
 import elucent.eidolon.block.HorizontalBlockBase;
-import elucent.eidolon.capability.KnowledgeProvider;
 import elucent.eidolon.capability.ReputationProvider;
 import elucent.eidolon.deity.Deity;
 import elucent.eidolon.particle.Particles;

@@ -1,0 +1,88 @@
+{
+  "type": "eidolon:worktable",
+  "core": {
+    "core0": {
+      "item": {
+        "item": "minecraft:white_wool"
+      },
+      "type": "minecraft:block"
+    },
+    "core1": {
+      "item": {
+        "item": "minecraft:white_wool"
+      },
+      "type": "minecraft:block"
+    },
+    "core2": {
+      "item": {
+        "item": "minecraft:white_wool"
+      },
+      "type": "minecraft:block"
+    },
+    "core3": {
+      "item": {
+        "item": "minecraft:white_wool"
+      },
+      "type": "minecraft:block"
+    },
+    "core4": {
+      "item": {
+        "item": "eidolon:shadow_gem"
+      },
+      "type": "minecraft:item"
+    },
+    "core5": {
+      "item": {
+        "item": "minecraft:white_wool"
+      },
+      "type": "minecraft:block"
+    },
+    "core6": {
+      "item": {
+        "item": "minecraft:white_wool"
+      },
+      "type": "minecraft:block"
+    },
+    "core7": {
+      "item": {
+        "item": "minecraft:white_wool"
+      },
+      "type": "minecraft:block"
+    },
+    "core8": {
+      "item": {
+        "item": "minecraft:white_wool"
+      },
+      "type": "minecraft:block"
+    }
+  },
+  "extras": {
+    "extras0": {
+      "item": {
+        "item": "eidolon:unholy_symbol"
+      },
+      "type": "minecraft:item"
+    },
+    "extras1": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "extras2": {
+      "item": {
+        "tag": "forge:dyes/blue"
+      },
+      "type": "minecraft:tag"
+    },
+    "extras3": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    }
+  },
+  "result": {
+    "item": "eidolon:wicked_weave"
+  }
+}

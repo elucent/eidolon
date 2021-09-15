@@ -2,7 +2,6 @@ package elucent.eidolon.particle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import elucent.eidolon.ClientEvents;
-import elucent.eidolon.Events;
 import elucent.eidolon.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleRenderType;

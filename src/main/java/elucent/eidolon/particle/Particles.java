@@ -1,14 +1,10 @@
 package elucent.eidolon.particle;
 
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.Random;
-import java.util.function.Function;
 
 public class Particles {
     public static class ParticleBuilder {

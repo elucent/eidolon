@@ -1,0 +1,88 @@
+{
+  "type": "eidolon:worktable",
+  "core": {
+    "core0": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core1": {
+      "item": {
+        "tag": "forge:ender_pearls"
+      },
+      "type": "minecraft:tag"
+    },
+    "core2": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core3": {
+      "item": {
+        "tag": "forge:feathers"
+      },
+      "type": "minecraft:tag"
+    },
+    "core4": {
+      "item": {
+        "item": "eidolon:basic_belt"
+      },
+      "type": "minecraft:item"
+    },
+    "core5": {
+      "item": {
+        "tag": "forge:feathers"
+      },
+      "type": "minecraft:tag"
+    },
+    "core6": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core7": {
+      "item": {
+        "item": "eidolon:lesser_soul_gem"
+      },
+      "type": "minecraft:item"
+    },
+    "core8": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    }
+  },
+  "extras": {
+    "extras0": {
+      "item": {
+        "item": "eidolon:ender_calx"
+      },
+      "type": "minecraft:item"
+    },
+    "extras1": {
+      "item": {
+        "item": "eidolon:pewter_inlay"
+      },
+      "type": "minecraft:item"
+    },
+    "extras2": {
+      "item": {
+        "item": "eidolon:ender_calx"
+      },
+      "type": "minecraft:item"
+    },
+    "extras3": {
+      "item": {
+        "item": "eidolon:pewter_inlay"
+      },
+      "type": "minecraft:item"
+    }
+  },
+  "result": {
+    "item": "eidolon:gravity_belt"
+  }
+}

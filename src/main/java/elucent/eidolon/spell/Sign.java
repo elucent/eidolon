@@ -3,8 +3,6 @@ package elucent.eidolon.spell;
 import elucent.eidolon.util.ColorUtil;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Resource;
-
 public class Sign {
     ResourceLocation key, sprite;
     int color;

@@ -1,9 +1,9 @@
 package elucent.eidolon.block;
 
-import elucent.eidolon.Registry;
-import net.minecraft.block.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BushBlock;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;

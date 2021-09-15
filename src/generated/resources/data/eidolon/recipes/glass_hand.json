@@ -1,0 +1,88 @@
+{
+  "type": "eidolon:worktable",
+  "core": {
+    "core0": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core1": {
+      "item": {
+        "tag": "forge:storage_blocks/diamond"
+      },
+      "type": "minecraft:tag"
+    },
+    "core2": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core3": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core4": {
+      "item": {
+        "item": "eidolon:basic_amulet"
+      },
+      "type": "minecraft:item"
+    },
+    "core5": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core6": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core7": {
+      "item": {
+        "item": "minecraft:glass"
+      },
+      "type": "minecraft:block"
+    },
+    "core8": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    }
+  },
+  "extras": {
+    "extras0": {
+      "item": {
+        "item": "eidolon:zombie_heart"
+      },
+      "type": "minecraft:item"
+    },
+    "extras1": {
+      "item": {
+        "item": "eidolon:lesser_soul_gem"
+      },
+      "type": "minecraft:item"
+    },
+    "extras2": {
+      "item": {
+        "item": "eidolon:wraith_heart"
+      },
+      "type": "minecraft:item"
+    },
+    "extras3": {
+      "item": {
+        "item": "eidolon:lesser_soul_gem"
+      },
+      "type": "minecraft:item"
+    }
+  },
+  "result": {
+    "item": "eidolon:glass_hand"
+  }
+}

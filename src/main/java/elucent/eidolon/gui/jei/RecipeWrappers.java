@@ -4,9 +4,6 @@ import elucent.eidolon.codex.Page;
 import elucent.eidolon.recipe.CrucibleRecipe;
 import elucent.eidolon.recipe.WorktableRecipe;
 import elucent.eidolon.ritual.Ritual;
-import net.minecraft.item.ItemStack;
-
-import java.util.List;
 
 public class RecipeWrappers {
     public static class Crucible {

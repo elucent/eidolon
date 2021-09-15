@@ -1,12 +1,8 @@
 package elucent.eidolon.deity;
 
 import elucent.eidolon.capability.IReputation;
-import elucent.eidolon.capability.ReputationEntry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Resource;
-import java.util.UUID;
 
 public abstract class Deity {
     ResourceLocation id;

@@ -1,0 +1,88 @@
+{
+  "type": "eidolon:worktable",
+  "core": {
+    "core0": {
+      "item": {
+        "item": "eidolon:pewter_ingot"
+      },
+      "type": "minecraft:item"
+    },
+    "core1": {
+      "item": {
+        "item": "eidolon:pewter_ingot"
+      },
+      "type": "minecraft:item"
+    },
+    "core2": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core3": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core4": {
+      "item": {
+        "item": "minecraft:stick"
+      },
+      "type": "minecraft:item"
+    },
+    "core5": {
+      "item": {
+        "item": "eidolon:pewter_ingot"
+      },
+      "type": "minecraft:item"
+    },
+    "core6": {
+      "item": {
+        "item": "minecraft:stick"
+      },
+      "type": "minecraft:item"
+    },
+    "core7": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core8": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    }
+  },
+  "extras": {
+    "extras0": {
+      "item": {
+        "item": "eidolon:unholy_symbol"
+      },
+      "type": "minecraft:item"
+    },
+    "extras1": {
+      "item": {
+        "item": "eidolon:soul_shard"
+      },
+      "type": "minecraft:item"
+    },
+    "extras2": {
+      "item": {
+        "item": "eidolon:tattered_cloth"
+      },
+      "type": "minecraft:item"
+    },
+    "extras3": {
+      "item": {
+        "item": "eidolon:soul_shard"
+      },
+      "type": "minecraft:item"
+    }
+  },
+  "result": {
+    "item": "eidolon:reaper_scythe"
+  }
+}

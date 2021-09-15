@@ -19,7 +19,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class CrucibleCategory implements IRecipeCategory<RecipeWrappers.Crucible> {
     static final ResourceLocation UID = new ResourceLocation(Eidolon.MODID, "crucible");

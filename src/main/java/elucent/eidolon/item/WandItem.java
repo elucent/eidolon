@@ -2,7 +2,6 @@ package elucent.eidolon.item;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class WandItem extends ItemBase {

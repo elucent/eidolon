@@ -8,8 +8,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
-import javax.annotation.Nonnull;
-
 public class EidolonCurio implements ICurio, ICapabilityProvider {
     private final ItemStack stack;
 

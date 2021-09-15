@@ -1,34 +1,23 @@
 package elucent.eidolon.tile;
 
-import com.ibm.icu.impl.data.ResourceReader;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import elucent.eidolon.Eidolon;
-import elucent.eidolon.ritual.CrystalRitual;
-import elucent.eidolon.ritual.Ritual;
-import elucent.eidolon.util.RenderUtil;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.ColorHelper;
 import net.minecraft.util.ColorHelper.PackedColor;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.biome.BiomeColors;
-
-import javax.annotation.Resource;
 
 public class CrucibleTileRenderer extends TileEntityRenderer<CrucibleTileEntity> {
     private final ModelRenderer stirrer;

@@ -3,9 +3,7 @@ package elucent.eidolon.particle;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import elucent.eidolon.ClientConfig;
 import elucent.eidolon.ClientEvents;
-import elucent.eidolon.Events;
 import elucent.eidolon.util.RenderUtil;
-import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.world.ClientWorld;
 

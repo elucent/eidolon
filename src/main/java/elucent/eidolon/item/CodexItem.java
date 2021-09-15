@@ -1,8 +1,8 @@
 package elucent.eidolon.item;
 
 import elucent.eidolon.Eidolon;
-import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.KnowledgeUtil;
+import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;

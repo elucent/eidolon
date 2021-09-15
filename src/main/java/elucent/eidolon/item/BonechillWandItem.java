@@ -1,12 +1,10 @@
 package elucent.eidolon.item;
 
 import elucent.eidolon.Registry;
-import elucent.eidolon.capability.ReputationProvider;
 import elucent.eidolon.entity.BonechillProjectileEntity;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;

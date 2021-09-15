@@ -1,70 +1,100 @@
 package elucent.eidolon.recipe;
 
-import net.minecraft.block.Block;
+import com.google.gson.JsonObject;
+import elucent.eidolon.Eidolon;
+import elucent.eidolon.recipe.recipeobj.RecipeObject;
+import elucent.eidolon.recipe.recipeobj.RecipeObjectType;
+import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class WorktableRecipe {
-    Object[] core, extras;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
+
+public class WorktableRecipe extends ForgeRegistryEntry<WorktableRecipe> implements ICraftingRecipe, IFinishedRecipe {
+    RecipeCore core;
+    RecipeExtras extras;
     ItemStack result;
-    ResourceLocation registryName;
 
-    public WorktableRecipe(Object[] core, Object[] extras, ItemStack result) {
+    public static class RecipeCore {
+        List<RecipeObject<?>> CONTEXT;
+
+        public RecipeCore(
+                RecipeObject<?> a, RecipeObject<?> b, RecipeObject<?> c,
+                RecipeObject<?> d, RecipeObject<?> e, RecipeObject<?> f,
+                RecipeObject<?> g, RecipeObject<?> h, RecipeObject<?> i
+        ) {
+            CONTEXT = Arrays.asList(a, b, c, d, e, f, g, h, i);
+        }
+
+        public RecipeCore(
+                Object a, Object b, Object c,
+                Object d, Object e, Object f,
+                Object g, Object h, Object i
+        ) {
+            this(
+                    RecipeObjectType.of(a), RecipeObjectType.of(b), RecipeObjectType.of(c),
+                    RecipeObjectType.of(d), RecipeObjectType.of(e), RecipeObjectType.of(f),
+                    RecipeObjectType.of(g), RecipeObjectType.of(h), RecipeObjectType.of(i));
+        }
+    }
+
+    public static class RecipeExtras {
+        List<RecipeObject<?>> CONTEXT;
+
+        public RecipeExtras(
+                RecipeObject<?> a, RecipeObject<?> b,
+                RecipeObject<?> c, RecipeObject<?> d
+        ) {
+            CONTEXT = Arrays.asList(a, b, c, d);
+        }
+
+        public RecipeExtras(
+                Object a, Object b,
+                Object c, Object d
+        ) {
+            this(
+                    RecipeObjectType.of(a), RecipeObjectType.of(b),
+                    RecipeObjectType.of(c), RecipeObjectType.of(d)
+            );
+        }
+    }
+
+    public WorktableRecipe(WorktableRecipe.RecipeCore core, WorktableRecipe.RecipeExtras extras, ItemStack result) {
         this.core = core;
         this.extras = extras;
         this.result = result;
     }
 
-    public ResourceLocation getRegistryName() {
-        return registryName;
+    public List<RecipeObject<?>> getCore() {
+        return core.CONTEXT;
     }
 
-    public WorktableRecipe setRegistryName(String domain, String path) {
-        this.registryName = new ResourceLocation(domain, path);
-        return this;
+    public List<RecipeObject<?>> getOuter() {
+        return extras.CONTEXT;
     }
 
-    public WorktableRecipe setRegistryName(ResourceLocation registryName) {
-        this.registryName = registryName;
-        return this;
-    }
-
-    public Object[] getCore() {
-        return core;
-    }
-
-    public Object[] getOuter() {
-        return extras;
-    }
-
-    static boolean matches(Object match, ItemStack sacrifice) {
-        if (match instanceof ItemStack) {
-            if (ItemStack.areItemStacksEqual((ItemStack)match, sacrifice)) return true;
-        }
-        else if (match instanceof Item) {
-            if ((Item)match == sacrifice.getItem()) return true;
-        }
-        else if (match instanceof Block) {
-            if (((Block)match).asItem() == sacrifice.getItem()) return true;
-        }
-        else if (match instanceof ITag) {
-            if (((ITag<Item>)match).contains(sacrifice.getItem())) return true;
-        }
-        return false;
+    static boolean matches(RecipeObject<?> match, ItemStack sacrifice) {
+        return match.matches(sacrifice);
     }
 
     public boolean matches(IInventory coreInv, IInventory extraInv) {
         if (coreInv.getSizeInventory() < 9 || extraInv.getSizeInventory() < 4) return false;
-        for (int i = 0; i < core.length; i ++) {
-            if (!matches(core[i], coreInv.getStackInSlot(i))) return false;
+        for (int i = 0; i < core.CONTEXT.size(); i ++) {
+            if (!matches(core.CONTEXT.get(i), coreInv.getStackInSlot(i))) return false;
         }
-        for (int i = 0; i < extras.length; i ++) {
-            if (!matches(extras[i], extraInv.getStackInSlot(i))) return false;
+        for (int i = 0; i < extras.CONTEXT.size(); i ++) {
+            if (!matches(extras.CONTEXT.get(i), extraInv.getStackInSlot(i))) return false;
         }
         return true;
     }
@@ -83,7 +113,60 @@ public class WorktableRecipe {
         return items;
     }
 
-    public ItemStack getResult() {
+    @Override
+    public ItemStack getRecipeOutput() {
         return result.copy();
+    }
+
+    @Override
+    public boolean matches(CraftingInventory inv, World worldIn) {
+        return false;
+    }
+
+    @Override
+    public ItemStack getCraftingResult(CraftingInventory inv) {
+        return result.copy();
+    }
+
+    @Override
+    public boolean canFit(int width, int height) {
+        return false;
+    }
+
+    @Override
+    public ResourceLocation getId() {
+        return getRegistryName();
+    }
+
+    @Override
+    public void serialize(JsonObject json) {
+        RecipeHandler.WORKTABLE_SERIALIZER.write(json, this);
+    }
+
+    @Override
+    public ResourceLocation getID() {
+        return getId();
+    }
+
+    @Override
+    public IRecipeSerializer<?> getSerializer() {
+        return RecipeHandler.WORKTABLE_SERIALIZER;
+    }
+
+    @Nullable
+    @Override
+    public JsonObject getAdvancementJson() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getAdvancementID() {
+        return null;
+    }
+
+    @Override
+    public IRecipeType<?> getType() {
+        return IRecipeType.CRAFTING;
     }
 }

@@ -1,12 +1,8 @@
 package elucent.eidolon.tile;
 
 import elucent.eidolon.Registry;
-import elucent.eidolon.ritual.RitualRegistry;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 
 public class EffigyTileEntity extends TileEntityBase {
     long previous = -1;

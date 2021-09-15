@@ -5,8 +5,6 @@ import elucent.eidolon.event.SpeedFactorEvent;
 import elucent.eidolon.item.ReaperScytheItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;

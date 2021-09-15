@@ -1,33 +1,16 @@
 package elucent.eidolon.item;
 
-import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
-import elucent.eidolon.capability.KnowledgeProvider;
-import elucent.eidolon.capability.ReputationProvider;
-import elucent.eidolon.deity.Deities;
-import elucent.eidolon.deity.DeityLocks;
 import elucent.eidolon.entity.SoulfireProjectileEntity;
-import elucent.eidolon.network.KnowledgeUpdatePacket;
-import elucent.eidolon.network.Networking;
-import elucent.eidolon.spell.Sign;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.List;
 
 public class SoulfireWandItem extends WandItem {
     public SoulfireWandItem(Properties builderIn) {

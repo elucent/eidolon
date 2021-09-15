@@ -2,7 +2,6 @@ package elucent.eidolon.tile;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import elucent.eidolon.ClientEvents;
-import elucent.eidolon.Events;
 import elucent.eidolon.ritual.Ritual;
 import elucent.eidolon.util.RenderUtil;
 import net.minecraft.client.Minecraft;

@@ -1,17 +1,10 @@
 package elucent.eidolon.ritual;
 
 import elucent.eidolon.Eidolon;
-import elucent.eidolon.Registry;
 import elucent.eidolon.entity.ai.GoToPositionGoal;
-import elucent.eidolon.network.CrystallizeEffectPacket;
-import elucent.eidolon.network.Networking;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;

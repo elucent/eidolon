@@ -2,15 +2,14 @@ package elucent.eidolon.block;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import elucent.eidolon.Registry;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ArrowEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
@@ -31,10 +30,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 public class EnchantedAshBlock extends BlockBase {
     public static final EnumProperty<RedstoneSide> NORTH = BlockStateProperties.REDSTONE_NORTH;
@@ -76,18 +73,18 @@ public class EnchantedAshBlock extends BlockBase {
     }
 
     private static boolean areAllSidesInvalid(BlockState state) {
-        return !state.get(NORTH).func_235921_b_() && !state.get(SOUTH).func_235921_b_() && !state.get(EAST).func_235921_b_() && !state.get(WEST).func_235921_b_();
+        return !state.get(NORTH).isValidSide() && !state.get(SOUTH).isValidSide() && !state.get(EAST).isValidSide() && !state.get(WEST).isValidSide();
     }
 
     private static boolean areAllSidesValid(BlockState state) {
-        return state.get(NORTH).func_235921_b_() && state.get(SOUTH).func_235921_b_() && state.get(EAST).func_235921_b_() && state.get(WEST).func_235921_b_();
+        return state.get(NORTH).isValidSide() && state.get(SOUTH).isValidSide() && state.get(EAST).isValidSide() && state.get(WEST).isValidSide();
     }
 
     private BlockState recalculateFacingState(IBlockReader reader, BlockState state, BlockPos pos) {
         boolean flag = !reader.getBlockState(pos.up()).isNormalCube(reader, pos);
 
         for(Direction direction : Direction.Plane.HORIZONTAL) {
-            if (!state.get(FACING_PROPERTY_MAP.get(direction)).func_235921_b_()) {
+            if (!state.get(FACING_PROPERTY_MAP.get(direction)).isValidSide()) {
                 RedstoneSide redstoneside = this.recalculateSide(reader, pos, direction, flag);
                 state = state.with(FACING_PROPERTY_MAP.get(direction), redstoneside);
             }
@@ -106,10 +103,10 @@ public class EnchantedAshBlock extends BlockBase {
 
         for(Direction direction : Direction.Plane.HORIZONTAL) {
             RedstoneSide redstoneside = state.get(FACING_PROPERTY_MAP.get(direction));
-            if (redstoneside != RedstoneSide.NONE && !worldIn.getBlockState(blockpos$mutable.setAndMove(pos, direction)).isIn(this)) {
+            if (redstoneside != RedstoneSide.NONE && !worldIn.getBlockState(blockpos$mutable.setAndMove(pos, direction)).matchesBlock(this)) {
                 blockpos$mutable.move(Direction.DOWN);
                 BlockState blockstate = worldIn.getBlockState(blockpos$mutable);
-                if (!blockstate.isIn(Blocks.OBSERVER)) {
+                if (!blockstate.matchesBlock(Blocks.OBSERVER)) {
                     BlockPos blockpos = blockpos$mutable.offset(direction.getOpposite());
                     BlockState blockstate1 = blockstate.updatePostPlacement(direction.getOpposite(), worldIn.getBlockState(blockpos), worldIn, blockpos$mutable, blockpos);
                     replaceBlockState(blockstate, blockstate1, worldIn, blockpos$mutable, flags, recursionLeft);
@@ -117,7 +114,7 @@ public class EnchantedAshBlock extends BlockBase {
 
                 blockpos$mutable.setAndMove(pos, direction).move(Direction.UP);
                 BlockState blockstate3 = worldIn.getBlockState(blockpos$mutable);
-                if (!blockstate3.isIn(Blocks.OBSERVER)) {
+                if (!blockstate3.matchesBlock(Blocks.OBSERVER)) {
                     BlockPos blockpos1 = blockpos$mutable.offset(direction.getOpposite());
                     BlockState blockstate2 = blockstate3.updatePostPlacement(direction.getOpposite(), worldIn.getBlockState(blockpos1), worldIn, blockpos$mutable, blockpos1);
                     replaceBlockState(blockstate3, blockstate2, worldIn, blockpos$mutable, flags, recursionLeft);
@@ -135,7 +132,7 @@ public class EnchantedAshBlock extends BlockBase {
             return this.getUpdatedState(worldIn, stateIn, currentPos);
         } else {
             RedstoneSide redstoneside = this.getSide(worldIn, currentPos, facing);
-            return redstoneside.func_235921_b_() == stateIn.get(FACING_PROPERTY_MAP.get(facing)).func_235921_b_() && !areAllSidesValid(stateIn) ? stateIn.with(FACING_PROPERTY_MAP.get(facing), redstoneside) : this.getUpdatedState(worldIn, this.sideBaseState.with(FACING_PROPERTY_MAP.get(facing), redstoneside), currentPos);
+            return redstoneside.isValidSide() == stateIn.get(FACING_PROPERTY_MAP.get(facing)).isValidSide() && !areAllSidesValid(stateIn) ? stateIn.with(FACING_PROPERTY_MAP.get(facing), redstoneside) : this.getUpdatedState(worldIn, this.sideBaseState.with(FACING_PROPERTY_MAP.get(facing), redstoneside), currentPos);
         }
     }
 
@@ -166,10 +163,10 @@ public class EnchantedAshBlock extends BlockBase {
         if (flag && areAllSidesInvalid(state)) {
             return state;
         } else {
-            boolean flag1 = state.get(NORTH).func_235921_b_();
-            boolean flag2 = state.get(SOUTH).func_235921_b_();
-            boolean flag3 = state.get(EAST).func_235921_b_();
-            boolean flag4 = state.get(WEST).func_235921_b_();
+            boolean flag1 = state.get(NORTH).isValidSide();
+            boolean flag2 = state.get(SOUTH).isValidSide();
+            boolean flag3 = state.get(EAST).isValidSide();
+            boolean flag4 = state.get(WEST).isValidSide();
             boolean flag5 = !flag1 && !flag2;
             boolean flag6 = !flag3 && !flag4;
             if (!flag4 && flag5) {
@@ -204,7 +201,7 @@ public class EnchantedAshBlock extends BlockBase {
 
     @Override
     public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (!oldState.isIn(state.getBlock()) && !worldIn.isRemote) {
+        if (!oldState.matchesBlock(state.getBlock()) && !worldIn.isRemote) {
             for(Direction direction : Direction.Plane.VERTICAL) {
                 worldIn.notifyNeighborsOfStateChange(pos.offset(direction), this);
             }
@@ -224,10 +221,7 @@ public class EnchantedAshBlock extends BlockBase {
             LivingEntity living = (LivingEntity)entity;
             if (living.isEntityUndead()) return true;
         }
-        if (entity.getPassengers().stream().anyMatch((e) -> e instanceof LivingEntity && ((LivingEntity)e).isEntityUndead()))
-            return true;
-
-        return false;
+        return entity.getPassengers().stream().anyMatch((e) -> e instanceof LivingEntity && ((LivingEntity) e).isEntityUndead());
     }
 
     @Override
@@ -244,7 +238,7 @@ public class EnchantedAshBlock extends BlockBase {
 
     @Override
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!isMoving && !state.isIn(newState.getBlock())) {
+        if (!isMoving && !state.matchesBlock(newState.getBlock())) {
             super.onReplaced(state, worldIn, pos, newState, isMoving);
             if (!worldIn.isRemote) {
                 for(Direction direction : Direction.values()) {
@@ -259,7 +253,7 @@ public class EnchantedAshBlock extends BlockBase {
     private void updateChangedConnections(World world, BlockPos pos, BlockState prevState, BlockState newState) {
         for(Direction direction : Direction.Plane.HORIZONTAL) {
             BlockPos blockpos = pos.offset(direction);
-            if (prevState.get(FACING_PROPERTY_MAP.get(direction)).func_235921_b_() != newState.get(FACING_PROPERTY_MAP.get(direction)).func_235921_b_() && world.getBlockState(blockpos).isNormalCube(world, blockpos)) {
+            if (prevState.get(FACING_PROPERTY_MAP.get(direction)).isValidSide() != newState.get(FACING_PROPERTY_MAP.get(direction)).isValidSide() && world.getBlockState(blockpos).isNormalCube(world, blockpos)) {
                 world.notifyNeighborsOfStateExcept(blockpos, newState.getBlock(), direction.getOpposite());
             }
         }
@@ -267,7 +261,7 @@ public class EnchantedAshBlock extends BlockBase {
     }
 
     private void notifyWireNeighborsOfStateChange(World worldIn, BlockPos pos) {
-        if (worldIn.getBlockState(pos).isIn(this)) {
+        if (worldIn.getBlockState(pos).matchesBlock(this)) {
             worldIn.notifyNeighborsOfStateChange(pos, this);
 
             for(Direction direction : Direction.values()) {
@@ -303,10 +297,7 @@ public class EnchantedAshBlock extends BlockBase {
     }
 
     protected static boolean canConnectTo(BlockState blockState, IBlockReader world, BlockPos pos, Direction side) {
-        if (blockState.isIn(Registry.ENCHANTED_ASH.get())) {
-            return true;
-        }
-        return false;
+        return blockState.matchesBlock(Registry.ENCHANTED_ASH.get());
     }
 
     @Override

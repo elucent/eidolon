@@ -25,7 +25,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class ChantCasterEntity extends Entity {
     public static final DataParameter<CompoundNBT> SIGNS = EntityDataManager.<CompoundNBT>createKey(ChantCasterEntity.class, DataSerializers.COMPOUND_NBT);

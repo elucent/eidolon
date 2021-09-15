@@ -8,12 +8,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.IRecipeHolder;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvents;
-
-import java.util.Optional;
 
 public class WorktableResultSlot extends Slot {
     private final CraftingInventory core, extras;
@@ -71,7 +68,7 @@ public class WorktableResultSlot extends Slot {
     public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {
         this.onCrafting(stack);
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(thePlayer);
-        WorktableRecipe recipe = WorktableRegistry.find(core, extras);
+        WorktableRecipe recipe = WorktableRegistry.find(thePlayer.world, core, extras);
         NonNullList<ItemStack> items = null;
         if (recipe != null) {
             items = recipe.getRemainingItems(core, extras);

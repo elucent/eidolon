@@ -1,0 +1,88 @@
+{
+  "type": "eidolon:worktable",
+  "core": {
+    "core0": {
+      "item": {
+        "item": "eidolon:pewter_ingot"
+      },
+      "type": "minecraft:item"
+    },
+    "core1": {
+      "item": {
+        "item": "eidolon:pewter_ingot"
+      },
+      "type": "minecraft:item"
+    },
+    "core2": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core3": {
+      "item": {
+        "item": "eidolon:pewter_ingot"
+      },
+      "type": "minecraft:item"
+    },
+    "core4": {
+      "item": {
+        "item": "minecraft:stick"
+      },
+      "type": "minecraft:item"
+    },
+    "core5": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core6": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "core7": {
+      "item": {
+        "item": "minecraft:stick"
+      },
+      "type": "minecraft:item"
+    },
+    "core8": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    }
+  },
+  "extras": {
+    "extras0": {
+      "item": {
+        "item": "eidolon:unholy_symbol"
+      },
+      "type": "minecraft:item"
+    },
+    "extras1": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "extras2": {
+      "item": {
+        "item": "eidolon:pewter_inlay"
+      },
+      "type": "minecraft:item"
+    },
+    "extras3": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    }
+  },
+  "result": {
+    "item": "eidolon:cleaving_axe"
+  }
+}

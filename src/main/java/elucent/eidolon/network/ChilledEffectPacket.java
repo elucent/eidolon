@@ -2,7 +2,6 @@ package elucent.eidolon.network;
 
 import elucent.eidolon.Eidolon;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.BlockParticleData;

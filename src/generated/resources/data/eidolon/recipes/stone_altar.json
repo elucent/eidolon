@@ -1,0 +1,88 @@
+{
+  "type": "eidolon:worktable",
+  "core": {
+    "core0": {
+      "item": {
+        "item": "minecraft:smooth_stone_slab"
+      },
+      "type": "minecraft:block"
+    },
+    "core1": {
+      "item": {
+        "item": "minecraft:smooth_stone_slab"
+      },
+      "type": "minecraft:block"
+    },
+    "core2": {
+      "item": {
+        "item": "minecraft:smooth_stone_slab"
+      },
+      "type": "minecraft:block"
+    },
+    "core3": {
+      "item": {
+        "tag": "forge:stone"
+      },
+      "type": "minecraft:tag"
+    },
+    "core4": {
+      "item": {
+        "tag": "forge:stone"
+      },
+      "type": "minecraft:tag"
+    },
+    "core5": {
+      "item": {
+        "tag": "forge:stone"
+      },
+      "type": "minecraft:tag"
+    },
+    "core6": {
+      "item": {
+        "tag": "forge:stone"
+      },
+      "type": "minecraft:tag"
+    },
+    "core7": {
+      "item": {
+        "item": "eidolon:pewter_inlay"
+      },
+      "type": "minecraft:item"
+    },
+    "core8": {
+      "item": {
+        "tag": "forge:stone"
+      },
+      "type": "minecraft:tag"
+    }
+  },
+  "extras": {
+    "extras0": {
+      "item": {
+        "item": "eidolon:soul_shard"
+      },
+      "type": "minecraft:item"
+    },
+    "extras1": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "extras2": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    },
+    "extras3": {
+      "item": {
+        "item": "minecraft:air"
+      },
+      "type": "minecraft:itemstack"
+    }
+  },
+  "result": {
+    "item": "eidolon:stone_altar"
+  }
+}

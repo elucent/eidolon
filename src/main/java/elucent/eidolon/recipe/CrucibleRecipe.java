@@ -1,20 +1,12 @@
 package elucent.eidolon.recipe;
 
-import elucent.eidolon.ritual.IRitualItemFocus;
-import elucent.eidolon.ritual.MultiItemSacrifice;
-import elucent.eidolon.ritual.Ritual;
-import elucent.eidolon.ritual.RitualRegistry;
-import elucent.eidolon.tile.CrucibleTileEntity;
 import elucent.eidolon.tile.CrucibleTileEntity.CrucibleStep;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

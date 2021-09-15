@@ -7,19 +7,12 @@ import elucent.eidolon.particle.Particles;
 import elucent.eidolon.util.ColorUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
-
-import java.util.List;
-import java.util.UUID;
 
 public class SoulfireProjectileEntity extends SpellProjectileEntity {
     public SoulfireProjectileEntity(EntityType<?> entityTypeIn, World worldIn) {

@@ -1,7 +1,5 @@
 package elucent.eidolon.capability;
 
-import elucent.eidolon.deity.Deities;
-import elucent.eidolon.deity.Deity;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;

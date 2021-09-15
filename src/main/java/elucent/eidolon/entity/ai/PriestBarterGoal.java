@@ -1,13 +1,9 @@
 package elucent.eidolon.entity.ai;
 
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
-import net.minecraft.entity.monster.WitchEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
 
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 

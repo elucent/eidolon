@@ -2,16 +2,13 @@ package elucent.eidolon.ritual;
 
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.network.RitualConsumePacket;
-import elucent.eidolon.ritual.Ritual.SetupResult;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.Tags;
 
 import java.util.List;
 
