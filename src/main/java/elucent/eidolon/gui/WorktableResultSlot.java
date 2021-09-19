@@ -81,7 +81,7 @@ public class WorktableResultSlot extends Slot {
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
         assert items != null;
 
-        for(int i = 0; i < items.size(); ++i) {
+        for(int i = 0; i < (recipe != null ? items.size() : 9); ++i) {
             IInventory inv = i < 9 ? core : extras;
             int index = i < 9 ? i : i - 9;
             ItemStack item = inv.getStackInSlot(index);
@@ -95,7 +95,7 @@ public class WorktableResultSlot extends Slot {
                 if (item.isEmpty()) {
                     inv.setInventorySlotContents(index, remaining);
                 } else if (ItemStack.areItemsEqual(item, remaining) && ItemStack.areItemStackTagsEqual(item, remaining)) {
-                    remaining.grow(item.getCount());
+                    // remaining.grow(item.getCount());
                     inv.setInventorySlotContents(index, remaining);
                 } else if (!this.player.inventory.addItemStackToInventory(remaining)) {
                     this.player.dropItem(remaining, false);

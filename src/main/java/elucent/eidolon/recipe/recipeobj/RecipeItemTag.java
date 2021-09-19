@@ -9,8 +9,6 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.stream.Stream;
-
 public class RecipeItemTag extends RecipeObject<ITag.INamedTag<Item>> {
     public RecipeItemTag(ITag.INamedTag<Item> obj) {
         super(obj);

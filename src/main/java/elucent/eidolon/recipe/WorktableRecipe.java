@@ -1,7 +1,6 @@
 package elucent.eidolon.recipe;
 
 import com.google.gson.JsonObject;
-import elucent.eidolon.Eidolon;
 import elucent.eidolon.recipe.recipeobj.RecipeObject;
 import elucent.eidolon.recipe.recipeobj.RecipeObjectType;
 import net.minecraft.data.IFinishedRecipe;
@@ -9,7 +8,6 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
@@ -18,8 +16,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class WorktableRecipe extends ForgeRegistryEntry<WorktableRecipe> implements ICraftingRecipe, IFinishedRecipe {
     RecipeCore core;
@@ -100,17 +100,14 @@ public class WorktableRecipe extends ForgeRegistryEntry<WorktableRecipe> impleme
     }
 
     public NonNullList<ItemStack> getRemainingItems(IInventory coreInv, IInventory extraInv) {
-        NonNullList<ItemStack> items = NonNullList.withSize(13, ItemStack.EMPTY);
+        ArrayList<ItemStack> result = new ArrayList<>();
 
-        for(int i = 0; i < items.size(); ++i) {
-            IInventory inv = i < 9 ? coreInv : extraInv;
-            ItemStack item = inv.getStackInSlot(i < 9 ? i : i - 9);
-            if (item.hasContainerItem()) {
-                items.set(i, item.getContainerItem());
-            }
-        }
+        Consumer<ItemStack> action = itemStack -> result.add(itemStack.getContainerItem());
 
-        return items;
+        RecipeUtils.forEach(coreInv, action);
+        RecipeUtils.forEach(extraInv, action);
+
+        return NonNullList.from(ItemStack.EMPTY, result.toArray(new ItemStack[0]));
     }
 
     @Override

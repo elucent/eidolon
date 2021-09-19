@@ -26,7 +26,7 @@ public class LivingEntityMixin {
     @Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
     protected void customDropLoot(DamageSource source, boolean hitRecently, CallbackInfo ci) {
         if (((LivingEntity)(Object)this).isEntityUndead()
-            && (source.getDamageType() == Registry.RITUAL_DAMAGE.getDamageType()
+            && (source.getDamageType().equals(Registry.RITUAL_DAMAGE.getDamageType())
                 || source.getTrueSource() instanceof LivingEntity
                     && ((LivingEntity) source.getTrueSource()).getHeldItemMainhand().getItem() instanceof ReaperScytheItem)) {
             ci.cancel();
