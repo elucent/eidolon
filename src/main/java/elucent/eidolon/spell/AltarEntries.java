@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AltarEntries {
-    static Map<BlockState, AltarEntry> entries = new HashMap<>();
+    public static Map<BlockState, AltarEntry> entries = new HashMap<>();
 
     public static AltarEntry find(BlockState state) {
         return entries.getOrDefault(state, null);
