@@ -35,7 +35,7 @@ import java.util.function.Predicate;
 
 public class CrucibleTileEntity extends TileEntityBase implements ITickableTileEntity {
     boolean boiling = false;
-    boolean hasWater = false;
+    public boolean hasWater = false;
     int stirTicks = 0;
     int stirs = 0;
     int stepCounter = 0;
