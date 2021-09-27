@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CodexChapters {
-    static List<Category> categories = new ArrayList<>();
+    public static List<Category> categories = new ArrayList<>();
     static Category NATURE, RITUALS, ARTIFICE, THEURGY, SIGNS;
 
     static Chapter NATURE_INDEX, MONSTERS, ORES, PEWTER, ENCHANTED_ASH,
