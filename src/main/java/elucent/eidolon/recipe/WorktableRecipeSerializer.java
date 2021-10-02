@@ -39,7 +39,7 @@ public class WorktableRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
         );
 
         ItemStack result = Ingredient.deserializeItemList(json.get("result").getAsJsonObject()).getStacks().iterator().next();
-        return new WorktableRecipe(recipeCore, recipeExtras, result);
+        return new WorktableRecipe(recipeCore, recipeExtras, result).setRegistryName(recipeId);
     }
 
     Gson gson = new GsonBuilder().create();
