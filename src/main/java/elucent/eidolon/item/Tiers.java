@@ -1,107 +1,141 @@
 package elucent.eidolon.item;
 
 import elucent.eidolon.Registry;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class Tiers {
-    public static class PewterTier implements IItemTier {
+    public static class PewterTier implements Tier {
         @Override
-        public int getMaxUses() {
+        public int getUses() {
             return 325;
         }
 
         @Override
-        public float getEfficiency() {
+        public float getSpeed() {
             return 6.5f;
         }
 
         @Override
-        public float getAttackDamage() {
+        public float getAttackDamageBonus() {
             return 2;
         }
 
         @Override
-        public int getHarvestLevel() {
+        public int getLevel() {
             return 2;
         }
 
         @Override
-        public int getEnchantability() {
+        public int getEnchantmentValue() {
             return 8;
         }
 
         @Override
-        public Ingredient getRepairMaterial() {
-            return Ingredient.fromStacks(new ItemStack(Registry.PEWTER_INGOT.get()));
+        public Ingredient getRepairIngredient() {
+            return Ingredient.of(new ItemStack(Registry.PEWTER_INGOT.get()));
         }
 
         public static PewterTier INSTANCE = new PewterTier();
     }
 
-    public static class MagicToolTier implements IItemTier {
+    public static class MagicToolTier implements Tier {
         @Override
-        public int getMaxUses() {
+        public int getUses() {
             return 1170;
         }
 
         @Override
-        public float getEfficiency() {
+        public float getSpeed() {
             return 7.0f;
         }
 
         @Override
-        public float getAttackDamage() {
+        public float getAttackDamageBonus() {
             return 3;
         }
 
         @Override
-        public int getHarvestLevel() {
+        public int getLevel() {
             return 3;
         }
 
         @Override
-        public int getEnchantability() {
+        public int getEnchantmentValue() {
             return 30;
         }
 
         @Override
-        public Ingredient getRepairMaterial() {
+        public Ingredient getRepairIngredient() {
             return Ingredient.EMPTY;
         }
 
         public static MagicToolTier INSTANCE = new MagicToolTier();
     }
 
-    public static class SanguineTier implements IItemTier {
+    public static class SilverTier implements Tier {
         @Override
-        public int getMaxUses() {
-            return 507;
+        public int getUses() {
+            return 193;
         }
 
         @Override
-        public float getEfficiency() {
-            return 8.0f;
+        public float getSpeed() {
+            return 7.0f;
         }
 
         @Override
-        public float getAttackDamage() {
-            return 3;
+        public float getAttackDamageBonus() {
+            return 2;
         }
 
         @Override
-        public int getHarvestLevel() {
-            return 3;
+        public int getLevel() {
+            return 2;
         }
 
         @Override
-        public int getEnchantability() {
+        public int getEnchantmentValue() {
             return 20;
         }
 
         @Override
-        public Ingredient getRepairMaterial() {
+        public Ingredient getRepairIngredient() {
+            return Ingredient.of(new ItemStack(Registry.SILVER_INGOT.get()));
+        }
+
+        public static SilverTier INSTANCE = new SilverTier();
+    }
+
+    public static class SanguineTier implements Tier {
+        @Override
+        public int getUses() {
+            return 507;
+        }
+
+        @Override
+        public float getSpeed() {
+            return 8.0f;
+        }
+
+        @Override
+        public float getAttackDamageBonus() {
+            return 3;
+        }
+
+        @Override
+        public int getLevel() {
+            return 3;
+        }
+
+        @Override
+        public int getEnchantmentValue() {
+            return 20;
+        }
+
+        @Override
+        public Ingredient getRepairIngredient() {
             return Ingredient.EMPTY;
         }
 

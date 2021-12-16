@@ -5,8 +5,12 @@
   "refmap": "eidolon.refmap.json",
   "mixins": [
     "LivingEntityMixin",
-    "ZombieVillagerEntityMixin",
-    "PotionBrewingMixin"
+    "ZombieVillagerMixin",
+    "PotionBrewingMixin",
+    "PlayerRendererMixin",
+    "LevelRendererMixin",
+    "AbstractArrowMixin",
+    "StructureSettingsMixin"
   ],
   "minVersion": "0.8"
 }

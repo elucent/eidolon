@@ -1,17 +1,17 @@
 package elucent.eidolon.util;
 
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 public class ChunkUtil {
-    public static void load(World world, ChunkPos pos) {
-        assert !world.isRemote;
-        ((ServerWorld)world).forceChunk(pos.x, pos.z, true);
+    public static void load(Level world, ChunkPos pos) {
+        assert !world.isClientSide;
+        ((ServerLevel)world).setChunkForced(pos.x, pos.z, true);
     }
 
-    public static void unload(World world, ChunkPos pos) {
-        assert !world.isRemote;
-        ((ServerWorld)world).forceChunk(pos.x, pos.z, false);
+    public static void unload(Level world, ChunkPos pos) {
+        assert !world.isClientSide;
+        ((ServerLevel)world).setChunkForced(pos.x, pos.z, false);
     }
 }

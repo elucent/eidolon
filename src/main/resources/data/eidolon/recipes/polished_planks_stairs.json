@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "group": "eidolon",
   "pattern": [
-    "x",
-    "x",
-    "x"
+    "x  ",
+    "xx ",
+    "xxx"
   ],
   "key": {
     "x": {
@@ -12,7 +12,7 @@
     }
   },
   "result": {
-    "item": "eidolon:polished_wood_pillar",
-    "count": 3
+    "item": "eidolon:polished_planks_stairs",
+    "count": 4
   }
 }

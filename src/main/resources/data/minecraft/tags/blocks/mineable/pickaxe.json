@@ -1,0 +1,31 @@
+{
+  "replace": false,
+  "values": [
+  	"eidolon:crucible",
+    "eidolon:lead_ore",
+    "eidolon:lead_block",
+    "eidolon:silver_ore",
+    "eidolon:silver_block",
+    "eidolon:deep_lead_ore",
+    "eidolon:raw_lead_block",
+    "eidolon:deep_silver_ore",
+    "eidolon:raw_silver_block",
+    "eidolon:pewter_block",
+    "eidolon:arcane_gold_block",
+    "eidolon:necrotic_focus",
+    "eidolon:obelisk",
+    "eidolon:plinth",
+    "eidolon:shadow_gem_block",
+    "eidolon:smooth_stone_bricks_slab",
+    "eidolon:smooth_stone_bricks_stairs",
+    "eidolon:smooth_stone_bricks_wall",
+    "eidolon:smooth_stone_bricks",
+    "eidolon:smooth_stone_tiles_slab",
+    "eidolon:smooth_stone_tiles_stairs",
+    "eidolon:smooth_stone_tiles",
+    "eidolon:soul_enchanter",
+    "eidolon:stone_altar",
+    "eidolon:stone_hand",
+    "eidolon:unholy_effigy"
+  ]
+}

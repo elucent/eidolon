@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=bottom": {
+      "model": "eidolon:block/incubator_bottom"
+    },
+    "half=top": {
+      "model": "eidolon:block/incubator_top"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "eidolon:crucible",
+  "steps": [
+    {
+      "items": [
+        { "tag": "forge:dusts/redstone" },
+        { "tag": "forge:dusts/redstone" },
+        { "item": "minecraft:lapis_lazuli" },
+        { "item": "minecraft:lapis_lazuli" }
+      ]
+    },
+    {
+      "stirs": 2,
+      "items": [
+        { "item": "eidolon:soul_shard" },
+        { "item": "eidolon:soul_shard" },
+        { "item": "eidolon:soul_shard" },
+        { "item": "eidolon:soul_shard" }
+      ]
+    },
+    {
+      "items": [
+        { "tag": "forge:gems/quartz" }
+      ]
+    }
+  ],
+  "result": {
+    "item": "eidolon:lesser_soul_gem"
+  }
+}

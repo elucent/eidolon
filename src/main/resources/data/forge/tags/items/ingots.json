@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "eidolon:lead_ingot",
+    "eidolon:pewter_ingot",
+    "eidolon:arcane_gold_ingot",
+    "eidolon:silver_ingot"
+  ]
+}

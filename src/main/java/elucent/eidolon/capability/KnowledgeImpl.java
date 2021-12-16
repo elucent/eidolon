@@ -1,11 +1,18 @@
 package elucent.eidolon.capability;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import elucent.eidolon.spell.Sign;
-import net.minecraft.util.ResourceLocation;
+import elucent.eidolon.spell.Signs;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.*;
-
-public class KnowledgeImpl implements IKnowledge {
+public class KnowledgeImpl implements IKnowledge, INBTSerializable<CompoundTag> {
     Set<Sign> signs = new HashSet<>();
     Set<ResourceLocation> facts = new HashSet<>();
 
@@ -38,4 +45,42 @@ public class KnowledgeImpl implements IKnowledge {
     public Set<ResourceLocation> getKnownFacts() {
         return facts;
     }
+
+	@Override
+	public CompoundTag serializeNBT() {
+        ListTag signs = new ListTag();
+        for (Sign s : getKnownSigns()) {
+            signs.add(StringTag.valueOf(s.getRegistryName().toString()));
+        }
+        ListTag facts = new ListTag();
+        for (ResourceLocation s : getKnownFacts()) {
+            facts.add(StringTag.valueOf(s.toString()));
+        }
+        CompoundTag wrapper = new CompoundTag();
+        wrapper.put("signs", signs);
+        wrapper.put("facts", facts);
+        return wrapper;
+	}
+
+	@Override
+	public void deserializeNBT(CompoundTag nbt) {
+        getKnownSigns().clear();
+        getKnownFacts().clear();
+
+        if (((CompoundTag)nbt).contains("signs")) {
+            ListTag signs = ((CompoundTag) nbt).getList("signs", Tag.TAG_STRING);
+            for (int i = 0; i < signs.size(); i++) {
+                ResourceLocation loc = new ResourceLocation(signs.getString(i));
+                Sign s = Signs.find(loc);
+                if (s != null) addSign(s);
+            }
+        }
+
+        if (((CompoundTag)nbt).contains("facts")) {
+            ListTag facts = ((CompoundTag) nbt).getList("facts", Tag.TAG_STRING);
+            for (int i = 0; i < facts.size(); i++) {
+                addFact(new ResourceLocation(facts.getString(i)));
+            }
+        }
+	}
 }

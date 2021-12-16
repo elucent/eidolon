@@ -1,20 +1,14 @@
 package elucent.eidolon.ritual;
 
 import elucent.eidolon.Eidolon;
-import elucent.eidolon.Registry;
 import elucent.eidolon.network.CrystallizeEffectPacket;
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import java.util.List;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class SummonRitual extends Ritual {
     public static final ResourceLocation SYMBOL = new ResourceLocation(Eidolon.MODID, "particle/summon_ritual");
@@ -26,12 +20,12 @@ public class SummonRitual extends Ritual {
     }
 
     @Override
-    public RitualResult start(World world, BlockPos pos) {
-        if (!world.isRemote) {
+    public RitualResult start(Level world, BlockPos pos) {
+        if (!world.isClientSide) {
             Networking.sendToTracking(world, pos, new CrystallizeEffectPacket(pos));
             Entity e = entity.create(world);
-            e.setPosition(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
-            world.addEntity(e);
+            e.setPos(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
+            world.addFreshEntity(e);
         }
         return RitualResult.TERMINATE;
     }

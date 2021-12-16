@@ -3,64 +3,102 @@ package elucent.eidolon.item.model;// Made with Blockbench 3.7.4
 // Paste this class into your mod and generate all required imports
 
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.math.MathHelper;
+import java.util.List;
 
-public abstract class ArmorModel extends BipedModel {
-	EquipmentSlotType slot;
+import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-	public ModelRenderer copyWithoutBoxes(ModelRenderer box) {
-		ModelRenderer newbox = new ModelRenderer(this);
-		newbox.setRotationPoint(box.rotationPointX, box.rotationPointY, box.rotationPointZ);
-		setRotationAngle(newbox, box.rotateAngleX, box.rotateAngleY, box.rotateAngleZ);
-		newbox.mirror = box.mirror;
-		newbox.showModel = box.showModel;
-		return newbox;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.world.entity.EquipmentSlot;
+
+public abstract class ArmorModel extends HumanoidModel {
+	public EquipmentSlot slot;
+	ModelPart root, head, body, leftArm, rightArm, pelvis, leftLegging, rightLegging, leftFoot, rightFoot;
+
+//	public ModelPart copyWithoutBoxes(ModelPart box) {
+//		ModelPart newbox = new ModelPart(this);
+//		newbox.setPos(box.x, box.y, box.z);
+//		setRotationAngle(newbox, box.xRot, box.yRot, box.zRot);
+//		newbox.mirror = box.mirror;
+//		newbox.visible = box.visible;
+//		return newbox;
+//	}
+
+	public ArmorModel(ModelPart root) {
+		super(root);
+		this.root = root;
+		this.head = root.getChild("head");
+		this.body = root.getChild("body");
+		this.pelvis = root.getChild("pelvis");
+		this.leftArm = root.getChild("left_arm");
+		this.rightArm = root.getChild("right_arm");
+		this.leftLegging = root.getChild("left_legging");
+		this.rightLegging = root.getChild("right_legging");
+		this.leftFoot = root.getChild("left_foot");
+		this.rightFoot = root.getChild("right_foot");
 	}
-
-	public ArmorModel(EquipmentSlotType slot, int texWidth, int texHeight) {
-		super(0, 0, texWidth, texHeight);
-		this.slot = slot;
-
-		bipedHead = copyWithoutBoxes(bipedHead);
-		bipedBody = copyWithoutBoxes(bipedBody);
-		bipedLeftArm = copyWithoutBoxes(bipedLeftArm);
-		bipedLeftLeg = copyWithoutBoxes(bipedLeftLeg);
-		bipedRightArm = copyWithoutBoxes(bipedRightArm);
-		bipedRightLeg = copyWithoutBoxes(bipedRightLeg);
+	
+	public static PartDefinition createHumanoidAlias(MeshDefinition mesh) {
+		PartDefinition root = mesh.getRoot();
+		root.addOrReplaceChild("body", new CubeListBuilder(), PartPose.ZERO);
+		root.addOrReplaceChild("pelvis", new CubeListBuilder(), PartPose.ZERO);
+		root.addOrReplaceChild("head", new CubeListBuilder(), PartPose.ZERO);
+		root.addOrReplaceChild("left_legging", new CubeListBuilder(), PartPose.ZERO);
+		root.addOrReplaceChild("left_foot", new CubeListBuilder(), PartPose.ZERO);
+		root.addOrReplaceChild("right_legging", new CubeListBuilder(), PartPose.ZERO);
+		root.addOrReplaceChild("right_foot", new CubeListBuilder(), PartPose.ZERO);
+		root.addOrReplaceChild("left_arm", new CubeListBuilder(), PartPose.ZERO);
+		root.addOrReplaceChild("right_arm", new CubeListBuilder(), PartPose.ZERO);
+		
+		return root;
 	}
+	
+	@Override
+    protected Iterable<ModelPart> headParts() {
+		return slot == EquipmentSlot.HEAD ? ImmutableList.of(head) : ImmutableList.of();
+    }
+
+    @Override
+    protected Iterable<ModelPart> bodyParts() {
+        if (slot == EquipmentSlot.CHEST) {
+        	return ImmutableList.<ModelPart>of(body, leftArm, rightArm);
+        }
+        else if (slot == EquipmentSlot.LEGS) {
+        	return ImmutableList.<ModelPart>of(leftLegging, rightLegging, pelvis);
+        }
+        else if (slot == EquipmentSlot.FEET) {
+        	return ImmutableList.<ModelPart>of(leftFoot, rightFoot);
+        }
+        else return ImmutableList.of();
+    }
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
-		bipedHeadwear.showModel = false;
-		bipedBody.showModel = bipedLeftArm.showModel = bipedRightArm.showModel =
-			bipedHead.showModel = bipedLeftLeg.showModel = bipedRightLeg.showModel = false;
-
-		if (slot == EquipmentSlotType.CHEST) {
-			bipedBody.showModel = true;
-			bipedLeftArm.showModel = true;
-			bipedRightArm.showModel = true;
-		}
-
-		if (slot == EquipmentSlotType.HEAD) {
-			bipedHead.showModel = true;
-		}
-
-		if (slot == EquipmentSlotType.FEET) {
-			bipedLeftLeg.showModel = true;
-			bipedRightLeg.showModel = true;
-		}
-		super.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+		super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+	}
+	
+	public void copyFromDefault(HumanoidModel model) {
+		body.copyFrom(model.body);
+		pelvis.copyFrom(model.body);
+		head.copyFrom(model.head);
+		leftArm.copyFrom(model.leftArm);
+		rightArm.copyFrom(model.rightArm);
+		leftLegging.copyFrom(leftLeg);
+		rightLegging.copyFrom(rightLeg);
+		leftFoot.copyFrom(leftLeg);
+		rightFoot.copyFrom(rightLeg);
 	}
 
-	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.rotateAngleX = x;
-		modelRenderer.rotateAngleY = y;
-		modelRenderer.rotateAngleZ = z;
+	public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
+		modelRenderer.xRot = x;
+		modelRenderer.yRot = y;
+		modelRenderer.zRot = z;
 	}
 }

@@ -1,12 +1,8 @@
 package elucent.eidolon.deity;
 
 import elucent.eidolon.capability.IReputation;
-import elucent.eidolon.capability.ReputationEntry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Resource;
-import java.util.UUID;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class Deity {
     ResourceLocation id;
@@ -35,6 +31,6 @@ public abstract class Deity {
         return id;
     }
 
-    public abstract void onReputationUnlock(PlayerEntity player, IReputation rep, ResourceLocation lock);
-    public abstract void onReputationChange(PlayerEntity player, IReputation rep, double prev, double current);
+    public abstract void onReputationUnlock(Player player, IReputation rep, ResourceLocation lock);
+    public abstract void onReputationChange(Player player, IReputation rep, double prev, double current);
 }

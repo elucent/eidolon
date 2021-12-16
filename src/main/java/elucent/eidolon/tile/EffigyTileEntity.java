@@ -1,18 +1,15 @@
 package elucent.eidolon.tile;
 
 import elucent.eidolon.Registry;
-import elucent.eidolon.ritual.RitualRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 
 public class EffigyTileEntity extends TileEntityBase {
     long previous = -1;
 
-    public EffigyTileEntity() {
-        super(Registry.EFFIGY_TILE_ENTITY);
+    public EffigyTileEntity(BlockPos pos, BlockState state) {
+        super(Registry.EFFIGY_TILE_ENTITY, pos, state);
     }
 
     public boolean ready() {
@@ -20,21 +17,21 @@ public class EffigyTileEntity extends TileEntityBase {
     }
 
     public void pray() {
-        if (!world.isRemote) {
-            previous = world.getGameTime();
+        if (!level.isClientSide) {
+            previous = level.getGameTime();
             sync();
         }
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag) {
-        super.read(state, tag);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         previous = tag.getLong("previous");
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
-        tag = super.write(tag);
+    public CompoundTag save(CompoundTag tag) {
+        tag = super.save(tag);
         tag.putLong("previous", previous);
         return tag;
     }

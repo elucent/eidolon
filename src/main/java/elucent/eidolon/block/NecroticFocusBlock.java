@@ -1,31 +1,29 @@
 package elucent.eidolon.block;
 
-import elucent.eidolon.tile.TileEntityBase;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.block.state.BlockState;
+import elucent.eidolon.tile.NecroticFocusTileEntity;
+import elucent.eidolon.tile.SoulEnchanterTileEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
-public class NecroticFocusBlock extends HorizontalWaterloggableBlock {
-    VoxelShape SOUTH = VoxelShapes.create(0, 0, 0, 1, 1, 0.5),
-               NORTH = VoxelShapes.create(0, 0, 0.5, 1, 1, 1),
-               WEST = VoxelShapes.create(0.5, 0, 0, 1, 1, 1),
-               EAST = VoxelShapes.create(0, 0, 0, 0.5, 1, 1);
+public class NecroticFocusBlock extends HorizontalWaterloggableBlock implements EntityBlock {
+    VoxelShape SOUTH = Shapes.box(0, 0, 0, 1, 1, 0.5),
+               NORTH = Shapes.box(0, 0, 0.5, 1, 1, 1),
+               WEST = Shapes.box(0.5, 0, 0, 1, 1, 1),
+               EAST = Shapes.box(0, 0, 0, 0.5, 1, 1);
 
     public NecroticFocusBlock(Properties properties) {
         super(properties);
     }
 
     VoxelShape shapeForState(BlockState state) {
-        switch (state.get(HORIZONTAL_FACING)) {
+        switch (state.getValue(HORIZONTAL_FACING)) {
             case NORTH:
                 return NORTH;
             case SOUTH:
@@ -39,17 +37,22 @@ public class NecroticFocusBlock extends HorizontalWaterloggableBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext ctx) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext ctx) {
         return shapeForState(state);
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext ctx) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext ctx) {
         return shapeForState(state);
     }
 
     @Override
-    public VoxelShape getRaytraceShape(BlockState state, IBlockReader world, BlockPos pos) {
+    public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
         return shapeForState(state);
     }
+
+	@Override
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new NecroticFocusTileEntity(pos, state);
+	}
 }

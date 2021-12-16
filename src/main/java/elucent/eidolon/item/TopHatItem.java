@@ -1,56 +1,63 @@
 package elucent.eidolon.item;
 
+import java.util.List;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.item.model.TopHatModel;
 import elucent.eidolon.item.model.WarlockArmorModel;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.List;
+import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraft.world.item.Item.Properties;
 
 public class TopHatItem extends ArmorItem {
     private static final int[] MAX_DAMAGE_ARRAY = new int[]{13, 15, 16, 11};
 
-    public static class Material implements IArmorMaterial {
+    public static class Material implements ArmorMaterial {
         @Override
-        public int getDurability(EquipmentSlotType slot) {
+        public int getDurabilityForSlot(EquipmentSlot slot) {
             return MAX_DAMAGE_ARRAY[slot.getIndex()] * 7;
         }
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType slot) {
+        public int getDefenseForSlot(EquipmentSlot slot) {
             return 1;
         }
 
         @Override
-        public int getEnchantability() {
+        public int getEnchantmentValue() {
             return 12;
         }
 
         @Override
-        public SoundEvent getSoundEvent() {
-            return ArmorMaterial.LEATHER.getSoundEvent();
+        public SoundEvent getEquipSound() {
+            return ArmorMaterials.LEATHER.getEquipSound();
         }
 
         @Override
-        public Ingredient getRepairMaterial() {
-            return Ingredient.fromStacks(new ItemStack(Items.BLACK_WOOL));
+        public Ingredient getRepairIngredient() {
+            return Ingredient.of(new ItemStack(Items.BLACK_WOOL));
         }
 
         @Override
@@ -80,29 +87,39 @@ public class TopHatItem extends ArmorItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (this.loreTag != null) {
-            tooltip.add(new StringTextComponent(""));
-            tooltip.add(new StringTextComponent("" + TextFormatting.DARK_PURPLE + TextFormatting.ITALIC + I18n.format(this.loreTag)));
+            tooltip.add(new TextComponent(""));
+            tooltip.add(new TextComponent("" + ChatFormatting.DARK_PURPLE + ChatFormatting.ITALIC + I18n.get(this.loreTag)));
         }
     }
 
     public TopHatItem(Properties builderIn) {
-        super(Material.INSTANCE, EquipmentSlotType.HEAD, builderIn);
-    }
-
-    TopHatModel model = null;
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public TopHatModel getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlotType slot, BipedModel defaultModel) {
-        if (model == null) model = new TopHatModel();
-        return model;
+        super(Material.INSTANCE, EquipmentSlot.HEAD, builderIn);
     }
 
     @OnlyIn(Dist.CLIENT)
+    @Override 
+    public void initializeClient(java.util.function.Consumer<net.minecraftforge.client.IItemRenderProperties> consumer) {
+        consumer.accept(new IItemRenderProperties() {
+            @Override
+            public TopHatModel getArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
+                float pticks = Minecraft.getInstance().getFrameTime();
+                float f = Mth.rotLerp(pticks, entity.yBodyRotO, entity.yBodyRot);
+                float f1 = Mth.rotLerp(pticks, entity.yHeadRotO, entity.yHeadRot);
+                float netHeadYaw = f1 - f;
+                float netHeadPitch = Mth.lerp(pticks, entity.xRotO, entity.getXRot());
+                Registry.TOP_HAT_MODEL.slot = slot;
+                Registry.TOP_HAT_MODEL.copyFromDefault(_default);
+                Registry.TOP_HAT_MODEL.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount + pticks, netHeadYaw, netHeadPitch);
+                return Registry.TOP_HAT_MODEL;
+            }
+        });
+    }
+
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return Eidolon.MODID + ":textures/entity/hat.png";
     }
 }

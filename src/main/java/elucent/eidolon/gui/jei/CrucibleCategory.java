@@ -1,12 +1,18 @@
 package elucent.eidolon.gui.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.codex.CodexGui;
 import elucent.eidolon.recipe.CrucibleRecipe;
 import elucent.eidolon.recipe.CrucibleRegistry;
-import elucent.eidolon.util.StackUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -14,12 +20,12 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-
-import java.util.*;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceLocation;
 
 public class CrucibleCategory implements IRecipeCategory<RecipeWrappers.Crucible> {
     static final ResourceLocation UID = new ResourceLocation(Eidolon.MODID, "crucible");
@@ -36,13 +42,13 @@ public class CrucibleCategory implements IRecipeCategory<RecipeWrappers.Crucible
     }
 
     @Override
-    public Class getRecipeClass() {
+    public Class<? extends RecipeWrappers.Crucible> getRecipeClass() {
         return RecipeWrappers.Crucible.class;
     }
 
     @Override
-    public String getTitle() {
-        return I18n.format("jei." + Eidolon.MODID + ".crucible");
+    public Component getTitle() {
+        return new TranslatableComponent(I18n.get("jei." + Eidolon.MODID + ".crucible"));
     }
 
     @Override
@@ -70,7 +76,7 @@ public class CrucibleCategory implements IRecipeCategory<RecipeWrappers.Crucible
         StackIngredient last = new StackIngredient(ItemStack.EMPTY, Ingredient.EMPTY);
         while (iter.hasNext()) {
             StackIngredient i = iter.next();
-            if (!ItemStack.areItemsEqual(i.stack, last.stack) || !ItemStack.areItemStackTagsEqual(i.stack, last.stack) || last.stack.getCount() + i.stack.getCount() > last.stack.getMaxStackSize()) {
+            if (!ItemStack.isSame(i.stack, last.stack) || !ItemStack.tagMatches(i.stack, last.stack) || last.stack.getCount() + i.stack.getCount() > last.stack.getMaxStackSize()) {
                 last = i;
             }
             else {
@@ -87,15 +93,15 @@ public class CrucibleCategory implements IRecipeCategory<RecipeWrappers.Crucible
         List<List<ItemStack>> inputs = new ArrayList<>();
         for (CrucibleRecipe.Step step : wrapper.recipe.getSteps()) {
             List<StackIngredient> stepInputs = new ArrayList<>();
-            for (Object o : step.matches) {
-                ItemStack stack = StackUtil.stackFromObject(o);
-                if (!stack.isEmpty()) stepInputs.add(new StackIngredient(stack, StackUtil.ingredientFromObject(o)));
+            for (Ingredient o : step.matches) {
+                ItemStack stack = o.getItems().length > 0 ? o.getItems()[0].copy() : ItemStack.EMPTY.copy();
+                if (!stack.isEmpty()) stepInputs.add(new StackIngredient(stack, o));
             }
             condense(stepInputs);
             for (StackIngredient i : stepInputs) {
-                ItemStack[] valid = i.ingredient.getMatchingStacks();
+                List<ItemStack> valid = Arrays.stream(i.ingredient.getItems()).map((s) -> s.copy()).collect(Collectors.toList());
                 for (ItemStack stack : valid) stack.setCount(i.stack.getCount());
-                inputs.add(Arrays.asList(valid));
+                inputs.add(valid);
             }
         }
         ingredients.setInputLists(VanillaTypes.ITEM, inputs);
@@ -115,8 +121,8 @@ public class CrucibleCategory implements IRecipeCategory<RecipeWrappers.Crucible
             tx += 24;
 
             List<StackIngredient> stepInputs = new ArrayList<>();
-            for (Object o : steps.get(i).matches) {
-                ItemStack stack = StackUtil.stackFromObject(o);
+            for (Ingredient o : steps.get(i).matches) {
+                ItemStack stack = o.getItems().length > 0 ? o.getItems()[0].copy() : ItemStack.EMPTY.copy();
                 if (!stack.isEmpty()) stepInputs.add(new StackIngredient(stack, Ingredient.EMPTY));
             }
             condense(stepInputs);
@@ -132,7 +138,7 @@ public class CrucibleCategory implements IRecipeCategory<RecipeWrappers.Crucible
     }
 
     @Override
-    public void draw(RecipeWrappers.Crucible recipe, MatrixStack mStack, double mouseX, double mouseY) {
+    public void draw(RecipeWrappers.Crucible recipe, PoseStack mStack, double mouseX, double mouseY) {
         recipe.page.renderBackground(CodexGui.DUMMY, mStack, 5, 4, (int)mouseX, (int)mouseY);
         recipe.page.render(CodexGui.DUMMY, mStack, 5, 4, (int)mouseX, (int)mouseY);
     }

@@ -1,17 +1,15 @@
 package elucent.eidolon.network;
 
 import elucent.eidolon.Eidolon;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Dimension;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class Networking {
     public static SimpleChannel INSTANCE;
@@ -142,16 +140,16 @@ public class Networking {
         );
     }
 
-    public static <MSG> void sendToDimension(World world, MSG msg, RegistryKey<World> dimension) {
+    public static <MSG> void sendToDimension(Level world, MSG msg, ResourceKey<Level> dimension) {
         Networking.INSTANCE.send(PacketDistributor.DIMENSION.with(() -> dimension), msg);
     }
 
-    public static <MSG> void sendToTracking(World world, BlockPos pos, MSG msg) {
+    public static <MSG> void sendToTracking(Level world, BlockPos pos, MSG msg) {
         Networking.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), msg);
     }
 
-    public static <MSG> void sendTo(PlayerEntity entity, MSG msg) {
-        Networking.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)entity), msg);
+    public static <MSG> void sendTo(Player entity, MSG msg) {
+        Networking.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)entity), msg);
     }
 
     public static <MSG> void sendToServer(MSG msg) {

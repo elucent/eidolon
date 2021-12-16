@@ -1,78 +1,75 @@
 package elucent.eidolon.world;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.gen.feature.structure.IStructurePieceType;
-import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
-import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.TemplateManager;
-
 import java.util.Random;
+
+import com.mojang.serialization.Dynamic;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.RuinedPortalPiece;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.levelgen.feature.StructurePieceType;
+import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
 public class BasicPiece extends TemplateStructurePiece {
     private ResourceLocation loc;
     Rotation rotation;
     Mirror mirror;
 
-    void modifyPlacement(PlacementSettings settings, BlockPos pos) {
+    void modifyPlacement(StructurePlaceSettings settings, BlockPos pos) {
         //
     }
 
     void init(BlockPos pos, Random random) {
         //
     }
-
-    public BasicPiece(IStructurePieceType structurePieceTypeIn, CompoundNBT nbt) {
-        super(structurePieceTypeIn, nbt);
-        this.loc = new ResourceLocation(nbt.getString("template"));
+    
+    public BasicPiece(StructurePieceType structurePieceTypeIn, CompoundTag nbt, StructureManager manager) {
+        super(structurePieceTypeIn, nbt, manager, (rl) -> {
+            return new StructurePlaceSettings().setRotation(Rotation.valueOf(nbt.getString("rot"))).setMirror(Mirror.valueOf(nbt.getString("mirror"))).addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
+        });
+        this.loc = new ResourceLocation(nbt.getString("Template"));
         this.rotation = Rotation.valueOf(nbt.getString("rot"));
         this.mirror = Mirror.valueOf(nbt.getString("mirror"));
     }
 
-    public BasicPiece(IStructurePieceType type, ResourceLocation key, TemplateManager templateManager, CompoundNBT nbt) {
-        this(type, nbt);
-        Template part = templateManager.getTemplateDefaulted(key);
-        PlacementSettings placement = (new PlacementSettings().setRotation(rotation).setMirror(mirror)).addProcessor(BlockIgnoreStructureProcessor.STRUCTURE_BLOCK);
-        this.setup(part, this.templatePosition, placement);
-        this.template = templateManager.getTemplate(key);
-    }
-
-    public BasicPiece(IStructurePieceType type, ResourceLocation key, TemplateManager templateManager, BlockPos pos, Random random) {
+    public BasicPiece(StructurePieceType type, ResourceLocation key, StructureManager templateManager, BlockPos pos, Random random) {
         this(type, key, templateManager, pos, Rotation.NONE, Mirror.NONE, random);
     }
 
-    public BasicPiece(IStructurePieceType type, ResourceLocation key, TemplateManager templateManager, BlockPos pos, Rotation rot, Mirror mirror, Random random) {
-        super(type, 0);
+    public BasicPiece(StructurePieceType type, ResourceLocation key, StructureManager templateManager, BlockPos pos, Rotation rot, Mirror mirror, Random random) {
+        super(type, 0, templateManager, key, "eidolon.structure." + key.getPath(),
+        		new StructurePlaceSettings().setRotation(rot).setMirror(Mirror.NONE).addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK), pos);
         this.templatePosition = pos;
         this.loc = key;
         this.rotation = rot;
         this.mirror = mirror;
 
-        Template part = templateManager.getTemplateDefaulted(key);
-        BlockPos d = part.getSize();
+        this.template = templateManager.getOrCreate(key);
+        Vec3i d = template.getSize();
         BlockPos o = new BlockPos(-((d.getX() - 1) / 2), 0, -(d.getZ() - 1) / 2);
-        templatePosition = templatePosition.add(o.rotate(this.rotation)).subtract(o);
-
-        PlacementSettings placement = (new PlacementSettings().setRotation(rotation).setMirror(Mirror.NONE)).addProcessor(BlockIgnoreStructureProcessor.STRUCTURE_BLOCK);
-        this.setup(part, this.templatePosition, placement);
-        this.template = templateManager.getTemplate(key);
+        templatePosition = templatePosition.offset(o.rotate(this.rotation)).subtract(o);
     }
 
     @Override
-    protected void readAdditional(CompoundNBT tagCompound) {
-        super.readAdditional(tagCompound);
-        tagCompound.putString("template", loc.toString());
+    protected void addAdditionalSaveData(StructurePieceSerializationContext ctx, CompoundTag tagCompound) {
+        super.addAdditionalSaveData(ctx, tagCompound);
         tagCompound.putString("rot", rotation.name());
         tagCompound.putString("mirror", mirror.name());
     }
 
     @Override
-    protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand, MutableBoundingBox sbb) {}
+    protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, Random rand, BoundingBox sbb) {}
 }

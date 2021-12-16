@@ -4,14 +4,14 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import elucent.eidolon.Registry;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
 
-import java.util.Locale;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 
-public class GenericParticleData implements IParticleData {
+import net.minecraft.core.particles.ParticleOptions.Deserializer;
+
+public class GenericParticleData implements ParticleOptions {
     float r1 = 1, g1 = 1, b1 = 1, a1 = 1, r2 = 1, g2 = 1, b2 = 1, a2 = 0;
     float scale1 = 1, scale2 = 0;
     int lifetime = 20;
@@ -59,7 +59,7 @@ public class GenericParticleData implements IParticleData {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void writeToNetwork(FriendlyByteBuf buffer) {
         buffer.writeFloat(r1).writeFloat(g1).writeFloat(b1).writeFloat(a1);
         buffer.writeFloat(r2).writeFloat(g2).writeFloat(b2).writeFloat(a2);
         buffer.writeFloat(scale1).writeFloat(scale2);
@@ -69,13 +69,13 @@ public class GenericParticleData implements IParticleData {
     }
 
     @Override
-    public String getParameters() {
+    public String writeToString() {
         return getClass().getSimpleName() + ":internal";
     }
 
-    public static final IDeserializer<GenericParticleData> DESERIALIZER = new IDeserializer<GenericParticleData>() {
+    public static final Deserializer<GenericParticleData> DESERIALIZER = new Deserializer<GenericParticleData>() {
         @Override
-        public GenericParticleData deserialize(ParticleType<GenericParticleData> type, StringReader reader) throws CommandSyntaxException {
+        public GenericParticleData fromCommand(ParticleType<GenericParticleData> type, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             float r1 = reader.readFloat();
             reader.expect(' ');
@@ -120,7 +120,7 @@ public class GenericParticleData implements IParticleData {
         }
 
         @Override
-        public GenericParticleData read(ParticleType<GenericParticleData> type, PacketBuffer buf) {
+        public GenericParticleData fromNetwork(ParticleType<GenericParticleData> type, FriendlyByteBuf buf) {
             float r1 = buf.readFloat();
             float g1 = buf.readFloat();
             float b1 = buf.readFloat();

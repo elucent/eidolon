@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "eidolon:block/sildrian_seed_1"
+  }
+}

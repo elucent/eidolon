@@ -11,7 +11,7 @@
       "item": "minecraft:stone"
     },
     "y": {
-      "item": "eidolon:pewter_ingot"
+      "tag": "forge:ingots/pewter"
     },
     "z": {
       "item": "minecraft:bone"

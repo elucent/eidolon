@@ -1,0 +1,27 @@
+{
+  "type": "eidolon:worktable",
+  "pattern": [
+    "www",
+    "wsw",
+    "www"
+  ],
+  "reagents": "u b ",
+  "key": {
+    "w": {
+      "item": "minecraft:white_wool"
+    },
+    "s": {
+      "item": "eidolon:shadow_gem"
+    },
+    "u": {
+      "item": "eidolon:unholy_symbol"
+    },
+    "b": {
+      "tag": "forge:dyes/blue"
+    }
+  },
+  "result": {
+    "item": "eidolon:wicked_weave",
+    "count": 8
+  }
+}

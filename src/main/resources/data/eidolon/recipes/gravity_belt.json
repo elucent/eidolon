@@ -1,0 +1,32 @@
+{
+  "type": "eidolon:worktable",
+  "pattern": [
+    " p ",
+    "fbf",
+    " l "
+  ],
+  "reagents": "cici",
+  "key": {
+    "f": {
+      "tag": "forge:feathers"
+    },
+    "p": {
+      "tag": "forge:ender_pearls"
+    },
+    "l": {
+      "item": "eidolon:lesser_soul_gem"
+    },
+    "b": {
+      "item": "eidolon:basic_belt"
+    },
+    "c": {
+      "item": "eidolon:ender_calx"
+    },
+    "i": {
+      "item": "eidolon:pewter_inlay"
+    }
+  },
+  "result": {
+    "item": "eidolon:gravity_belt"
+  }
+}

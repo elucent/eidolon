@@ -1,51 +1,67 @@
 package elucent.eidolon;
 
-import com.google.common.collect.Lists;
-import elucent.eidolon.capability.*;
+import elucent.eidolon.capability.IKnowledge;
+import elucent.eidolon.capability.IReputation;
+import elucent.eidolon.capability.KnowledgeImpl;
+import elucent.eidolon.capability.ReputationImpl;
 import elucent.eidolon.codex.CodexChapters;
-import elucent.eidolon.entity.*;
+import elucent.eidolon.deity.RegisterDeitiesEvent;
+import elucent.eidolon.entity.AngelArrowRenderer;
+import elucent.eidolon.entity.NecromancerEntity;
+import elucent.eidolon.entity.NecromancerModel;
+import elucent.eidolon.entity.NecromancerRenderer;
+import elucent.eidolon.entity.RavenEntity;
+import elucent.eidolon.entity.RavenModel;
+import elucent.eidolon.entity.RavenRenderer;
+import elucent.eidolon.entity.WraithEntity;
+import elucent.eidolon.entity.WraithModel;
+import elucent.eidolon.entity.WraithRenderer;
+import elucent.eidolon.entity.ZombieBruteEntity;
+import elucent.eidolon.entity.ZombieBruteModel;
+import elucent.eidolon.entity.ZombieBruteRenderer;
 import elucent.eidolon.gui.SoulEnchanterScreen;
 import elucent.eidolon.gui.WoodenBrewingStandScreen;
 import elucent.eidolon.gui.WorktableScreen;
+import elucent.eidolon.item.AthameItem;
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.proxy.ClientProxy;
 import elucent.eidolon.proxy.ISidedProxy;
 import elucent.eidolon.proxy.ServerProxy;
+import elucent.eidolon.reagent.RegisterReagentsEvent;
 import elucent.eidolon.recipe.CrucibleRegistry;
-import elucent.eidolon.recipe.WorktableRegistry;
 import elucent.eidolon.ritual.RitualRegistry;
 import elucent.eidolon.spell.AltarEntries;
-import elucent.eidolon.spell.AltarInfo;
-import elucent.eidolon.tile.*;
-import mezz.jei.api.JeiPlugin;
-import mezz.jei.plugins.vanilla.brewing.BrewingRecipeUtil;
-import mezz.jei.runtime.JeiHelpers;
-import mezz.jei.startup.JeiStarter;
-import net.minecraft.client.gui.ScreenManager;
+import elucent.eidolon.tile.BrazierTileRenderer;
+import elucent.eidolon.tile.CrucibleTileRenderer;
+import elucent.eidolon.tile.GobletTileRenderer;
+import elucent.eidolon.tile.HandTileRenderer;
+import elucent.eidolon.tile.NecroticFocusTileRenderer;
+import elucent.eidolon.tile.SoulEnchanterTileRenderer;
+import elucent.eidolon.tile.reagent.CisternTileRenderer;
+import elucent.eidolon.tile.reagent.PipeTileRenderer;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.world.gen.Heightmap;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -61,9 +77,9 @@ public class Eidolon {
 
     public static final String MODID = "eidolon";
 
-    public static final ItemGroup TAB = new ItemGroup(MODID) {
+    public static final CreativeModeTab TAB = new CreativeModeTab(MODID) {
         @Override
-        public ItemStack createIcon() {
+        public ItemStack makeIcon() {
             return new ItemStack(Registry.SHADOW_GEM.get(), 1);
         }
     };
@@ -76,6 +92,7 @@ public class Eidolon {
         FMLJavaModLoadingContext.get().getModEventBus().register(new Registry());
         Registry.init();
         proxy.init();
+        MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new WorldGen());
         WorldGen.preInit();
         MinecraftForge.EVENT_BUS.register(new Events());
@@ -90,58 +107,57 @@ public class Eidolon {
         WorldGen.init();
         event.enqueueWork(() -> {
             CrucibleRegistry.init();
-            WorktableRegistry.init();
             RitualRegistry.init();
             CodexChapters.init();
             Registry.addBrewingRecipes();
             AltarEntries.init();
+            MinecraftForge.EVENT_BUS.post(new RegisterDeitiesEvent());
+            MinecraftForge.EVENT_BUS.post(new RegisterReagentsEvent());
+            AthameItem.initHarvestables();
         });
-        event.enqueueWork(this::defineAttributes);
 
-        CapabilityManager.INSTANCE.register(IReputation.class, new ReputationStorage(), ReputationImpl::new);
-        CapabilityManager.INSTANCE.register(IKnowledge.class, new KnowledgeStorage(), KnowledgeImpl::new);
-
-        EntitySpawnPlacementRegistry.register(Registry.ZOMBIE_BRUTE.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-            MonsterEntity::canMonsterSpawnInLight);
-        EntitySpawnPlacementRegistry.register(Registry.WRAITH.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-            MonsterEntity::canMonsterSpawnInLight);
+        SpawnPlacements.register(Registry.ZOMBIE_BRUTE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            Monster::checkMonsterSpawnRules);
+        SpawnPlacements.register(Registry.WRAITH.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            Monster::checkMonsterSpawnRules);
+        SpawnPlacements.register(Registry.RAVEN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            Animal::checkAnimalSpawnRules);
+        SpawnPlacements.register(Registry.SLIMY_SLUG.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        	(e, w, t, pos, rand) -> pos.getY() < w.getHeight(Types.WORLD_SURFACE, pos.getX(), pos.getZ()));
     }
 
     @OnlyIn(Dist.CLIENT)
     public static void clientSetup(final FMLClientSetupEvent event){
-        RenderingRegistry.registerEntityRenderingHandler(Registry.ZOMBIE_BRUTE.get(), (erm) -> new ZombieBruteRenderer(erm, new ZombieBruteModel(), 0.6f));
-        RenderingRegistry.registerEntityRenderingHandler(Registry.WRAITH.get(), (erm) -> new WraithRenderer(erm, new WraithModel(), 0.6f));
-        RenderingRegistry.registerEntityRenderingHandler(Registry.NECROMANCER.get(), (erm) -> new NecromancerRenderer(erm, new NecromancerModel(0), 0.6f));
-        RenderingRegistry.registerEntityRenderingHandler(Registry.SOULFIRE_PROJECTILE.get(), (erm) -> new EmptyRenderer(erm));
-        RenderingRegistry.registerEntityRenderingHandler(Registry.BONECHILL_PROJECTILE.get(), (erm) -> new EmptyRenderer(erm));
-        RenderingRegistry.registerEntityRenderingHandler(Registry.NECROMANCER_SPELL.get(), (erm) -> new EmptyRenderer(erm));
-        RenderingRegistry.registerEntityRenderingHandler(Registry.CHANT_CASTER.get(), (erm) -> new EmptyRenderer(erm));
-        ClientRegistry.bindTileEntityRenderer(Registry.HAND_TILE_ENTITY, (trd) -> new HandTileRenderer(trd));
-        ClientRegistry.bindTileEntityRenderer(Registry.BRAZIER_TILE_ENTITY, (trd) -> new BrazierTileRenderer(trd));
-        ClientRegistry.bindTileEntityRenderer(Registry.NECROTIC_FOCUS_TILE_ENTITY, (trd) -> new NecroticFocusTileRenderer(trd));
-        ClientRegistry.bindTileEntityRenderer(Registry.CRUCIBLE_TILE_ENTITY, (trd) -> new CrucibleTileRenderer(trd));
-        ClientRegistry.bindTileEntityRenderer(Registry.SOUL_ENCHANTER_TILE_ENTITY, (trd) -> new SoulEnchanterTileRenderer(trd));
-        ClientRegistry.bindTileEntityRenderer(Registry.GOBLET_TILE_ENTITY, (trd) -> new GobletTileRenderer(trd));
+        BlockEntityRenderers.register(Registry.HAND_TILE_ENTITY, (trd) -> new HandTileRenderer());
+        BlockEntityRenderers.register(Registry.BRAZIER_TILE_ENTITY, (trd) -> new BrazierTileRenderer());
+        BlockEntityRenderers.register(Registry.NECROTIC_FOCUS_TILE_ENTITY, (trd) -> new NecroticFocusTileRenderer());
+        BlockEntityRenderers.register(Registry.CRUCIBLE_TILE_ENTITY, (trd) -> new CrucibleTileRenderer());
+        BlockEntityRenderers.register(Registry.SOUL_ENCHANTER_TILE_ENTITY, (trd) -> new SoulEnchanterTileRenderer());
+        BlockEntityRenderers.register(Registry.GOBLET_TILE_ENTITY, (trd) -> new GobletTileRenderer());
+        BlockEntityRenderers.register(Registry.CISTERN_TILE_ENTITY, (trd) -> new CisternTileRenderer());
+        BlockEntityRenderers.register(Registry.PIPE_TILE_ENTITY, (trd) -> new PipeTileRenderer());
 
-        RenderTypeLookup.setRenderLayer(Registry.ENCHANTED_ASH.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(Registry.WOODEN_STAND.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(Registry.GOBLET.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(Registry.UNHOLY_EFFIGY.get(), RenderType.getCutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.ENCHANTED_ASH.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.WOODEN_STAND.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.GOBLET.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.UNHOLY_EFFIGY.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.INCUBATOR.get(), (t) -> t == RenderType.solid() || t == RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(Registry.GLASS_TUBE.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(Registry.CISTERN.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(Registry.MERAMMER_ROOT.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.SILDRIAN_SEED.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.OANNA_BLOOM.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.AVENNIAN_SPRIG.get(), RenderType.cutoutMipped());
 
         event.enqueueWork(() -> {
-            ScreenManager.registerFactory(Registry.WORKTABLE_CONTAINER.get(), WorktableScreen::new);
-            ScreenManager.registerFactory(Registry.SOUL_ENCHANTER_CONTAINER.get(), SoulEnchanterScreen::new);
-            ScreenManager.registerFactory(Registry.WOODEN_STAND_CONTAINER.get(), WoodenBrewingStandScreen::new);
+            MenuScreens.register(Registry.WORKTABLE_CONTAINER.get(), WorktableScreen::new);
+            MenuScreens.register(Registry.SOUL_ENCHANTER_CONTAINER.get(), SoulEnchanterScreen::new);
+            MenuScreens.register(Registry.WOODEN_STAND_CONTAINER.get(), WoodenBrewingStandScreen::new);
         });
     }
 
-    public void defineAttributes() {
-        GlobalEntityTypeAttributes.put(Registry.ZOMBIE_BRUTE.get(), ZombieBruteEntity.createAttributes());
-        GlobalEntityTypeAttributes.put(Registry.WRAITH.get(), WraithEntity.createAttributes());
-        GlobalEntityTypeAttributes.put(Registry.NECROMANCER.get(), NecromancerEntity.createAttributes());
-    }
-
     public void sendImc(InterModEnqueueEvent evt) {
+        InterModComms.sendTo("consecration", "holy_material", () -> "silver");
         InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.CHARM.getMessageBuilder().build());
         InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.RING.getMessageBuilder().size(2).build());
         InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BELT.getMessageBuilder().build());

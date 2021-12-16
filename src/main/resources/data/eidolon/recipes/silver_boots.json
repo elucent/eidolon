@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    "x x",
+    "x x"
+  ],
+  "key": {
+    "x": {
+      "tag": "forge:ingots/silver"
+    }
+  },
+  "result": {
+    "item": "eidolon:silver_boots"
+  }
+}

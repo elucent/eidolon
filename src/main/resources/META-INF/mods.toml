@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[34,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+loaderVersion="[39,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 license="All rights reserved"
 issueTrackerURL="http://my.issue.tracker/" #optional
 [[mods]] #mandatory
@@ -17,6 +17,6 @@ A spooky magic mod about necromancy.
 [[dependencies.eidolon]]
     modId="curios"
     mandatory=true
-    versionRange="[FORGE-1.16.3,)"
+    versionRange="[FORGE-1.18.1,)"
     ordering="AFTER"
     side="BOTH"

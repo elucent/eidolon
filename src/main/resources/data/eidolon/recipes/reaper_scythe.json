@@ -1,0 +1,29 @@
+{
+  "type": "eidolon:worktable",
+  "pattern": [
+    "pp ",
+    " sp",
+    "s  "
+  ],
+  "reagents": "utct",
+  "key": {
+    "p": {
+      "tag": "forge:ingots/pewter"
+    },
+    "u": {
+      "item": "eidolon:unholy_symbol"
+    },
+    "t": {
+      "item": "eidolon:tattered_cloth"
+    },
+    "c": {
+      "item": "eidolon:soul_shard"
+    },
+    "s": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "eidolon:reaper_scythe"
+  }
+}

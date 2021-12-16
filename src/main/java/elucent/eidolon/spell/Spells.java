@@ -1,13 +1,13 @@
 package elucent.eidolon.spell;
 
-import elucent.eidolon.Eidolon;
-import elucent.eidolon.deity.Deities;
-import net.minecraft.util.ResourceLocation;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import elucent.eidolon.Eidolon;
+import elucent.eidolon.deity.Deities;
+import net.minecraft.resources.ResourceLocation;
 
 public class Spells {
     static List<Spell> spells = new ArrayList<>();
@@ -51,5 +51,10 @@ public class Spells {
             new ResourceLocation(Eidolon.MODID, "dark_villager_sacrifice"),
             Deities.DARK_DEITY,
             Signs.BLOOD_SIGN, Signs.WICKED_SIGN, Signs.BLOOD_SIGN, Signs.SOUL_SIGN
+        )),
+        LIGHT_PRAYER = register(new PrayerSpell(
+            new ResourceLocation(Eidolon.MODID, "light_prayer"),
+            Deities.LIGHT_DEITY,
+            Signs.SACRED_SIGN, Signs.SACRED_SIGN, Signs.SACRED_SIGN
         ));
 }

@@ -1,0 +1,29 @@
+{
+  "type": "eidolon:worktable",
+  "pattern": [
+    " p ",
+    "iai",
+    " o "
+  ],
+  "reagents": "s s ",
+  "key": {
+    "p": {
+      "tag": "forge:ingots/pewter"
+    },
+    "i": {
+      "item": "eidolon:pewter_inlay"
+    },
+    "a": {
+      "item": "eidolon:basic_amulet"
+    },
+    "o": {
+      "item": "minecraft:obsidian"
+    },
+    "s": {
+      "item": "eidolon:soul_shard"
+    }
+  },
+  "result": {
+    "item": "eidolon:void_amulet"
+  }
+}

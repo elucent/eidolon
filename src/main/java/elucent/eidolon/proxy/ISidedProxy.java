@@ -1,11 +1,11 @@
 package elucent.eidolon.proxy;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public interface ISidedProxy {
-    PlayerEntity getPlayer();
-    World getWorld();
+    Player getPlayer();
+    Level getWorld();
     void init();
 
     void openCodexGui();

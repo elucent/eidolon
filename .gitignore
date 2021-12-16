@@ -16,6 +16,8 @@ out
 # gradle
 build
 .gradle
+gradle/
+gradlew*
 
 # other
 eclipse
@@ -25,3 +27,4 @@ logs
 # Files from Forge MDK
 forge*changelog.txt
 changelog.txt
+LICENSE.txt

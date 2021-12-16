@@ -3,37 +3,24 @@ package elucent.eidolon.item.curio;
 import elucent.eidolon.Registry;
 import elucent.eidolon.entity.SpellProjectileEntity;
 import elucent.eidolon.item.ItemBase;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.EnderPearlEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.*;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.entity.projectile.LlamaSpit;
+import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.entity.projectile.ShulkerBullet;
+import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.capability.ICurio;
-import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
-import javax.annotation.Nonnull;
+import net.minecraft.world.item.Item.Properties;
 
 public class VoidAmuletItem extends ItemBase {
     public VoidAmuletItem(Properties properties) {
@@ -53,11 +40,11 @@ public class VoidAmuletItem extends ItemBase {
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT unused) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
         return new EidolonCurio(stack) {
             @Override
             public void curioTick(String type, int index, LivingEntity entity) {
-                if (!entity.world.isRemote) {
+                if (!entity.level.isClientSide) {
                     if (getCooldown(stack) > 0) setCooldown(stack, getCooldown(stack) - 1);
                 }
             }
@@ -71,7 +58,7 @@ public class VoidAmuletItem extends ItemBase {
 
     @SubscribeEvent
     public static void onDamage(LivingAttackEvent event) {
-        if (event.getEntityLiving() instanceof PlayerEntity) {
+        if (event.getEntityLiving() instanceof Player) {
             CuriosApi.getCuriosHelper().getEquippedCurios(event.getEntityLiving()).resolve().ifPresent((slots) -> {
                 boolean hasVoid = false;
                 int i;
@@ -85,15 +72,15 @@ public class VoidAmuletItem extends ItemBase {
                 }
                 ItemStack stack = slots.getStackInSlot(i);
                 if (hasVoid &&
-                    (event.getSource().getImmediateSource() instanceof FireballEntity
-                        || event.getSource().getImmediateSource() instanceof LlamaSpitEntity
-                        || event.getSource().getImmediateSource() instanceof SmallFireballEntity
-                        || event.getSource().getImmediateSource() instanceof ShulkerBulletEntity
-                        || event.getSource().getImmediateSource() instanceof PotionEntity
-                        || event.getSource().getImmediateSource() instanceof SpellProjectileEntity)) {
+                    (event.getSource().getDirectEntity() instanceof LargeFireball
+                        || event.getSource().getDirectEntity() instanceof LlamaSpit
+                        || event.getSource().getDirectEntity() instanceof SmallFireball
+                        || event.getSource().getDirectEntity() instanceof ShulkerBullet
+                        || event.getSource().getDirectEntity() instanceof ThrownPotion
+                        || event.getSource().getDirectEntity() instanceof SpellProjectileEntity)) {
                     event.setCanceled(true);
-                    if (!event.getEntity().getEntityWorld().isRemote) {
-                        event.getEntity().getEntityWorld().playSound(null, event.getEntity().getPosition(), SoundEvents.ENTITY_WITHER_HURT, SoundCategory.PLAYERS, 1.0f, 0.75f);
+                    if (!event.getEntity().getCommandSenderWorld().isClientSide) {
+                        event.getEntity().getCommandSenderWorld().playSound(null, event.getEntity().blockPosition(), SoundEvents.WITHER_HURT, SoundSource.PLAYERS, 1.0f, 0.75f);
                         setCooldown(stack, 200);
                     }
                 }

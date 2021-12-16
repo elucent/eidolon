@@ -1,7 +1,8 @@
 package elucent.eidolon.codex;
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
-import elucent.eidolon.Eidolon;
+import java.util.ArrayList;
+import java.util.List;
+
 import elucent.eidolon.Registry;
 import elucent.eidolon.capability.Facts;
 import elucent.eidolon.codex.CruciblePage.CrucibleStep;
@@ -12,18 +13,13 @@ import elucent.eidolon.codex.ListPage.ListEntry;
 import elucent.eidolon.codex.RitualPage.RitualIngredient;
 import elucent.eidolon.codex.SignIndexPage.SignEntry;
 import elucent.eidolon.ritual.RitualRegistry;
-import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 
 public class CodexChapters {
     static List<Category> categories = new ArrayList<>();
@@ -33,7 +29,7 @@ public class CodexChapters {
         RITUALS_INDEX, BRAZIER, ITEM_PROVIDERS, CRYSTAL_RITUAL, SUMMON_RITUAL, ALLURE_RITUAL, REPELLING_RITUAL, DECEIT_RITUAL, TIME_RITUALS, PURIFY_RITUAL, SANGUINE_RITUAL,
         ARTIFICE_INDEX, WOODEN_STAND, TALLOW, CRUCIBLE, ARCANE_GOLD, REAGENTS, SOUL_GEMS, SHADOW_GEM, WARPED_SPROUTS, BASIC_ALCHEMY, INLAYS, BASIC_BAUBLES, MAGIC_WORKBENCH, VOID_AMULET, WARDED_MAIL, SOULFIRE_WAND, BONECHILL_WAND, REAPER_SCYTHE, CLEAVING_AXE, SOUL_ENCHANTER, REVERSAL_PICK, WARLOCK_ARMOR, GRAVITY_BELT, PRESTIGIOUS_PALM, MIND_SHIELDING_PLATE, RESOLUTE_BELT, GLASS_HAND,
         THEURGY_INDEX, INTRO_SIGNS, EFFIGY, ALTARS, ALTAR_LIGHTS, ALTAR_SKULLS, ALTAR_HERBS, GOBLET, DARK_PRAYER, ANIMAL_SACRIFICE, DARK_TOUCH, STONE_ALTAR, UNHOLY_EFFIGY, VILLAGER_SACRIFICE,
-        SIGNS_INDEX, WICKED_SIGN, SACRED_SIGN, BLOOD_SIGN, SOUL_SIGN, MIND_SIGN;
+        SIGNS_INDEX, WICKED_SIGN, SACRED_SIGN, BLOOD_SIGN, SOUL_SIGN, MIND_SIGN, FLAME_SIGN;
 
     public static void init() {
         MONSTERS = new Chapter(
@@ -215,7 +211,7 @@ public class CodexChapters {
             new TitledRitualPage("eidolon.codex.page.purify_ritual", RitualRegistry.PURIFY_RITUAL, new ItemStack(Items.GLISTERING_MELON_SLICE),
                 new RitualIngredient(new ItemStack(Registry.ENCHANTED_ASH.get()), false),
                 new RitualIngredient(new ItemStack(Registry.ENCHANTED_ASH.get()), false),
-                new RitualIngredient(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.HEALING), false),
+                new RitualIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING), false),
                 new RitualIngredient(new ItemStack(Registry.SOUL_SHARD.get()), false),
                 new RitualIngredient(new ItemStack(Registry.SOUL_SHARD.get()), false)),
             new TextPage("eidolon.codex.page.purify_ritual")
@@ -223,7 +219,7 @@ public class CodexChapters {
 
         SANGUINE_RITUAL = new Chapter(
             "eidolon.codex.chapter.sanguine_ritual",
-            new TitledRitualPage("eidolon.codex.page.sanguine_ritual.0", RitualRegistry.SANGUINE_SWORD, PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.HARMING),
+            new TitledRitualPage("eidolon.codex.page.sanguine_ritual.0", RitualRegistry.SANGUINE_SWORD, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HARMING),
                 new RitualIngredient(new ItemStack(Registry.SHADOW_GEM.get()), false),
                 new RitualIngredient(new ItemStack(Registry.SOUL_SHARD.get()), false),
                 new RitualIngredient(new ItemStack(Registry.SOUL_SHARD.get()), false),
@@ -232,7 +228,7 @@ public class CodexChapters {
                 new RitualIngredient(new ItemStack(Items.NETHER_WART), false),
                 new RitualIngredient(new ItemStack(Items.NETHER_WART), false)),
             new TextPage("eidolon.codex.page.sanguine_ritual.0"),
-            new TitledRitualPage("eidolon.codex.page.sanguine_ritual.1", RitualRegistry.SANGUINE_AMULET, PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.HARMING),
+            new TitledRitualPage("eidolon.codex.page.sanguine_ritual.1", RitualRegistry.SANGUINE_AMULET, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HARMING),
                 new RitualIngredient(new ItemStack(Items.REDSTONE), false),
                 new RitualIngredient(new ItemStack(Items.REDSTONE), false),
                 new RitualIngredient(new ItemStack(Items.DIAMOND), false),
@@ -488,7 +484,7 @@ public class CodexChapters {
                 new ItemStack(Registry.PEWTER_INGOT.get()), new ItemStack(Registry.PEWTER_INGOT.get()), ItemStack.EMPTY,
                 ItemStack.EMPTY, new ItemStack(Items.STICK), new ItemStack(Registry.PEWTER_INGOT.get()),
                 new ItemStack(Items.STICK), ItemStack.EMPTY, ItemStack.EMPTY,
-                new ItemStack(Registry.UNHOLY_SYMBOL.get()), new ItemStack(Registry.SOUL_SHARD.get()), new ItemStack(Registry.TATTERED_CLOTH.get()), new ItemStack(Registry.SOUL_SHARD.get()))
+                new ItemStack(Registry.UNHOLY_SYMBOL.get()), new ItemStack(Registry.TATTERED_CLOTH.get()), new ItemStack(Registry.SOUL_SHARD.get()), new ItemStack(Registry.TATTERED_CLOTH.get()))
         );
 
         CLEAVING_AXE = new Chapter(
@@ -808,6 +804,12 @@ public class CodexChapters {
             new SignPage(Signs.MIND_SIGN)
         );
 
+        FLAME_SIGN = new Chapter(
+            "eidolon.codex.chapter.flame_sign",
+            new TitlePage("eidolon.codex.page.flame_sign"),
+            new SignPage(Signs.FLAME_SIGN)
+        );
+
         SIGNS_INDEX = new Chapter(
             "eidolon.codex.chapter.signs_index",
             new SignIndexPage(
@@ -815,7 +817,8 @@ public class CodexChapters {
                 new SignEntry(SACRED_SIGN, Signs.SACRED_SIGN),
                 new SignEntry(BLOOD_SIGN, Signs.BLOOD_SIGN),
                 new SignEntry(SOUL_SIGN, Signs.SOUL_SIGN),
-                new SignEntry(MIND_SIGN, Signs.MIND_SIGN)
+                new SignEntry(MIND_SIGN, Signs.MIND_SIGN),
+                new SignEntry(FLAME_SIGN, Signs.FLAME_SIGN)
             )
         );
 

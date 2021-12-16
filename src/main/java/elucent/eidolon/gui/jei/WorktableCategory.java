@@ -1,13 +1,14 @@
 package elucent.eidolon.gui.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.codex.CodexGui;
-import elucent.eidolon.recipe.CrucibleRecipe;
-import elucent.eidolon.recipe.WorktableRecipe;
 import elucent.eidolon.recipe.WorktableRegistry;
-import elucent.eidolon.util.StackUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -15,15 +16,12 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceLocation;
 
 public class WorktableCategory implements IRecipeCategory<RecipeWrappers.Worktable> {
     static final ResourceLocation UID = new ResourceLocation(Eidolon.MODID, "worktable");
@@ -40,13 +38,13 @@ public class WorktableCategory implements IRecipeCategory<RecipeWrappers.Worktab
     }
 
     @Override
-    public Class getRecipeClass() {
+    public Class<? extends RecipeWrappers.Worktable> getRecipeClass() {
         return RecipeWrappers.Worktable.class;
     }
 
     @Override
-    public String getTitle() {
-        return I18n.format("jei." + Eidolon.MODID + ".worktable");
+    public Component getTitle() {
+        return new TranslatableComponent(I18n.get("jei." + Eidolon.MODID + ".worktable"));
     }
 
     @Override
@@ -64,8 +62,8 @@ public class WorktableCategory implements IRecipeCategory<RecipeWrappers.Worktab
         if (wrapper.page == null) wrapper.page = WorktableRegistry.getDefaultPage(wrapper.recipe);
 
         List<Ingredient> inputs = new ArrayList<>();
-        for (Object o : wrapper.recipe.getCore()) inputs.add(StackUtil.ingredientFromObject(o));
-        for (Object o : wrapper.recipe.getOuter()) inputs.add(StackUtil.ingredientFromObject(o));
+        for (Ingredient i : wrapper.recipe.getCore()) inputs.add(i);
+        for (Ingredient i : wrapper.recipe.getOuter()) inputs.add(i);
         ingredients.setInputIngredients(inputs);
         ingredients.setOutput(VanillaTypes.ITEM, wrapper.recipe.getResult());
     }
@@ -89,7 +87,7 @@ public class WorktableCategory implements IRecipeCategory<RecipeWrappers.Worktab
     }
 
     @Override
-    public void draw(RecipeWrappers.Worktable recipe, MatrixStack mStack, double mouseX, double mouseY) {
+    public void draw(RecipeWrappers.Worktable recipe, PoseStack mStack, double mouseX, double mouseY) {
         recipe.page.renderBackground(CodexGui.DUMMY, mStack, 5, 4, (int)mouseX, (int)mouseY);
         recipe.page.render(CodexGui.DUMMY, mStack, 5, 4, (int)mouseX, (int)mouseY);
     }

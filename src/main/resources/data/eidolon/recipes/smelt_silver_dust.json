@@ -1,0 +1,25 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:dusts/silver",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:smelting",
+        "ingredient": {
+          "tag": "forge:dusts/silver"
+        },
+        "result": "eidolon:silver_ingot",
+        "experience": 0.5,
+        "cookingtime": 200
+      }
+    }
+  ]
+}

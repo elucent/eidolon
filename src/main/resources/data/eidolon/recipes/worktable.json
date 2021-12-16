@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "group": "eidolon",
   "pattern": [
+    " y ",
     "xxx",
-    "yzy",
     "zzz"
   ],
   "key": {
     "x": {
-      "item": "minecraft:red_carpet"
+      "item": "minecraft:purple_carpet"
     },
     "y": {
-      "item": "eidolon:pewter_ingot"
+      "item": "eidolon:pewter_inlay"
     },
     "z": {
-      "tag": "planks"
+      "tag": "minecraft:planks"
     }
   },
   "result": {

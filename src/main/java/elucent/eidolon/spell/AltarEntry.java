@@ -1,8 +1,8 @@
 package elucent.eidolon.spell;
 
-import net.minecraft.util.ResourceLocation;
-
 import java.util.function.Consumer;
+
+import net.minecraft.resources.ResourceLocation;
 
 public class AltarEntry {
     double capacity = 0, power = 0;

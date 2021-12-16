@@ -1,0 +1,22 @@
+{
+  "type": "eidolon:crucible",
+  "steps": [
+    {
+      "items": [
+        { "tag": "forge:dusts/redstone" },
+        { "tag": "forge:dusts/redstone" },
+        { "item": "eidolon:soul_shard" }
+      ]
+    },
+    {
+      "items": [
+        { "tag": "forge:ingots/gold" },
+        { "tag": "forge:ingots/gold" }
+      ]
+    }
+  ],
+  "result": {
+    "item": "eidolon:arcane_gold_ingot",
+    "count": 2
+  }
+}

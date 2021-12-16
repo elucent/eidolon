@@ -1,0 +1,35 @@
+{
+  "type": "eidolon:worktable",
+  "pattern": [
+    " i ",
+    "gbg",
+    " d "
+  ],
+  "reagents": "lsas",
+  "key": {
+    "i": {
+      "item": "eidolon:gold_inlay"
+    },
+    "g": {
+      "tag": "forge:ingots/arcane_gold"
+    },
+    "b": {
+      "item": "eidolon:basic_belt"
+    },
+    "d": {
+      "tag": "forge:gems/diamond"
+    },
+    "l": {
+      "item": "minecraft:leather"
+    },
+    "s": {
+      "item": "eidolon:soul_shard"
+    },
+    "a": {
+      "item": "eidolon:enchanted_ash"
+    }
+  },
+  "result": {
+    "item": "eidolon:resolute_belt"
+  }
+}

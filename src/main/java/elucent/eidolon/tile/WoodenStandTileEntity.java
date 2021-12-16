@@ -1,41 +1,37 @@
 package elucent.eidolon.tile;
 
+import java.util.Arrays;
+
+import javax.annotation.Nullable;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.block.WoodenStandBlock;
 import elucent.eidolon.gui.WoodenBrewingStandContainer;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BrewingStandBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.PotionBrewing;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.LockableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.BrewingStandBlock;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.Containers;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 
-import javax.annotation.Nullable;
-import java.util.Arrays;
-
-public class WoodenStandTileEntity extends LockableTileEntity implements ISidedInventory, ITickableTileEntity {
+public class WoodenStandTileEntity extends BaseContainerBlockEntity implements WorldlyContainer {
     private static final int[] SLOTS_FOR_UP = new int[]{3};
     private static final int[] SLOTS_FOR_DOWN = new int[]{0, 1, 2, 3};
     private static final int[] OUTPUT_SLOTS = new int[]{0, 1, 2};
@@ -43,7 +39,7 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
     private int brewTime, heat;
     private boolean[] filledSlots;
     private Item ingredientID;
-    public final IIntArray field_213954_a = new IIntArray() {
+    public final ContainerData dataAccess = new ContainerData() {
         public int get(int index) {
             switch(index) {
                 case 0:
@@ -65,22 +61,22 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
             }
         }
 
-        public int size() {
+        public int getCount() {
             return 2;
         }
     };
 
-    public WoodenStandTileEntity() {
-        super(Registry.WOODEN_STAND_TILE_ENTITY);
+    public WoodenStandTileEntity(BlockPos pos, BlockState state) {
+        super(Registry.WOODEN_STAND_TILE_ENTITY, pos, state);
     }
 
     @Override
-    protected ITextComponent getDefaultName() {
-        return new TranslationTextComponent("container." + Eidolon.MODID + ".wooden_brewing_stand");
+    protected Component getDefaultName() {
+        return new TranslatableComponent("container." + Eidolon.MODID + ".wooden_brewing_stand");
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return this.brewingItemStacks.size();
     }
 
@@ -95,17 +91,16 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
         return true;
     }
 
-    @Override
     public void tick() {
         boolean flag = this.canBrew();
         boolean flag1 = this.brewTime > 0;
         ItemStack itemstack1 = this.brewingItemStacks.get(3);
-        if (world.getGameTime() % 20 == 0) {
-            TileEntity below = world.getTileEntity(pos.down());
+        if (level.getGameTime() % 20 == 0) {
+            BlockEntity below = level.getBlockEntity(worldPosition.below());
             if (below instanceof CrucibleTileEntity) {
                 int prevHeat = heat;
                 heat = ((CrucibleTileEntity)below).boiling ? 1 : 0;
-                if (prevHeat != heat) markDirty();
+                if (prevHeat != heat) setChanged();
             }
         }
         if (flag1) {
@@ -113,34 +108,34 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
             boolean flag2 = this.brewTime == 0;
             if (flag2 && flag) {
                 this.brewPotions();
-                this.markDirty();
+                this.setChanged();
             } else if (!flag || heat == 0) {
                 this.brewTime = 0;
-                this.markDirty();
+                this.setChanged();
             } else if (this.ingredientID != itemstack1.getItem()) {
                 this.brewTime = 0;
-                this.markDirty();
+                this.setChanged();
             }
         } else if (flag && heat > 0) {
             this.brewTime = 800;
             this.ingredientID = itemstack1.getItem();
-            this.markDirty();
+            this.setChanged();
         }
 
-        if (!this.world.isRemote) {
+        if (!this.level.isClientSide) {
             boolean[] aboolean = this.createFilledSlotsArray();
             if (!Arrays.equals(aboolean, this.filledSlots)) {
                 this.filledSlots = aboolean;
-                BlockState blockstate = this.world.getBlockState(this.getPos());
+                BlockState blockstate = this.level.getBlockState(this.getBlockPos());
                 if (!(blockstate.getBlock() instanceof WoodenStandBlock)) {
                     return;
                 }
 
                 for(int i = 0; i < BrewingStandBlock.HAS_BOTTLE.length; ++i) {
-                    blockstate = blockstate.with(BrewingStandBlock.HAS_BOTTLE[i], Boolean.valueOf(aboolean[i]));
+                    blockstate = blockstate.setValue(BrewingStandBlock.HAS_BOTTLE[i], Boolean.valueOf(aboolean[i]));
                 }
 
-                this.world.setBlockState(this.pos, blockstate, 2);
+                this.level.setBlock(this.worldPosition, blockstate, 2);
             }
         }
     }
@@ -162,12 +157,12 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
         if (!itemstack.isEmpty()) return net.minecraftforge.common.brewing.BrewingRecipeRegistry.canBrew(brewingItemStacks, itemstack, OUTPUT_SLOTS); // divert to VanillaBrewingRegistry
         if (itemstack.isEmpty()) {
             return false;
-        } else if (!PotionBrewing.isReagent(itemstack)) {
+        } else if (!PotionBrewing.isIngredient(itemstack)) {
             return false;
         } else {
             for(int i = 0; i < 3; ++i) {
                 ItemStack itemstack1 = this.brewingItemStacks.get(i);
-                if (!itemstack1.isEmpty() && PotionBrewing.hasConversions(itemstack1, itemstack)) {
+                if (!itemstack1.isEmpty() && PotionBrewing.hasMix(itemstack1, itemstack)) {
                     return true;
                 }
             }
@@ -182,55 +177,55 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
 
         net.minecraftforge.common.brewing.BrewingRecipeRegistry.brewPotions(brewingItemStacks, itemstack, OUTPUT_SLOTS);
         net.minecraftforge.event.ForgeEventFactory.onPotionBrewed(brewingItemStacks);
-        BlockPos blockpos = this.getPos();
+        BlockPos blockpos = this.getBlockPos();
         if (itemstack.hasContainerItem()) {
             ItemStack itemstack1 = itemstack.getContainerItem();
             itemstack.shrink(1);
             if (itemstack.isEmpty()) {
                 itemstack = itemstack1;
-            } else if (!this.world.isRemote) {
-                InventoryHelper.spawnItemStack(this.world, (double)blockpos.getX(), (double)blockpos.getY(), (double)blockpos.getZ(), itemstack1);
+            } else if (!this.level.isClientSide) {
+                Containers.dropItemStack(this.level, (double)blockpos.getX(), (double)blockpos.getY(), (double)blockpos.getZ(), itemstack1);
             }
         }
         else itemstack.shrink(1);
 
         this.brewingItemStacks.set(3, itemstack);
-        this.world.playEvent(1035, blockpos, 0);
+        this.level.levelEvent(1035, blockpos, 0);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
-        super.read(state, nbt);
-        this.brewingItemStacks = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
-        ItemStackHelper.loadAllItems(nbt, this.brewingItemStacks);
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
+        this.brewingItemStacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(nbt, this.brewingItemStacks);
         this.brewTime = nbt.getShort("BrewTime");
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        super.write(compound);
+    public CompoundTag save(CompoundTag compound) {
+        super.save(compound);
         compound.putShort("BrewTime", (short)this.brewTime);
-        ItemStackHelper.saveAllItems(compound, this.brewingItemStacks);
+        ContainerHelper.saveAllItems(compound, this.brewingItemStacks);
         return compound;
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public ItemStack getItem(int index) {
         return index >= 0 && index < this.brewingItemStacks.size() ? this.brewingItemStacks.get(index) : ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-        return ItemStackHelper.getAndSplit(this.brewingItemStacks, index, count);
+    public ItemStack removeItem(int index, int count) {
+        return ContainerHelper.removeItem(this.brewingItemStacks, index, count);
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return ItemStackHelper.getAndRemove(this.brewingItemStacks, index);
+    public ItemStack removeItemNoUpdate(int index) {
+        return ContainerHelper.takeItem(this.brewingItemStacks, index);
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setItem(int index, ItemStack stack) {
         if (index >= 0 && index < this.brewingItemStacks.size()) {
             this.brewingItemStacks.set(index, stack);
         }
@@ -238,22 +233,22 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
-        if (this.world.getTileEntity(this.pos) != this) {
+    public boolean stillValid(Player player) {
+        if (this.level.getBlockEntity(this.worldPosition) != this) {
             return false;
         } else {
-            return !(player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) > 64.0D);
+            return !(player.distanceToSqr((double)this.worldPosition.getX() + 0.5D, (double)this.worldPosition.getY() + 0.5D, (double)this.worldPosition.getZ() + 0.5D) > 64.0D);
         }
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
+    public boolean canPlaceItem(int index, ItemStack stack) {
         if (index == 3) {
             return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidIngredient(stack)
                 && !Tags.Items.DUSTS_REDSTONE.contains(stack.getItem())
                 && !Tags.Items.DUSTS_GLOWSTONE.contains(stack.getItem());
         } else {
-            return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidInput(stack) && this.getStackInSlot(index).isEmpty();
+            return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidInput(stack) && this.getItem(index).isEmpty();
         }
     }
 
@@ -267,12 +262,12 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, @Nullable Direction direction) {
-        return this.isItemValidForSlot(index, itemStackIn);
+    public boolean canPlaceItemThroughFace(int index, ItemStack itemStackIn, @Nullable Direction direction) {
+        return this.canPlaceItem(index, itemStackIn);
     }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
+    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
         if (index == 3) {
             return stack.getItem() == Items.GLASS_BOTTLE;
         } else {
@@ -281,13 +276,13 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         this.brewingItemStacks.clear();
     }
 
     @Override
-    public Container createMenu(int id, PlayerInventory player) {
-        return new WoodenBrewingStandContainer(id, player, this, this.field_213954_a);
+    public AbstractContainerMenu createMenu(int id, Inventory player) {
+        return new WoodenBrewingStandContainer(id, player, this, this.dataAccess);
     }
 
     net.minecraftforge.common.util.LazyOptional<? extends net.minecraftforge.items.IItemHandler>[] handlers =
@@ -295,7 +290,7 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
 
     @Override
     public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing) {
-        if (!this.removed && facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!this.remove && facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if (facing == Direction.UP)
                 return handlers[0].cast();
             else if (facing == Direction.DOWN)
@@ -307,8 +302,8 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         for (int x = 0; x < handlers.length; x++)
             handlers[x].invalidate();
     }

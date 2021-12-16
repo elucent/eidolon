@@ -1,0 +1,21 @@
+{
+  "type": "eidolon:crucible",
+  "steps": [
+    {
+      "items": [
+        { "tag": "forge:dusts/sulfur" },
+        { "item": "minecraft:bone_meal" }
+      ]
+    },
+    {
+      "stirs": 1,
+      "items": [
+        { "item": "minecraft:charcoal" }
+      ]
+    }
+  ],
+  "result": {
+    "item": "minecraft:gunpowder",
+    "count": 4
+  }
+}

@@ -11,7 +11,7 @@
       "item": "minecraft:string"
     },
     "y": {
-      "item": "eidolon:arcane_gold_ingot"
+      "tag": "forge:ingots/arcane_gold"
     }
   },
   "result": {

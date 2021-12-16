@@ -1,13 +1,12 @@
 package elucent.eidolon.spell;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public abstract class StaticSpell extends Spell {
     List<Sign> signs;
@@ -24,17 +23,17 @@ public abstract class StaticSpell extends Spell {
         return true;
     }
 
-    public abstract boolean canCast(World world, BlockPos pos, PlayerEntity player);
+    public abstract boolean canCast(Level world, BlockPos pos, Player player);
 
     @Override
-    public boolean canCast(World world, BlockPos pos, PlayerEntity player, List<Sign> signs) {
+    public boolean canCast(Level world, BlockPos pos, Player player, List<Sign> signs) {
         return canCast(world, pos, player);
     }
 
-    public abstract void cast(World world, BlockPos pos, PlayerEntity player);
+    public abstract void cast(Level world, BlockPos pos, Player player);
 
     @Override
-    public void cast(World world, BlockPos pos, PlayerEntity player, List<Sign> signs) {
+    public void cast(Level world, BlockPos pos, Player player, List<Sign> signs) {
         cast(world, pos, player);
     }
 }

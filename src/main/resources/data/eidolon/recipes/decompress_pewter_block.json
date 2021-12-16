@@ -3,7 +3,7 @@
   "group": "eidolon",
   "ingredients": [
     {
-      "item": "eidolon:pewter_block"
+      "tag": "forge:storage_blocks/pewter"
     }
   ],
   "result": {

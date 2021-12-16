@@ -1,6 +1,10 @@
 package elucent.eidolon.gui.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.codex.CodexGui;
@@ -8,7 +12,7 @@ import elucent.eidolon.ritual.IRequirement;
 import elucent.eidolon.ritual.ItemRequirement;
 import elucent.eidolon.ritual.MultiItemSacrifice;
 import elucent.eidolon.ritual.RitualRegistry;
-import elucent.eidolon.util.StackUtil;
+import elucent.eidolon.util.RecipeUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -16,13 +20,12 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceLocation;
 
 public class RitualCategory implements IRecipeCategory<RecipeWrappers.RitualRecipe> {
     static final ResourceLocation UID = new ResourceLocation(Eidolon.MODID, "ritual");
@@ -39,13 +42,13 @@ public class RitualCategory implements IRecipeCategory<RecipeWrappers.RitualReci
     }
 
     @Override
-    public Class getRecipeClass() {
+    public Class<? extends RecipeWrappers.RitualRecipe> getRecipeClass() {
         return RecipeWrappers.RitualRecipe.class;
     }
 
     @Override
-    public String getTitle() {
-        return I18n.format("jei." + Eidolon.MODID + ".ritual");
+    public Component getTitle() {
+        return new TranslatableComponent(I18n.get("jei." + Eidolon.MODID + ".ritual"));
     }
 
     @Override
@@ -66,10 +69,10 @@ public class RitualCategory implements IRecipeCategory<RecipeWrappers.RitualReci
         int slot = 0;
         for (IRequirement r : wrapper.ritual.getRequirements()) {
             if (r instanceof ItemRequirement)
-                inputs.add(StackUtil.ingredientFromObject(((ItemRequirement)r).getMatch()));
+                inputs.add(RecipeUtil.ingredientFromObject(((ItemRequirement)r).getMatch()));
             slot ++;
         }
-        inputs.add(StackUtil.ingredientFromObject(sacrifice instanceof MultiItemSacrifice ? ((MultiItemSacrifice)sacrifice).main : sacrifice));
+        inputs.add(RecipeUtil.ingredientFromObject(sacrifice instanceof MultiItemSacrifice ? ((MultiItemSacrifice)sacrifice).main : sacrifice));
         ingredients.setInputIngredients(inputs);
     }
 
@@ -92,7 +95,7 @@ public class RitualCategory implements IRecipeCategory<RecipeWrappers.RitualReci
     }
 
     @Override
-    public void draw(RecipeWrappers.RitualRecipe recipe, MatrixStack mStack, double mouseX, double mouseY) {
+    public void draw(RecipeWrappers.RitualRecipe recipe, PoseStack mStack, double mouseX, double mouseY) {
         recipe.page.renderBackground(CodexGui.DUMMY, mStack, 5, 4, (int)mouseX, (int)mouseY);
         recipe.page.render(CodexGui.DUMMY, mStack, 5, 4, (int)mouseX, (int)mouseY);
     }

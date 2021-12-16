@@ -1,14 +1,12 @@
 package elucent.eidolon.item.curio;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.type.capability.ICurio;
-
-import javax.annotation.Nonnull;
 
 public class EidolonCurio implements ICurio, ICapabilityProvider {
     private final ItemStack stack;
@@ -26,4 +24,9 @@ public class EidolonCurio implements ICurio, ICapabilityProvider {
     public <ICurio> LazyOptional<ICurio> getCapability(Capability<ICurio> cap, Direction side) {
         return getCapability(cap);
     }
+
+	@Override
+	public ItemStack getStack() {
+		return stack;
+	}
 }

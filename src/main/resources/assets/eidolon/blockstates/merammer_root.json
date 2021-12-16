@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "eidolon:block/merammer_root_0"
+    },
+    "age=1": {
+      "model": "eidolon:block/merammer_root_1"
+    }
+  }
+}

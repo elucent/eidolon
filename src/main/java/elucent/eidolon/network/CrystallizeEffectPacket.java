@@ -1,17 +1,17 @@
 package elucent.eidolon.network;
 
+import java.util.function.Supplier;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.particle.Particles;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
+
 
 public class CrystallizeEffectPacket {
     BlockPos pos;
@@ -20,11 +20,11 @@ public class CrystallizeEffectPacket {
         this.pos = pos;
     }
 
-    public static void encode(CrystallizeEffectPacket object, PacketBuffer buffer) {
+    public static void encode(CrystallizeEffectPacket object, FriendlyByteBuf buffer) {
         buffer.writeBlockPos(object.pos);
     }
 
-    public static CrystallizeEffectPacket decode(PacketBuffer buffer) {
+    public static CrystallizeEffectPacket decode(FriendlyByteBuf buffer) {
         return new CrystallizeEffectPacket(buffer.readBlockPos());
     }
 
@@ -32,7 +32,7 @@ public class CrystallizeEffectPacket {
         ctx.get().enqueueWork(() -> {
             assert ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT;
 
-            World world = Eidolon.proxy.getWorld();
+            Level world = Eidolon.proxy.getWorld();
             if (world != null) {
                 BlockPos pos = packet.pos;
                 double x = pos.getX() + 0.5, y = pos.getY() + 0.1, z = pos.getZ() + 0.5;

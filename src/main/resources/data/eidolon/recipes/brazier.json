@@ -8,13 +8,13 @@
   ],
   "key": {
     "x": {
-      "item": "eidolon:pewter_ingot"
+      "tag": "forge:ingots/pewter"
     },
     "y": {
       "tag": "forge:storage_blocks/coal"
     },
     "z": {
-      "item": "minecraft:stick"
+      "tag": "forge:rods/wooden"
     }
   },
   "result": {

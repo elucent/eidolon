@@ -1,36 +1,34 @@
 package elucent.eidolon.ritual;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.codex.Page;
 import elucent.eidolon.codex.RitualPage;
-import elucent.eidolon.codex.WorktablePage;
 import elucent.eidolon.gui.jei.RecipeWrappers;
-import elucent.eidolon.recipe.WorktableRecipe;
-import elucent.eidolon.util.StackUtil;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.tags.ITag;
+import elucent.eidolon.util.RecipeUtil;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.Tags;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 public class RitualRegistry {
     static Map<ResourceLocation, Ritual> rituals = new HashMap<>();
@@ -55,11 +53,11 @@ public class RitualRegistry {
         ResourceLocation name = ritual.getRegistryName();
         assert name != null;
         rituals.put(name, ritual);
-        matches.put(Item.getItemFromBlock(sacrifice), ritual);
+        matches.put(Item.byBlock(sacrifice), ritual);
         return ritual;
     }
 
-    public static Ritual register(ITag<Item> sacrifice, Ritual ritual) {
+    public static Ritual register(Tag<Item> sacrifice, Ritual ritual) {
         ResourceLocation name = ritual.getRegistryName();
         assert name != null;
         rituals.put(name, ritual);
@@ -79,19 +77,19 @@ public class RitualRegistry {
         List<RitualPage.RitualIngredient> inputs = new ArrayList<>();
         List<ItemStack> foci = new ArrayList<>();
         if (sacrifice instanceof MultiItemSacrifice) for (Object o : ((MultiItemSacrifice)sacrifice).items) {
-            foci.add(StackUtil.stackFromObject(o));
+            foci.add(RecipeUtil.stackFromObject(o));
         }
         int slot = 0;
         for (IRequirement r : ritual.getRequirements()) {
             if (r instanceof ItemRequirement)
-                inputs.add(new RitualPage.RitualIngredient(StackUtil.stackFromObject(((ItemRequirement)r).getMatch()), false));
+                inputs.add(new RitualPage.RitualIngredient(RecipeUtil.stackFromObject(((ItemRequirement)r).getMatch()), false));
             slot ++;
         }
         Iterator<ItemStack> iter = foci.iterator();
         while (iter.hasNext()) {
             ItemStack focus = iter.next();
             for (RitualPage.RitualIngredient input : inputs) {
-                if (ItemStack.areItemsEqual(focus, input.stack) && ItemStack.areItemStackTagsEqual(focus, input.stack)
+                if (ItemStack.isSame(focus, input.stack) && ItemStack.tagMatches(focus, input.stack)
                     && !input.isFocus) {
                     input.isFocus = true;
                     iter.remove();
@@ -99,7 +97,7 @@ public class RitualRegistry {
                 }
             }
         }
-        ItemStack center = StackUtil.stackFromObject(sacrifice instanceof MultiItemSacrifice ? ((MultiItemSacrifice)sacrifice).main : sacrifice);
+        ItemStack center = RecipeUtil.stackFromObject(sacrifice instanceof MultiItemSacrifice ? ((MultiItemSacrifice)sacrifice).main : sacrifice);
 
         return new RitualPage(ritual, center, inputs.toArray(new RitualPage.RitualIngredient[inputs.size()]));
     }
@@ -122,18 +120,18 @@ public class RitualRegistry {
         return rituals.get(name);
     }
 
-    static boolean matches(World world, BlockPos pos, Object match, ItemStack sacrifice) {
+    static boolean matches(Level world, BlockPos pos, Object match, ItemStack sacrifice) {
         if (match instanceof ItemStack) {
-            if (ItemStack.areItemStacksEqual((ItemStack)match, sacrifice)) return true;
+            if (ItemStack.matches((ItemStack)match, sacrifice)) return true;
         }
         else if (match instanceof Block) {
-            if (Item.getItemFromBlock((Block)match) == sacrifice.getItem()) return true;
+            if (Item.byBlock((Block)match) == sacrifice.getItem()) return true;
         }
         else if (match instanceof Item) {
             if ((Item)match == sacrifice.getItem()) return true;
         }
-        else if (match instanceof ITag) {
-            if (((ITag<Item>)match).contains(sacrifice.getItem())) return true;
+        else if (match instanceof Tag) {
+            if (((Tag<Item>)match).contains(sacrifice.getItem())) return true;
         }
         else if (match instanceof MultiItemSacrifice) {
             // check main item first, avoid complicated work
@@ -163,7 +161,7 @@ public class RitualRegistry {
         return false;
     }
 
-    public static Ritual find(World world, BlockPos pos, ItemStack sacrifice) {
+    public static Ritual find(Level world, BlockPos pos, ItemStack sacrifice) {
         for (Entry<Object, Ritual> entry : matches.entrySet()) {
             if (matches(world, pos, entry.getKey(), sacrifice)) return entry.getValue();
         }
@@ -252,11 +250,11 @@ public class RitualRegistry {
         PURIFY_RITUAL = register(Items.GLISTERING_MELON_SLICE, new PurifyRitual().setRegistryName(Eidolon.MODID, "purify")
             .addRequirement(new ItemRequirement(Registry.ENCHANTED_ASH.get()))
             .addRequirement(new ItemRequirement(Registry.ENCHANTED_ASH.get()))
-            .addRequirement(new ItemRequirement(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.HEALING)))
+            .addRequirement(new ItemRequirement(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING)))
             .addRequirement(new ItemRequirement(Registry.SOUL_SHARD.get()))
             .addRequirement(new ItemRequirement(Registry.SOUL_SHARD.get())));
 
-        SANGUINE_SWORD = register(new MultiItemSacrifice(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.HARMING), Items.IRON_SWORD), new SanguineRitual(new ItemStack(Registry.SAPPING_SWORD.get())).setRegistryName(Eidolon.MODID, "sanguine_sapping_sword")
+        SANGUINE_SWORD = register(new MultiItemSacrifice(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HARMING), Items.IRON_SWORD), new SanguineRitual(new ItemStack(Registry.SAPPING_SWORD.get())).setRegistryName(Eidolon.MODID, "sanguine_sapping_sword")
             .addRequirement(new ItemRequirement(Registry.SHADOW_GEM.get()))
             .addRequirement(new ItemRequirement(Registry.SOUL_SHARD.get()))
             .addRequirement(new ItemRequirement(Registry.SOUL_SHARD.get()))
@@ -266,7 +264,7 @@ public class RitualRegistry {
             .addRequirement(new ItemRequirement(Items.GHAST_TEAR))
             .addRequirement(new HealthRequirement(20)));
 
-        SANGUINE_AMULET = register(new MultiItemSacrifice(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.HARMING), Registry.BASIC_AMULET.get()), new SanguineRitual(new ItemStack(Registry.SANGUINE_AMULET.get())).setRegistryName(Eidolon.MODID, "sanguine_sanguine_amulet")
+        SANGUINE_AMULET = register(new MultiItemSacrifice(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HARMING), Registry.BASIC_AMULET.get()), new SanguineRitual(new ItemStack(Registry.SANGUINE_AMULET.get())).setRegistryName(Eidolon.MODID, "sanguine_sanguine_amulet")
             .addRequirement(new ItemRequirement(Tags.Items.GEMS_DIAMOND))
             .addRequirement(new ItemRequirement(Tags.Items.DUSTS_REDSTONE))
             .addRequirement(new ItemRequirement(Tags.Items.DUSTS_REDSTONE))

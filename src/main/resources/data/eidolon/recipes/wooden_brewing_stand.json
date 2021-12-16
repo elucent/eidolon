@@ -7,10 +7,10 @@
   ],
   "key": {
     "x": {
-      "item": "minecraft:stick"
+      "tag": "forge:rods/wooden"
     },
     "y": {
-      "item": "eidolon:pewter_ingot"
+      "tag": "forge:ingots/pewter"
     }
   },
   "result": {

@@ -1,0 +1,32 @@
+{
+  "type": "eidolon:worktable",
+  "pattern": [
+    " gx",
+    " sg",
+    "i  "
+  ],
+  "reagents": "lbbb",
+  "key": {
+    "i": {
+      "item": "eidolon:gold_inlay"
+    },
+    "g": {
+      "tag": "forge:ingots/arcane_gold"
+    },
+    "s": {
+      "tag": "forge:rods/wooden"
+    },
+    "x": {
+      "item": "eidolon:shadow_gem"
+    },
+    "b": {
+      "item": "minecraft:blaze_powder"
+    },
+    "l": {
+      "item": "eidolon:lesser_soul_gem"
+    }
+  },
+  "result": {
+    "item": "eidolon:soulfire_wand"
+  }
+}

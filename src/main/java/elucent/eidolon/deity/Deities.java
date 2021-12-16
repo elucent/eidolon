@@ -1,11 +1,10 @@
 package elucent.eidolon.deity;
 
-import elucent.eidolon.Eidolon;
-import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+
+import elucent.eidolon.Eidolon;
+import net.minecraft.resources.ResourceLocation;
 
 public class Deities {
     static Map<ResourceLocation, Deity> deities = new HashMap<>();
@@ -20,6 +19,6 @@ public class Deities {
     }
 
     public static final Deity
-        DARK_DEITY = register(new DarkDeity(new ResourceLocation(Eidolon.MODID, "dark"), 154, 77, 255));
-        // LIGHT = new new ResourceLocation(Eidolon.MODID, "light");
+        DARK_DEITY = register(new DarkDeity(new ResourceLocation(Eidolon.MODID, "dark"), 154, 77, 255)),
+        LIGHT_DEITY = register(new LightDeity(new ResourceLocation(Eidolon.MODID, "light"), 255, 230, 117));
 }

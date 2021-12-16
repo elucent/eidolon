@@ -1,19 +1,20 @@
 package elucent.eidolon.network;
 
-import elucent.eidolon.Eidolon;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
-
 import java.util.function.Supplier;
+
+import elucent.eidolon.Eidolon;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.Level;
+
+
 
 public class ChilledEffectPacket {
     double x, y, z;
@@ -24,13 +25,13 @@ public class ChilledEffectPacket {
         this.z = z;
     }
 
-    public static void encode(ChilledEffectPacket object, PacketBuffer buffer) {
+    public static void encode(ChilledEffectPacket object, FriendlyByteBuf buffer) {
         buffer.writeDouble(object.x);
         buffer.writeDouble(object.y);
         buffer.writeDouble(object.z);
     }
 
-    public static ChilledEffectPacket decode(PacketBuffer buffer) {
+    public static ChilledEffectPacket decode(FriendlyByteBuf buffer) {
         return new ChilledEffectPacket(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     }
 
@@ -38,15 +39,15 @@ public class ChilledEffectPacket {
         ctx.get().enqueueWork(() -> {
             assert ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT;
 
-            PlayerEntity player = Eidolon.proxy.getPlayer();
+            Player player = Eidolon.proxy.getPlayer();
             if (player != null) {
-                World world = player.world;
-                world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                Level world = player.level;
+                world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.0f, 1.0f);
                 for (int i = 0; i < 5; i ++) {
                     world.addParticle(
-                        new BlockParticleData(ParticleTypes.BLOCK, Blocks.ICE.getDefaultState()),
+                        new BlockParticleOption(ParticleTypes.BLOCK, Blocks.ICE.defaultBlockState()),
                         packet.x, packet.y, packet.z,
-                        0.05f * world.rand.nextGaussian(), 0.05f * world.rand.nextGaussian(), 0.05f * world.rand.nextGaussian()
+                        0.05f * world.random.nextGaussian(), 0.05f * world.random.nextGaussian(), 0.05f * world.random.nextGaussian()
                     );
                 }
             }

@@ -1,20 +1,19 @@
 package elucent.eidolon.entity;
 
 import elucent.eidolon.Eidolon;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.LivingRenderer;
+import elucent.eidolon.Registry;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class ZombieBruteRenderer extends MobRenderer<ZombieBruteEntity, ZombieBruteModel> {
-    public ZombieBruteRenderer(EntityRendererManager rendererManager, ZombieBruteModel entityModelIn, float shadowSizeIn) {
-        super(rendererManager, entityModelIn, shadowSizeIn);
+    public ZombieBruteRenderer(Context erm) {
+        super(erm, new ZombieBruteModel(erm.bakeLayer(Registry.ZOMBIE_BRUTE_LAYER)), 0.6f);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(ZombieBruteEntity entity) {
+    public ResourceLocation getTextureLocation(ZombieBruteEntity entity) {
         return new ResourceLocation(Eidolon.MODID, "textures/entity/zombie_brute.png");
     }
 }

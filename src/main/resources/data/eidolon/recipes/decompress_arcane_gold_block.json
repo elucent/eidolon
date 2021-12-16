@@ -3,7 +3,7 @@
   "group": "eidolon",
   "ingredients": [
     {
-      "item": "eidolon:arcane_gold_block"
+      "tag": "forge:storage_blocks/arcane_gold"
     }
   ],
   "result": {

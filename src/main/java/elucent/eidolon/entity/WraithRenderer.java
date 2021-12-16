@@ -1,17 +1,19 @@
 package elucent.eidolon.entity;
 
 import elucent.eidolon.Eidolon;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import elucent.eidolon.Registry;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class WraithRenderer extends MobRenderer<WraithEntity, WraithModel> {
-    public WraithRenderer(EntityRendererManager rendererManager, WraithModel entityModelIn, float shadowSizeIn) {
-        super(rendererManager, entityModelIn, shadowSizeIn);
+    public WraithRenderer(Context erm) {
+        super(erm, new WraithModel(erm.bakeLayer(Registry.WRAITH_LAYER)), 0.45f);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(WraithEntity entity) {
+    public ResourceLocation getTextureLocation(WraithEntity entity) {
         return new ResourceLocation(Eidolon.MODID, "textures/entity/wraith.png");
     }
 }

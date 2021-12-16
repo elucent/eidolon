@@ -3,7 +3,7 @@
   "group": "eidolon",
   "ingredients": [
     {
-      "item": "eidolon:pewter_ingot"
+      "tag": "forge:ingots/pewter"
     }
   ],
   "result": {

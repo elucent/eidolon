@@ -1,19 +1,20 @@
 package elucent.eidolon.item.curio;
 
+import java.util.UUID;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.item.ItemBase;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-import java.util.UUID;
+import net.minecraft.world.item.Item.Properties;
 
 public class PrestigiousPalmItem extends ItemBase {
     UUID ATTR_ID = new UUID(297661999713141389l, 6434109711109552363l);
@@ -22,7 +23,7 @@ public class PrestigiousPalmItem extends ItemBase {
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT unused) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
         return new EidolonCurio(stack) {
             @Override
             public Multimap<Attribute, AttributeModifier> getAttributeModifiers(String identifier) {

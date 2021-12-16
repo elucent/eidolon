@@ -1,0 +1,375 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "OR": [
+          { "in": "up" },
+          { "out": "up" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_up"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "down" },
+          { "out": "down" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_down"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "north" },
+          { "out": "north" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_north"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "east" },
+          { "out": "east" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_east"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "south" },
+          { "out": "south" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_south"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "west" },
+          { "out": "west" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_west"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "west", "out": "east" },
+          { "in": "east", "out": "west" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_straight",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "north", "out": "south" },
+          { "in": "south", "out": "north" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_straight"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "up", "out": "down" },
+          { "in": "down", "out": "up" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_straight",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "north", "out": "up" },
+          { "in": "up", "out": "north" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend",
+        "x": 270,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "east", "out": "up" },
+          { "in": "up", "out": "east" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend",
+        "x": 270,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "south", "out": "up" },
+          { "in": "up", "out": "south" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend",
+        "x": 270,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "west", "out": "up" },
+          { "in": "up", "out": "west" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "north", "out": "down" },
+          { "in": "down", "out": "north" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "east", "out": "down" },
+          { "in": "down", "out": "east" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend",
+        "x": 90,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "south", "out": "down" },
+          { "in": "down", "out": "south" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend",
+        "x": 90,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "west", "out": "down" },
+          { "in": "down", "out": "west" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend",
+        "x": 90,
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "west", "out": "north" },
+          { "in": "north", "out": "west" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "east", "out": "north" },
+          { "in": "north", "out": "east" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "east", "out": "south" },
+          { "in": "south", "out": "east" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          { "in": "west", "out": "south" },
+          { "in": "south", "out": "west" }
+        ]
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_bend",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "attachin": false,
+        "in": "west"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_input",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "attachin": false,
+        "in": "north"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_input",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "attachin": false,
+        "in": "east"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_input",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "attachin": false,
+        "in": "south"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_input",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "attachin": false,
+        "in": "up"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_input",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "attachin": false,
+        "in": "down"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_input",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "attachout": false,
+        "out": "west"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_output",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "attachout": false,
+        "out": "north"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_output",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "attachout": false,
+        "out": "east"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_output",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "attachout": false,
+        "out": "south"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_output",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "attachout": false,
+        "out": "up"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_output",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "attachout": false,
+        "out": "down"
+      },
+      "apply": {
+        "model": "eidolon:block/glass_tube_output",
+        "x": 90
+      }
+    }
+  ]
+}

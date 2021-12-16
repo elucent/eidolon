@@ -1,39 +1,30 @@
 package elucent.eidolon.block;
 
-import elucent.eidolon.tile.TileEntityBase;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FenceGateBlock;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
 
-public class TableBlockBase extends BlockBase implements IWaterLoggable {
-    VoxelShape NORMAL = VoxelShapes.create(0, 0.75, 0, 1, 1, 1),
-        CORNER = VoxelShapes.combine(
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
+public class TableBlockBase extends BlockBase implements SimpleWaterloggedBlock {
+    VoxelShape NORMAL = Shapes.box(0, 0.75, 0, 1, 1, 1),
+        CORNER = Shapes.joinUnoptimized(
             NORMAL,
-            VoxelShapes.create(0.0625, 0, 0.0625, 0.9375, 0.75, 0.9375),
-            IBooleanFunction.OR
+            Shapes.box(0.0625, 0, 0.0625, 0.9375, 0.75, 0.9375),
+            BooleanOp.OR
         );
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -44,31 +35,31 @@ public class TableBlockBase extends BlockBase implements IWaterLoggable {
 
     public TableBlockBase(Properties properties) {
         super(properties);
-        setDefaultState(super.getDefaultState()
-            .with(NX, false)
-            .with(PX, false)
-            .with(NZ, false)
-            .with(PZ, false));
+        registerDefaultState(super.defaultBlockState()
+            .setValue(NX, false)
+            .setValue(PX, false)
+            .setValue(NZ, false)
+            .setValue(PZ, false));
     }
 
     public TableBlockBase setMainShape(VoxelShape shape) {
         NORMAL = shape;
-        CORNER = VoxelShapes.combine(
+        CORNER = Shapes.joinUnoptimized(
             NORMAL,
-            VoxelShapes.create(0.0625, 0, 0.0625, 0.9375, 0.75, 0.9375),
-            IBooleanFunction.OR
+            Shapes.box(0.0625, 0, 0.0625, 0.9375, 0.75, 0.9375),
+            BooleanOp.OR
         );
         return this;
     }
 
     @Override
-    public VoxelShape getRaytraceShape(BlockState state, IBlockReader world, BlockPos pos) {
-        boolean nx = state.get(NX), px = state.get(PX), nz = state.get(NZ), pz = state.get(PZ);
+    public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
+        boolean nx = state.getValue(NX), px = state.getValue(PX), nz = state.getValue(NZ), pz = state.getValue(PZ);
         if ((!nx && !nz) || (!nx && !pz) || (!px && !pz) || (!px && !nz)) return CORNER;
         return NORMAL;
     }
 
-    protected BlockState updateCorners(IBlockReader world, BlockPos pos, BlockState state) {
+    protected BlockState updateCorners(BlockGetter world, BlockPos pos, BlockState state) {
         BlockState blockstate = world.getBlockState(pos.north());
         BlockState blockstate1 = world.getBlockState(pos.east());
         BlockState blockstate2 = world.getBlockState(pos.south());
@@ -78,37 +69,37 @@ public class TableBlockBase extends BlockBase implements IWaterLoggable {
             conn3 = blockstate2.getBlock() == this,
             conn4 = blockstate3.getBlock() == this;
         return state
-            .with(NZ, conn1).with(PX, conn2)
-            .with(PZ, conn3).with(NX, conn4);
+            .setValue(NZ, conn1).setValue(PX, conn2)
+            .setValue(PZ, conn3).setValue(NX, conn4);
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        IBlockReader iblockreader = context.getWorld();
-        BlockPos blockpos = context.getPos();
-        return updateCorners(iblockreader, blockpos, super.getStateForPlacement(context)).with(WATERLOGGED, false);
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockGetter iblockreader = context.getLevel();
+        BlockPos blockpos = context.getClickedPos();
+        return updateCorners(iblockreader, blockpos, super.getStateForPlacement(context)).setValue(WATERLOGGED, false);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
-        if (state.get(WATERLOGGED)) {
-            world.getPendingFluidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos pos, BlockPos facingPos) {
+        if (state.getValue(WATERLOGGED)) {
+            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
         return updateCorners(world, pos, state);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(NX, PX, NZ, PZ, WATERLOGGED);
     }
 
     @Override
     public FluidState getFluidState(BlockState state) {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-        return !state.get(WATERLOGGED);
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+        return !state.getValue(WATERLOGGED);
     }
 }

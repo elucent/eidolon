@@ -1,0 +1,36 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"0": "eidolon:block/obelisk_bottom",
+		"1": "eidolon:block/obelisk_parts",
+		"3": "eidolon:block/obelisk_top",
+		"4": "eidolon:block/obelisk_side_top",
+		"particle": "eidolon:block/obelisk_side_top"
+	},
+	"elements": [
+		{
+			"from": [2, 0, 2],
+			"to": [14, 14, 14],
+			"faces": {
+				"north": {"uv": [0, 0, 12, 14], "texture": "#4"},
+				"east": {"uv": [0, 0, 12, 14], "texture": "#4"},
+				"south": {"uv": [0, 0, 12, 14], "texture": "#4"},
+				"west": {"uv": [0, 0, 12, 14], "texture": "#4"},
+				"up": {"uv": [0, 0, 12, 12], "texture": "#3"},
+				"down": {"uv": [0, 0, 12, 12], "texture": "#0"}
+			}
+		},
+		{
+			"from": [4, 14, 4],
+			"to": [12, 16, 12],
+			"faces": {
+				"north": {"uv": [0, 8, 8, 10], "texture": "#1"},
+				"east": {"uv": [0, 8, 8, 10], "texture": "#1"},
+				"south": {"uv": [0, 8, 8, 10], "texture": "#1"},
+				"west": {"uv": [0, 8, 8, 10], "texture": "#1"},
+				"up": {"uv": [0, 0, 8, 8], "texture": "#1"}
+			}
+		}
+	]
+}

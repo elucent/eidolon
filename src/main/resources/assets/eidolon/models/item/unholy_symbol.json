@@ -1,6 +1,47 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "builtin/entity",
   "textures": {
-    "layer0": "eidolon:item/unholy_symbol"
+    "particle": "eidolon:item/unholy_symbol"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [-18, -180, 0],
+      "translation": [0, 4, 0],
+      "scale": [0.55, 0.55, 0.55]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [-18, -180, 0],
+      "translation": [0, 4, 0],
+      "scale": [0.55, 0.55, 0.55]
+    },
+    "firstperson_righthand": {
+      "rotation": [-15, 135, 9],
+      "translation": [-1.5, 6.5, 3],
+      "scale": [0.7, 0.7, 0.7]
+    },
+    "firstperson_lefthand": {
+      "rotation": [-15, 135, 9],
+      "translation": [-1.5, 6.5, 3],
+      "scale": [0.7, 0.7, 0.7]
+    },
+    "ground": {
+      "rotation": [0, 0, 15],
+      "translation": [0, 2, 0],
+      "scale": [0.625, 0.625, 0.625]
+    },
+    "gui": {
+      "rotation": [0, 165, 15],
+      "translation": [1, 4, 0],
+      "scale": [1.25, 1.25, 1.25]
+    },
+    "head": {
+      "rotation": [0, 180, 0],
+      "translation": [0, 13, 7]
+    },
+    "fixed": {
+      "rotation": [0, -15, 15],
+      "translation": [0, 4, -3],
+      "scale": [1.25, 1.25, 1.25]
+    }
   }
 }

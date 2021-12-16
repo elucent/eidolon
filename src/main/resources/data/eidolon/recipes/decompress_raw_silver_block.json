@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "eidolon",
+  "ingredients": [
+    {
+      "item": "eidolon:raw_silver_block"
+    }
+  ],
+  "result": {
+    "item": "eidolon:raw_silver",
+    "count": 9
+  }
+}

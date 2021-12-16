@@ -2,21 +2,16 @@ package elucent.eidolon.item.curio;
 
 import elucent.eidolon.Registry;
 import elucent.eidolon.item.ItemBase;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.PotionEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import java.util.UUID;
+import net.minecraft.world.item.Item.Properties;
 
 public class GlassHandItem extends ItemBase {
     public GlassHandItem(Properties properties) {
@@ -29,14 +24,14 @@ public class GlassHandItem extends ItemBase {
         if (CuriosApi.getCuriosHelper().findEquippedCurio(Registry.GLASS_HAND.get(), event.getEntityLiving()).isPresent()) {
             event.setAmount(event.getAmount() * 5);
         }
-        if (event.getSource().getTrueSource() instanceof LivingEntity &&
-            CuriosApi.getCuriosHelper().findEquippedCurio(Registry.GLASS_HAND.get(), (LivingEntity)event.getSource().getTrueSource()).isPresent()) {
+        if (event.getSource().getEntity() instanceof LivingEntity &&
+            CuriosApi.getCuriosHelper().findEquippedCurio(Registry.GLASS_HAND.get(), (LivingEntity)event.getSource().getEntity()).isPresent()) {
             event.setAmount(event.getAmount() * 2);
         }
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT unused) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
         return new EidolonCurio(stack) {
             @Override
             public boolean canRightClickEquip() {

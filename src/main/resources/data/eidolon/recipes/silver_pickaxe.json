@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    "xxx",
+    " y ",
+    " y "
+  ],
+  "key": {
+    "x": {
+      "tag": "forge:ingots/silver"
+    },
+    "y": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "eidolon:silver_pickaxe"
+  }
+}

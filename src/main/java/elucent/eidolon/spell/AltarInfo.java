@@ -1,15 +1,20 @@
 package elucent.eidolon.spell;
 
-import elucent.eidolon.block.TableBlockBase;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
-import java.util.*;
+import elucent.eidolon.block.TableBlockBase;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class AltarInfo {
     static class AltarAttributes {
@@ -22,31 +27,31 @@ public class AltarInfo {
 
     Map<ResourceLocation, AltarAttributes> attributes = new HashMap<>();
 
-    public static Set<BlockPos> getAltarPositions(World world, BlockPos pos) {
+    public static Set<BlockPos> getAltarPositions(Level world, BlockPos pos) {
         Set<BlockPos> result = new HashSet<>();
         Queue<BlockPos> visit = new ArrayDeque();
-        BlockState below = world.getBlockState(pos.down());
+        BlockState below = world.getBlockState(pos.below());
         Block b = below.getBlock();
-        if (below.getBlock() instanceof TableBlockBase) visit.add(pos.down());
+        if (below.getBlock() instanceof TableBlockBase) visit.add(pos.below());
         while (!visit.isEmpty()) {
             BlockPos visited = visit.remove();
             if (result.contains(visited)) continue;
             result.add(visited);
-            for (Direction d : BlockStateProperties.HORIZONTAL_FACING.getAllowedValues())
-                if (world.getBlockState(visited.offset(d)).getBlock() == b
-                    && !result.contains(visited.offset(d)))
-                    visit.add(visited.offset(d));
+            for (Direction d : BlockStateProperties.HORIZONTAL_FACING.getPossibleValues())
+                if (world.getBlockState(visited.relative(d)).getBlock() == b
+                    && !result.contains(visited.relative(d)))
+                    visit.add(visited.relative(d));
         }
         return result;
     }
 
-    public static AltarInfo getAltarInfo(World world, BlockPos pos) {
+    public static AltarInfo getAltarInfo(Level world, BlockPos pos) {
         AltarInfo info = new AltarInfo();
         info.icon = world.getBlockState(pos).getBlock();
         Set<BlockPos> altarPositions = getAltarPositions(world, pos);
         for (BlockPos p : altarPositions) {
             if (info.altar == null) info.altar = world.getBlockState(p).getBlock();
-            BlockState state = world.getBlockState(p.up());
+            BlockState state = world.getBlockState(p.above());
             AltarEntry entry = AltarEntries.find(state);
             if (entry != null) {
                 entry.apply(info);

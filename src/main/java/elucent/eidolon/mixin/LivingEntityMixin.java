@@ -1,19 +1,18 @@
 package elucent.eidolon.mixin;
 
-import elucent.eidolon.Registry;
-import elucent.eidolon.event.SpeedFactorEvent;
-import elucent.eidolon.item.ReaperScytheItem;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.DamageSource;
-import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import elucent.eidolon.Registry;
+import elucent.eidolon.event.SpeedFactorEvent;
+import elucent.eidolon.item.ReaperScytheItem;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraftforge.common.MinecraftForge;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
@@ -25,12 +24,12 @@ public class LivingEntityMixin {
         cir.setReturnValue(event.getSpeedFactor());
     }
 
-    @Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
-    protected void customDropLoot(DamageSource source, boolean hitRecently, CallbackInfo ci) {
-        if (((LivingEntity)(Object)this).isEntityUndead()
-            && (source.getDamageType() == Registry.RITUAL_DAMAGE.getDamageType()
-                || source.getTrueSource() instanceof LivingEntity
-                    && ((LivingEntity) source.getTrueSource()).getHeldItemMainhand().getItem() instanceof ReaperScytheItem)) {
+    @Inject(method = "dropFromLootTable", at = @At("HEAD"), cancellable = true)
+    protected void customDropFromLootTable(DamageSource source, boolean hitRecently, CallbackInfo ci) {
+        if (((LivingEntity)(Object)this).isInvertedHealAndHarm()
+            && (source.getMsgId() == Registry.RITUAL_DAMAGE.getMsgId()
+                || source.getEntity() instanceof LivingEntity
+                    && ((LivingEntity) source.getEntity()).getMainHandItem().getItem() instanceof ReaperScytheItem)) {
             ci.cancel();
         }
     }

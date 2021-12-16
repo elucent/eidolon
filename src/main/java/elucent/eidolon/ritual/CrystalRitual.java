@@ -1,21 +1,18 @@
 package elucent.eidolon.ritual;
 
+import java.util.List;
+
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.network.CrystallizeEffectPacket;
 import elucent.eidolon.network.Networking;
-import elucent.eidolon.particle.GenericParticle;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import javax.annotation.Resource;
-import java.util.List;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class CrystalRitual extends Ritual {
     public static final ResourceLocation SYMBOL = new ResourceLocation(Eidolon.MODID, "particle/crystal_ritual");
@@ -25,13 +22,13 @@ public class CrystalRitual extends Ritual {
     }
 
     @Override
-    public RitualResult start(World world, BlockPos pos) {
-        List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, getSearchBounds(pos), (e) -> e.isEntityUndead());
+    public RitualResult start(Level world, BlockPos pos) {
+        List<LivingEntity> entities = world.getEntitiesOfClass(LivingEntity.class, getSearchBounds(pos), (e) -> e.isInvertedHealAndHarm() && e.canChangeDimensions());
         for (LivingEntity e : entities) {
-            e.attackEntityFrom(Registry.RITUAL_DAMAGE, e.getMaxHealth() * 1000);
-            if (!world.isRemote) {
-                Networking.sendToTracking(world, e.getPosition(), new CrystallizeEffectPacket(e.getPosition()));
-                world.addEntity(new ItemEntity(world, e.getPosX(), e.getPosY(), e.getPosZ(), new ItemStack(Registry.SOUL_SHARD.get(), 1 + world.rand.nextInt(3))));
+            e.hurt(Registry.RITUAL_DAMAGE, e.getMaxHealth() * 1000);
+            if (!world.isClientSide) {
+                Networking.sendToTracking(world, e.blockPosition(), new CrystallizeEffectPacket(e.blockPosition()));
+                world.addFreshEntity(new ItemEntity(world, e.getX(), e.getY(), e.getZ(), new ItemStack(Registry.SOUL_SHARD.get(), 1 + world.random.nextInt(3))));
             }
         }
         return RitualResult.TERMINATE;

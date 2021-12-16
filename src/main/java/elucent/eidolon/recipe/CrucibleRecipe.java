@@ -1,25 +1,29 @@
 package elucent.eidolon.recipe;
 
-import elucent.eidolon.ritual.IRitualItemFocus;
-import elucent.eidolon.ritual.MultiItemSacrifice;
-import elucent.eidolon.ritual.Ritual;
-import elucent.eidolon.ritual.RitualRegistry;
-import elucent.eidolon.tile.CrucibleTileEntity;
-import elucent.eidolon.tile.CrucibleTileEntity.CrucibleStep;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class CrucibleRecipe {
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+
+import elucent.eidolon.Eidolon;
+import elucent.eidolon.Registry;
+import elucent.eidolon.tile.CrucibleTileEntity.CrucibleStep;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.registries.ForgeRegistryEntry;
+
+public class CrucibleRecipe implements Recipe<Container> {
     List<Step> steps = new ArrayList<>();
     ResourceLocation registryName;
     ItemStack result;
@@ -29,16 +33,17 @@ public class CrucibleRecipe {
     }
 
     public static class Step {
-        public List<Object> matches = new ArrayList<>();
+        public List<Ingredient> matches = new ArrayList<>();
         public int stirs;
 
-        public Step(int stirs, List<Object> matches) {
+        public Step(int stirs, List<Ingredient> matches) {
             this.stirs = stirs;
             this.matches.addAll(matches);
         }
     };
 
-    public CrucibleRecipe(ItemStack result) {
+    public CrucibleRecipe(List<Step> steps, ItemStack result) {
+        this.steps = steps;
         this.result = result;
     }
 
@@ -60,41 +65,10 @@ public class CrucibleRecipe {
         return this;
     }
 
-    public CrucibleRecipe addStep(Object... matches) {
-        addStirringStep(0, matches);
-        return this;
-    }
-
-    public CrucibleRecipe addStep(int stirs) {
-        addStirringStep(stirs, new Object[]{});
-        return this;
-    }
-
-    public CrucibleRecipe addStirringStep(int stirs, Object... matches) {
-        steps.add(new Step(stirs, Arrays.asList(matches)));
-        return this;
-    }
-
-    static boolean matches(Object match, ItemStack sacrifice) {
-        if (match instanceof ItemStack) {
-            if (ItemStack.areItemStacksEqual((ItemStack)match, sacrifice)) return true;
-        }
-        else if (match instanceof Item) {
-            if ((Item)match == sacrifice.getItem()) return true;
-        }
-        else if (match instanceof Block) {
-            if (((Block)match).asItem() == sacrifice.getItem()) return true;
-        }
-        else if (match instanceof ITag) {
-            if (((ITag<Item>)match).contains(sacrifice.getItem())) return true;
-        }
-        return false;
-    }
-
     public boolean matches(List<CrucibleStep> items) {
         if (steps.size() != items.size()) return false;
 
-        List<Object> matchList = new ArrayList<>();
+        List<Ingredient> matchList = new ArrayList<>();
         List<ItemStack> itemList = new ArrayList<>();
 
         for (int i = 0; i < steps.size(); i ++) {
@@ -109,7 +83,7 @@ public class CrucibleRecipe {
 
             for (int j = 0; j < matchList.size(); j ++) {
                 for (int k = 0; k < itemList.size(); k ++) {
-                    if (matches(matchList.get(j), itemList.get(k))) {
+                    if (matchList.get(j).test(itemList.get(k))) {
                         matchList.remove(j --);
                         itemList.remove(k --);
                         break;
@@ -117,9 +91,105 @@ public class CrucibleRecipe {
                 }
             }
 
-            if (matchList.size() != 0) return false;
+            if (matchList.size() != 0 || itemList.size() != 0) return false;
         }
 
         return true;
+    }
+
+    @Override
+    public boolean matches(Container inv, Level worldIn) {
+        return false; // we don't use a single inventory, so we ignore this one
+    }
+
+    @Override
+    public ItemStack assemble(Container inv) {
+        return getResultItem();
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return false; // we don't use a single inventory, so we ignore this one
+    }
+
+    @Override
+    public ItemStack getResultItem() {
+        return result;
+    }
+
+    @Override
+    public ResourceLocation getId() {
+        return registryName;
+    }
+
+    public static class Type implements RecipeType<CrucibleRecipe> {
+        @Override
+        public String toString () {
+            return Eidolon.MODID + ":crucible";
+        }
+
+        public static final CrucibleRecipe.Type INSTANCE = new CrucibleRecipe.Type();
+    }
+
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<CrucibleRecipe> {
+        @Override
+        public CrucibleRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+            List<Step> steps = new ArrayList<>();
+            JsonArray stepArray = json.getAsJsonArray("steps");
+            for (JsonElement elt : stepArray) {
+                if (!elt.isJsonObject()) throw new JsonSyntaxException("Expected JSON object for crucible step.");
+                JsonObject step = elt.getAsJsonObject();
+                int stirs = step.has("stirs") ? step.get("stirs").getAsInt() : 0;
+                List<Ingredient> matches = new ArrayList<>();
+                if (step.has("items")) {
+                    JsonArray items = step.get("items").getAsJsonArray();
+                    for (JsonElement item : items) matches.add(Ingredient.fromJson(item));
+                }
+                steps.add(new Step(stirs, matches));
+            }
+            ItemStack result = CraftingHelper.getItemStack(json.getAsJsonObject("result"), true);
+            return CrucibleRegistry.register(new CrucibleRecipe(steps, result).setRegistryName(recipeId));
+        }
+
+        @Override
+        public CrucibleRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            int count = buffer.readInt();
+            List<Step> steps = new ArrayList<>();
+            for (int i = 0; i < count; i ++) {
+                int stirs = buffer.readInt();
+                int ingredients = buffer.readInt();
+                List<Ingredient> matches = new ArrayList<>();
+                for (int j = 0; j < ingredients; j ++) matches.add(Ingredient.fromNetwork(buffer));
+                steps.add(new Step(stirs, matches));
+            }
+            ItemStack result = buffer.readItem();
+            return CrucibleRegistry.register(new CrucibleRecipe(steps, result).setRegistryName(recipeId));
+        }
+
+        @Override
+        public void toNetwork(FriendlyByteBuf buffer, CrucibleRecipe recipe) {
+            buffer.writeInt(recipe.steps.size());
+            for (Step step : recipe.steps) {
+                buffer.writeInt(step.stirs);
+                buffer.writeInt(step.matches.size());
+                for (Ingredient i : step.matches) i.toNetwork(buffer);
+            }
+            buffer.writeItem(recipe.result);
+        }
+    }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return Registry.CRUCIBLE_RECIPE.get();
+    }
+
+    @Override
+    public RecipeType<?> getType() {
+        return CrucibleRecipe.Type.INSTANCE;
+    }
+
+    @Override
+    public boolean isSpecial() {
+        return true; // needed to prevent errors loading modded recipes in the recipe book
     }
 }

@@ -1,13 +1,13 @@
 package elucent.eidolon.spell;
 
-import elucent.eidolon.Eidolon;
-import elucent.eidolon.util.ColorUtil;
-import net.minecraft.util.ResourceLocation;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import elucent.eidolon.Eidolon;
+import elucent.eidolon.util.ColorUtil;
+import net.minecraft.resources.ResourceLocation;
 
 public class Signs {
     static List<Sign> signs = new ArrayList<>();
@@ -62,5 +62,10 @@ public class Signs {
             new ResourceLocation(Eidolon.MODID, "energy"),
             new ResourceLocation(Eidolon.MODID, "particle/energy_sign"),
             ColorUtil.packColor(255, 145, 250, 100)
+        )),
+        FLAME_SIGN = register(new Sign(
+            new ResourceLocation(Eidolon.MODID, "flame"),
+            new ResourceLocation(Eidolon.MODID, "particle/flame_sign"),
+            ColorUtil.packColor(255, 255, 128, 64)
         ));
 }

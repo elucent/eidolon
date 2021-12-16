@@ -1,0 +1,21 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"2": "eidolon:block/cistern_mid",
+		"particle": "eidolon:block/cistern_bottom"
+	},
+	"elements": [
+		{
+			"from": [1, 0, 1],
+			"to": [15, 16, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [9, 8, 9]},
+			"faces": {
+				"north": {"uv": [0, 0, 14, 16], "texture": "#2"},
+				"east": {"uv": [0, 0, 14, 16], "texture": "#2"},
+				"south": {"uv": [0, 0, 14, 16], "texture": "#2"},
+				"west": {"uv": [0, 0, 14, 16], "texture": "#2"}
+			}
+		}
+	]
+}

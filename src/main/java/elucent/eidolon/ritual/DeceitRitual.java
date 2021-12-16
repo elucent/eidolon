@@ -1,22 +1,14 @@
 package elucent.eidolon.ritual;
 
-import elucent.eidolon.Eidolon;
-import elucent.eidolon.Registry;
-import elucent.eidolon.network.CrystallizeEffectPacket;
-import elucent.eidolon.network.Networking;
-import elucent.eidolon.util.ColorUtil;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.ReturnToVillageGoal;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.village.GossipManager;
-import net.minecraft.world.World;
-
 import java.util.List;
+
+import elucent.eidolon.Eidolon;
+import elucent.eidolon.util.ColorUtil;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class DeceitRitual extends Ritual {
     public static final ResourceLocation SYMBOL = new ResourceLocation(Eidolon.MODID, "particle/deceit_ritual");
@@ -26,11 +18,11 @@ public class DeceitRitual extends Ritual {
     }
 
     @Override
-    public RitualResult tick(World world, BlockPos pos) {
+    public RitualResult tick(Level world, BlockPos pos) {
         if (world.getGameTime() % 20 == 0) {
-            List<VillagerEntity> villagers = world.getEntitiesWithinAABB(VillagerEntity.class, new AxisAlignedBB(pos).grow(48, 16, 48));
-            for (VillagerEntity v : villagers) {
-                if (world.rand.nextInt(120) == 0) v.getGossip().tick();
+            List<Villager> villagers = world.getEntitiesOfClass(Villager.class, new AABB(pos).inflate(48, 16, 48));
+            for (Villager v : villagers) {
+                if (world.random.nextInt(120) == 0) v.getGossips().decay();
             }
         }
         return RitualResult.PASS;
