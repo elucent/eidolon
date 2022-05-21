@@ -2,8 +2,6 @@ package elucent.eidolon.util;
 
 import java.util.Random;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -11,6 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 
 import elucent.eidolon.ClientEvents;
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import net.minecraft.client.Minecraft;
@@ -27,8 +26,6 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import net.minecraft.world.phys.Vec3;
 import com.mojang.math.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class RenderUtil {
     public static final RenderStateShard.TransparencyStateShard ADDITIVE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("lightning_transparency", () -> {
@@ -75,7 +72,7 @@ public class RenderUtil {
             .setLightmapState(new RenderStateShard.LightmapStateShard(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
             .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
-            .setShaderState(new ShaderStateShard(Registry::getGlowingSpriteShader))
+            .setShaderState(new ShaderStateShard(ClientRegistry::getGlowingSpriteShader))
             .createCompositeState(false)
     ), GLOWING = RenderType.create(
         Eidolon.MODID + ":glowing",
@@ -85,7 +82,7 @@ public class RenderUtil {
             .setWriteMaskState(new RenderStateShard.WriteMaskStateShard(true, false))
             .setLightmapState(new RenderStateShard.LightmapStateShard(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
-            .setShaderState(new ShaderStateShard(Registry::getGlowingShader))
+            .setShaderState(new ShaderStateShard(ClientRegistry::getGlowingShader))
             .createCompositeState(false)
     ), DELAYED_PARTICLE = RenderType.create(
         Eidolon.MODID + ":delayed_particle",
@@ -95,7 +92,7 @@ public class RenderUtil {
             .setWriteMaskState(new RenderStateShard.WriteMaskStateShard(true, false))
             .setTransparencyState(NORMAL_TRANSPARENCY)
             .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false, false))
-            .setShaderState(new ShaderStateShard(GameRenderer::getParticleShader))
+            .setShaderState(new ShaderStateShard(ClientRegistry::getSpriteParticleShader))
             .createCompositeState(false)
     ), GLOWING_PARTICLE = RenderType.create(
         Eidolon.MODID + ":glowing_particle",
@@ -106,7 +103,7 @@ public class RenderUtil {
             .setLightmapState(new RenderStateShard.LightmapStateShard(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
             .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false, false))
-            .setShaderState(new ShaderStateShard(Registry::getGlowingParticleShader))
+            .setShaderState(new ShaderStateShard(ClientRegistry::getGlowingParticleShader))
             .createCompositeState(false)
     ), GLOWING_BLOCK_PARTICLE = RenderType.create(
         Eidolon.MODID + ":glowing_particle",
@@ -117,7 +114,7 @@ public class RenderUtil {
             .setLightmapState(new RenderStateShard.LightmapStateShard(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
             .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
-            .setShaderState(new ShaderStateShard(Registry::getGlowingParticleShader))
+            .setShaderState(new ShaderStateShard(ClientRegistry::getGlowingParticleShader))
             .createCompositeState(false)
     ), VAPOR_TRANSLUCENT = RenderType.create(
         Eidolon.MODID + ":vapor_translucent",
@@ -127,13 +124,13 @@ public class RenderUtil {
             .setLightmapState(new RenderStateShard.LightmapStateShard(false))
             .setTransparencyState(NORMAL_TRANSPARENCY)
             .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
-            .setShaderState(new ShaderStateShard(Registry::getVaporShader))
+            .setShaderState(new ShaderStateShard(ClientRegistry::getVaporShader))
             .createCompositeState(false)
     );
 
     static double ticks = 0;
 
-    public static void litQuad(PoseStack mStack, MultiBufferSource buffer, double x, double y, double w, double h, float r, float g, float b, TextureAtlasSprite sprite) {
+    public static void litQuad(PoseStack mStack, MultiBufferSource buffer, double x, double y, double w, double h, float r, float g, float b, float a, TextureAtlasSprite sprite) {
         VertexConsumer builder = buffer.getBuffer(GLOWING_SPRITE);
 
         float f7 = sprite.getU0();
@@ -141,10 +138,14 @@ public class RenderUtil {
         float f5 = sprite.getV0();
         float f6 = sprite.getV1();
         Matrix4f mat = mStack.last().pose();
-        builder.vertex(mat, (float)x, (float)y + (float)h, 0).uv(f7, f6).color(r, g, b, 1.0f).endVertex();
-        builder.vertex(mat, (float)x + (float)w, (float)y + (float)h, 0).uv(f8, f6).color(r, g, b, 1.0f).endVertex();
-        builder.vertex(mat, (float)x + (float)w, (float)y, 0).uv(f8, f5).color(r, g, b, 1.0f).endVertex();
-        builder.vertex(mat, (float)x, (float)y, 0).uv(f7, f5).color(r, g, b, 1.0f).endVertex();
+        builder.vertex(mat, (float)x, (float)y + (float)h, 0).uv(f7, f6).color(r, g, b, a).endVertex();
+        builder.vertex(mat, (float)x + (float)w, (float)y + (float)h, 0).uv(f8, f6).color(r, g, b, a).endVertex();
+        builder.vertex(mat, (float)x + (float)w, (float)y, 0).uv(f8, f5).color(r, g, b, a).endVertex();
+        builder.vertex(mat, (float)x, (float)y, 0).uv(f7, f5).color(r, g, b, a).endVertex();
+    }
+
+    public static void litQuad(PoseStack mStack, MultiBufferSource buffer, double x, double y, double w, double h, float r, float g, float b, TextureAtlasSprite sprite) {
+        litQuad(mStack, buffer, x, y, w, h, r, g, b, 1.0f, sprite);
     }
 
     public static void litQuad(PoseStack mStack, MultiBufferSource buffer, double x, double y, double w, double h, float r, float g, float b, float u, float v, float uw, float vh) {

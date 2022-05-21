@@ -18,8 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class CandleBlock extends BlockBase {
     protected static final VoxelShape SHAPE = Block.box(6.0D, 0.0D, 6.0D, 10.0D, 9.0, 10.0D);
 

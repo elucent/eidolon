@@ -18,8 +18,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class ReversalPickItem extends PickaxeItem {
     public ReversalPickItem(Properties builderIn) {
         super(Tiers.MagicToolTier.INSTANCE, 1, -2.8F, builderIn);

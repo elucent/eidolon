@@ -5,7 +5,6 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import elucent.eidolon.gui.WoodenBrewingStandContainer;
-import elucent.eidolon.tile.CrucibleTileEntity;
 import elucent.eidolon.tile.WoodenStandTileEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,7 +31,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class WoodenStandBlock extends BrewingStandBlock {
     protected static final VoxelShape SHAPE = Shapes.or(Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D), Block.box(7.0D, 0.0D, 7.0D, 9.0D, 14.0D, 9.0D));

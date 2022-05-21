@@ -11,8 +11,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class GlassHandItem extends ItemBase {
     public GlassHandItem(Properties properties) {
         super(properties);

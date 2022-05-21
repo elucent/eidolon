@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "eidolon:item/elder_bricks_slab"
+    },
+    "type=double": {
+      "model": "eidolon:item/elder_bricks"
+    },
+    "type=top": {
+      "model": "eidolon:block/elder_bricks_slab_top"
+    }
+  }
+}

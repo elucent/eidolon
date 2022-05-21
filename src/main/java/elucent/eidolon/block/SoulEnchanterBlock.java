@@ -3,7 +3,6 @@ package elucent.eidolon.block;
 import javax.annotation.Nullable;
 
 import elucent.eidolon.gui.SoulEnchanterContainer;
-import elucent.eidolon.tile.CrucibleTileEntity;
 import elucent.eidolon.tile.SoulEnchanterTileEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class SoulEnchanterBlock extends HorizontalBlockBase implements EntityBlock {
     public SoulEnchanterBlock(Properties properties) {

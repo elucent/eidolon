@@ -17,7 +17,7 @@ public class Spells {
         return spellMap.getOrDefault(loc, null);
     }
 
-    public static Spell find(List<Sign> signs) {
+    public static Spell find(SignSequence signs) {
         for (Spell spell : spells) if (spell.matches(signs)) return spell;
         return null;
     }

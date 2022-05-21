@@ -2,6 +2,7 @@ package elucent.eidolon.capability;
 
 import java.util.Set;
 
+import elucent.eidolon.spell.Rune;
 import elucent.eidolon.spell.Sign;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -38,9 +39,25 @@ public interface IKnowledge {
 	
     boolean knowsSign(Sign sign);
     void addSign(Sign sign);
+    void removeSign(Sign sign);
+    void resetSigns();
     Set<Sign> getKnownSigns();
 
     boolean knowsFact(ResourceLocation fact);
     void addFact(ResourceLocation fact);
+    void removeFact(ResourceLocation fact);
+    void resetFacts();
     Set<ResourceLocation> getKnownFacts();
+
+    boolean knowsResearch(ResourceLocation research);
+    void addResearch(ResourceLocation research);
+    void removeResearch(ResourceLocation research);
+    void resetResearch();
+    Set<ResourceLocation> getKnownResearches();
+	
+    boolean knowsRune(Rune rune);
+    void addRune(Rune rune);
+    void removeRune(Rune rune);
+    void resetRunes();
+    Set<Rune> getKnownRunes();
 }

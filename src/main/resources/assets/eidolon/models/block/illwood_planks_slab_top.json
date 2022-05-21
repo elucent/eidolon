@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "eidolon:block/illwood_planks",
+    "top": "eidolon:block/illwood_planks",
+    "side": "eidolon:block/illwood_planks"
+  }
+}

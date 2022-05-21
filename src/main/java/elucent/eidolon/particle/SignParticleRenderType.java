@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 
+import elucent.eidolon.ClientEvents;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -21,6 +22,7 @@ public class SignParticleRenderType extends SpriteParticleRenderType {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+        ClientEvents.particleMVMatrix = RenderSystem.getModelViewMatrix();
         bufferBuilder.begin(Mode.QUADS, DefaultVertexFormat.PARTICLE);
     }
 

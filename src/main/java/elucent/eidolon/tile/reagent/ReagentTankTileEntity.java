@@ -9,7 +9,6 @@ import elucent.eidolon.reagent.ReagentTank;
 import elucent.eidolon.tile.TileEntityBase;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
@@ -31,10 +30,9 @@ public abstract class ReagentTankTileEntity extends TileEntityBase implements IR
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        tag = super.save(tag);
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         tag.put("tank", tank.write());
-        return tag;
     }
 
     public void tick() {

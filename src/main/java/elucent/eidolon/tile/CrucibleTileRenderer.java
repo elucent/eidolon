@@ -4,15 +4,22 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Eidolon;
+import elucent.eidolon.Registry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.util.FastColor.ARGB32;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -21,14 +28,22 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.BiomeColors;
 
 public class CrucibleTileRenderer implements BlockEntityRenderer<CrucibleTileEntity> {
-//    private final ModelPart stirrer;
+    private final ModelPart stirrer;
     public static final ResourceLocation STIRRER_TEXTURE = new ResourceLocation(Eidolon.MODID, "textures/block/crucible_stirrer.png");
+    
+    public static LayerDefinition createModelLayer() {
+    	MeshDefinition mesh = new MeshDefinition();
+    	
+		PartDefinition root = mesh.getRoot();
+		PartDefinition stirrer = root.addOrReplaceChild("stirrer", CubeListBuilder.create()
+				.texOffs(0, 8).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(0, 0).addBox(-1.0F, 3.0F, -1.0F, 2.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+		
+		return LayerDefinition.create(mesh, 16, 16);
+    }
 
     public CrucibleTileRenderer() {
-//        stirrer = new ModelPart(16, 16, 0, 0);
-//        stirrer.setPos(0.0F, 0.0F, 0.0F);
-//        stirrer.texOffs(0, 8).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 3.0F, 3.0F, 0.0F, false);
-//        stirrer.texOffs(0, 0).addBox(-1.0F, 3.0F, -1.0F, 2.0F, 6.0F, 2.0F, 0.0F, false);
+    	this.stirrer = Minecraft.getInstance().getEntityModels().bakeLayer(ClientRegistry.CRUCIBLE_STIRRER_LAYER).getChild("stirrer");
     }
 
     @Override
@@ -41,8 +56,8 @@ public class CrucibleTileRenderer implements BlockEntityRenderer<CrucibleTileEnt
             matrixStackIn.translate(0.5, 0.625, 0.5);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(45 + coeff * 360));
             matrixStackIn.translate(0, -0.125 * Math.sin(coeff * Math.PI), 0.125);
-//            stirrer.xRot = (float) Math.PI / 8 * (1.0f - (float) Math.sin(coeff * Math.PI));
-//            stirrer.render(matrixStackIn, bufferIn.getBuffer(RenderType.entitySolid(STIRRER_TEXTURE)), combinedLightIn, combinedOverlayIn);
+            stirrer.xRot = (float) Math.PI / 8 * (1.0f - (float) Math.sin(coeff * Math.PI));
+            stirrer.render(matrixStackIn, bufferIn.getBuffer(RenderType.entitySolid(STIRRER_TEXTURE)), combinedLightIn, combinedOverlayIn);
             matrixStackIn.popPose();
         }
         if (tile.hasWater) {

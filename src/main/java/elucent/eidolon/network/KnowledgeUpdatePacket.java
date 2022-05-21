@@ -14,8 +14,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-
-
 public class KnowledgeUpdatePacket {
     UUID uuid;
     CompoundTag tag;

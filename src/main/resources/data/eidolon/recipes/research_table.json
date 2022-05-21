@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    " c ",
+    "xxx",
+    "zzz"
+  ],
+  "key": {
+    "x": {
+      "item": "minecraft:red_carpet"
+    },
+    "z": {
+      "tag": "minecraft:planks"
+    },
+    "c": {
+      "item": "eidolon:magic_candle"
+    }
+  },
+  "result": {
+    "item": "eidolon:research_table"
+  }
+}

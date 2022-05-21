@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "eidolon:item/illwood_planks_slab"
+    },
+    "type=double": {
+      "model": "eidolon:item/illwood_planks"
+    },
+    "type=top": {
+      "model": "eidolon:block/illwood_planks_slab_top"
+    }
+  }
+}

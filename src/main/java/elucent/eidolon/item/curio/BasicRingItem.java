@@ -14,8 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class BasicRingItem extends Item {
     UUID ATTR_ID = new UUID(7207179027447911419l, 1628308750126455317l);
     public BasicRingItem(Properties properties) {

@@ -1,9 +1,9 @@
 package elucent.eidolon.item;
 
 import elucent.eidolon.Eidolon;
-import elucent.eidolon.spell.KnowledgeUtil;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
+import elucent.eidolon.util.KnowledgeUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -14,9 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 
-import net.minecraft.world.item.Item.Properties;
-
-public class CodexItem extends ItemBase {
+public class CodexItem extends ItemBase implements IManaRelatedItem {
     public CodexItem(Properties properties) {
         super(properties);
     }

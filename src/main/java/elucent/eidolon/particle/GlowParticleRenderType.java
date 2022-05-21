@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import elucent.eidolon.ClientEvents;
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Registry;
 import elucent.eidolon.util.RenderUtil;
 import net.minecraft.client.Minecraft;
@@ -24,7 +25,7 @@ public class GlowParticleRenderType implements ParticleRenderType {
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-        RenderSystem.setShader(Registry::getGlowingSpriteShader);
+        RenderSystem.setShader(ClientRegistry::getGlowingSpriteShader);
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
         ClientEvents.particleMVMatrix = RenderSystem.getModelViewMatrix();
         bufferBuilder.begin(Mode.QUADS, DefaultVertexFormat.PARTICLE);

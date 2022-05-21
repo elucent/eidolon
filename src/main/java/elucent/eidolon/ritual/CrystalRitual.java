@@ -23,7 +23,7 @@ public class CrystalRitual extends Ritual {
 
     @Override
     public RitualResult start(Level world, BlockPos pos) {
-        List<LivingEntity> entities = world.getEntitiesOfClass(LivingEntity.class, getSearchBounds(pos), (e) -> e.isInvertedHealAndHarm() && e.canChangeDimensions());
+        List<LivingEntity> entities = world.getEntitiesOfClass(LivingEntity.class, getSearchBounds(pos), (e) -> e.isInvertedHealAndHarm());
         for (LivingEntity e : entities) {
             e.hurt(Registry.RITUAL_DAMAGE, e.getMaxHealth() * 1000);
             if (!world.isClientSide) {

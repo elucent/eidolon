@@ -19,9 +19,9 @@
     "subtitle": "eidolon.subtitle.splash_bonechill",
     "sounds": [ "eidolon:splash_bonechill" ]
   },
-  "select_sign": {
+  "select_rune": {
     "category": "neutral",
-    "sounds": [ "eidolon:select_sign" ]
+    "sounds": [ "eidolon:select_rune" ]
   },
   "chant_word": {
     "category": "neutral",

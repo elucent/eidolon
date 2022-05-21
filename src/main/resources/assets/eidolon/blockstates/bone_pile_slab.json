@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "eidolon:item/bone_pile_slab"
+    },
+    "type=double": {
+      "model": "eidolon:item/bone_pile"
+    },
+    "type=top": {
+      "model": "eidolon:block/bone_pile_slab_top"
+    }
+  }
+}

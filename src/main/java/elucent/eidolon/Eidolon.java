@@ -1,24 +1,8 @@
 package elucent.eidolon;
 
-import elucent.eidolon.capability.IKnowledge;
-import elucent.eidolon.capability.IReputation;
-import elucent.eidolon.capability.KnowledgeImpl;
-import elucent.eidolon.capability.ReputationImpl;
 import elucent.eidolon.codex.CodexChapters;
 import elucent.eidolon.deity.RegisterDeitiesEvent;
-import elucent.eidolon.entity.AngelArrowRenderer;
-import elucent.eidolon.entity.NecromancerEntity;
-import elucent.eidolon.entity.NecromancerModel;
-import elucent.eidolon.entity.NecromancerRenderer;
-import elucent.eidolon.entity.RavenEntity;
-import elucent.eidolon.entity.RavenModel;
-import elucent.eidolon.entity.RavenRenderer;
-import elucent.eidolon.entity.WraithEntity;
-import elucent.eidolon.entity.WraithModel;
-import elucent.eidolon.entity.WraithRenderer;
-import elucent.eidolon.entity.ZombieBruteEntity;
-import elucent.eidolon.entity.ZombieBruteModel;
-import elucent.eidolon.entity.ZombieBruteRenderer;
+import elucent.eidolon.gui.ResearchTableScreen;
 import elucent.eidolon.gui.SoulEnchanterScreen;
 import elucent.eidolon.gui.WoodenBrewingStandScreen;
 import elucent.eidolon.gui.WorktableScreen;
@@ -29,8 +13,11 @@ import elucent.eidolon.proxy.ISidedProxy;
 import elucent.eidolon.proxy.ServerProxy;
 import elucent.eidolon.reagent.RegisterReagentsEvent;
 import elucent.eidolon.recipe.CrucibleRegistry;
+import elucent.eidolon.research.Research;
+import elucent.eidolon.research.Researches;
 import elucent.eidolon.ritual.RitualRegistry;
 import elucent.eidolon.spell.AltarEntries;
+import elucent.eidolon.spell.Runes;
 import elucent.eidolon.tile.BrazierTileRenderer;
 import elucent.eidolon.tile.CrucibleTileRenderer;
 import elucent.eidolon.tile.GobletTileRenderer;
@@ -42,10 +29,12 @@ import elucent.eidolon.tile.reagent.PipeTileRenderer;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.CreativeModeTab;
@@ -54,11 +43,10 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -73,7 +61,7 @@ import top.theillusivec4.curios.api.SlotTypePreset;
 
 @Mod(Eidolon.MODID)
 public class Eidolon {
-    public static ISidedProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+    public static ISidedProxy proxy = DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     public static final String MODID = "eidolon";
 
@@ -83,6 +71,15 @@ public class Eidolon {
             return new ItemStack(Registry.SHADOW_GEM.get(), 1);
         }
     };
+    
+    public static boolean trueMobType = false;
+    
+    public static MobType getTrueMobType(LivingEntity e) {
+    	trueMobType = true;
+    	MobType type = e.getMobType();
+    	trueMobType = false;
+    	return type;
+    }
 
     public Eidolon() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -98,6 +95,7 @@ public class Eidolon {
         MinecraftForge.EVENT_BUS.register(new Events());
         DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> {
             MinecraftForge.EVENT_BUS.register(new ClientEvents());
+            FMLJavaModLoadingContext.get().getModEventBus().register(new ClientRegistry());
             return new Object();
         });
     }
@@ -108,12 +106,12 @@ public class Eidolon {
         event.enqueueWork(() -> {
             CrucibleRegistry.init();
             RitualRegistry.init();
-            CodexChapters.init();
             Registry.addBrewingRecipes();
             AltarEntries.init();
-            MinecraftForge.EVENT_BUS.post(new RegisterDeitiesEvent());
-            MinecraftForge.EVENT_BUS.post(new RegisterReagentsEvent());
+            Researches.init();
+            Runes.init();
             AthameItem.initHarvestables();
+            CodexChapters.init();
         });
 
         SpawnPlacements.register(Registry.ZOMBIE_BRUTE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
@@ -123,7 +121,7 @@ public class Eidolon {
         SpawnPlacements.register(Registry.RAVEN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
             Animal::checkAnimalSpawnRules);
         SpawnPlacements.register(Registry.SLIMY_SLUG.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        	(e, w, t, pos, rand) -> pos.getY() < w.getHeight(Types.WORLD_SURFACE, pos.getX(), pos.getZ()));
+        	(e, w, t, pos, rand) -> true);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -148,11 +146,18 @@ public class Eidolon {
         ItemBlockRenderTypes.setRenderLayer(Registry.SILDRIAN_SEED.get(), RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(Registry.OANNA_BLOOM.get(), RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(Registry.AVENNIAN_SPRIG.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.ILLWOOD_LEAVES.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.ILLWOOD_SAPLING.get(), RenderType.cutoutMipped());
 
         event.enqueueWork(() -> {
             MenuScreens.register(Registry.WORKTABLE_CONTAINER.get(), WorktableScreen::new);
             MenuScreens.register(Registry.SOUL_ENCHANTER_CONTAINER.get(), SoulEnchanterScreen::new);
             MenuScreens.register(Registry.WOODEN_STAND_CONTAINER.get(), WoodenBrewingStandScreen::new);
+            MenuScreens.register(Registry.RESEARCH_TABLE_CONTAINER.get(), ResearchTableScreen::new);
+            
+            OverlayRegistry.registerOverlayAbove(ForgeIngameGui.PLAYER_HEALTH_ELEMENT, Eidolon.MODID + ":hearts", new ClientRegistry.EidolonHearts());
+            OverlayRegistry.registerOverlayBelow(ForgeIngameGui.CHAT_PANEL_ELEMENT, Eidolon.MODID + ":mana_bar", new ClientRegistry.EidolonManaBar());
+            ClientRegistry.initCurios();
         });
     }
 

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "eidolon",
+  "ingredients": [
+    {
+      "item": "eidolon:parchment"
+    },
+    {
+      "item": "eidolon:magic_ink"
+    },
+    {
+      "tag": "forge:feathers"
+    },
+    {
+      "tag": "forge:nuggets/arcane_gold"
+    }
+  ],
+  "result": {
+    "item": "eidolon:notetaking_tools"
+  }
+}

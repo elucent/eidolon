@@ -8,13 +8,10 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.core.Direction;
-import elucent.eidolon.tile.SoulEnchanterTileEntity;
 import elucent.eidolon.tile.reagent.CisternTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class CisternBlock extends BlockBase implements EntityBlock {
     public static final BooleanProperty TOP = BooleanProperty.create("top");

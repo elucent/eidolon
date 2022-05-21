@@ -9,11 +9,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.Tag;
-import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class RecipeUtil {

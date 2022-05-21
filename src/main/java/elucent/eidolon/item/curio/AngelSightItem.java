@@ -24,8 +24,6 @@ import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class AngelSightItem extends ItemBase {
 	static Random random = new Random();
 	

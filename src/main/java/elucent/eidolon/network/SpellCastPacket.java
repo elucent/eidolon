@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.spell.Sign;
+import elucent.eidolon.spell.SignSequence;
 import elucent.eidolon.spell.Signs;
 import elucent.eidolon.spell.Spell;
 import elucent.eidolon.spell.Spells;
@@ -19,20 +20,20 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 public class SpellCastPacket {
-    List<Sign> signs = new ArrayList<>();
+    SignSequence seq;
     Spell spell;
     BlockPos pos;
     UUID uuid;
 
-    public SpellCastPacket(Player player, BlockPos pos, Spell spell, List<Sign> signs) {
-        this.signs.addAll(signs);
+    public SpellCastPacket(Player player, BlockPos pos, Spell spell, SignSequence seq) {
+        this.seq = seq;
         this.pos = pos;
         this.spell = spell;
         this.uuid = player.getUUID();
     }
 
-    public SpellCastPacket(UUID uuid, BlockPos pos, ResourceLocation location, List<Sign> signs) {
-        this.signs.addAll(signs);
+    public SpellCastPacket(UUID uuid, BlockPos pos, ResourceLocation location, SignSequence seq) {
+        this.seq = seq;
         this.pos = pos;
         this.spell = Spells.find(location);
         this.uuid = uuid;
@@ -40,18 +41,15 @@ public class SpellCastPacket {
 
     public static void encode(SpellCastPacket object, FriendlyByteBuf buffer) {
         buffer.writeUtf(object.spell.getRegistryName().toString());
-        buffer.writeInt(object.signs.size());
-        for (int i = 0; i < object.signs.size(); i ++) buffer.writeUtf(object.signs.get(i).getRegistryName().toString());
+        buffer.writeNbt(object.seq.serializeNbt());
         buffer.writeUUID(object.uuid);
         buffer.writeBlockPos(object.pos);
     }
 
     public static SpellCastPacket decode(FriendlyByteBuf buffer) {
         ResourceLocation spell = new ResourceLocation(buffer.readUtf());
-        int n = buffer.readInt();
-        List<Sign> signs = new ArrayList<>();
-        for (int i = 0; i < n; i ++) signs.add(Signs.find(new ResourceLocation(buffer.readUtf())));
-        return new SpellCastPacket(buffer.readUUID(), buffer.readBlockPos(), spell, signs);
+        SignSequence seq = SignSequence.deserializeNbt(buffer.readNbt());
+        return new SpellCastPacket(buffer.readUUID(), buffer.readBlockPos(), spell, seq);
     }
 
     public static void consume(SpellCastPacket packet, Supplier<NetworkEvent.Context> ctx) {
@@ -62,7 +60,7 @@ public class SpellCastPacket {
             if (world != null) {
                 Player player = world.getPlayerByUUID(packet.uuid);
                 if (player != null) {
-                    List<Sign> signs = packet.signs;
+                    SignSequence signs = packet.seq;
                     packet.spell.cast(world, packet.pos, player, signs);
                 }
             }

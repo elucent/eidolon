@@ -14,8 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class BasicBeltItem extends ItemBase {
     UUID ATTR_ID = new UUID(5892388994722937059l, 8235504439637777033l);
     public BasicBeltItem(Properties properties) {

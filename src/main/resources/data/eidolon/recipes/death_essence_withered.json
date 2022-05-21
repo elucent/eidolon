@@ -1,0 +1,27 @@
+{
+  "type": "eidolon:crucible",
+  "steps": [
+    {
+      "items": [
+        { "item": "eidolon:withered_heart" },
+        { "item": "minecraft:rotten_flesh" }
+      ]
+    },
+    {
+      "stirs": 2,
+      "items": [
+        { "item": "minecraft:bone_meal" },
+        { "item": "minecraft:bone_meal" }
+      ]
+    },
+    {
+      "items": [
+        { "item": "minecraft:charcoal" }
+      ]
+    }
+  ],
+  "result": {
+    "item": "eidolon:death_essence",
+    "count": 8
+  }
+}

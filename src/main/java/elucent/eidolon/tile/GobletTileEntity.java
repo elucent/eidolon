@@ -32,9 +32,7 @@ public class GobletTileEntity extends TileEntityBase {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        tag = super.save(tag);
+    public void saveAdditional(CompoundTag tag) {
         if (type != null) tag.putString("type", type.getRegistryName().toString());
-        return tag;
     }
 }

@@ -45,6 +45,13 @@ public class ReputationImpl implements IReputation, INBTSerializable<CompoundTag
     }
 
     @Override
+    public boolean hasLock(UUID player, ResourceLocation deity, ResourceLocation lock) {
+    	ResourceLocation l = getReputationMap(player).computeIfAbsent(deity, (k) -> new ReputationEntry()).lock;
+    	if (l != null && l.equals(lock)) return true;
+    	return false;
+    }
+
+    @Override
     public void lock(UUID player, ResourceLocation deity, ResourceLocation key) {
         getReputationMap(player).computeIfAbsent(deity, (k) -> new ReputationEntry()).lock = key;
     }
@@ -67,7 +74,7 @@ public class ReputationImpl implements IReputation, INBTSerializable<CompoundTag
     @Override
     public boolean canPray(UUID player, ResourceLocation spell, long time) {
         Map<ResourceLocation, Long> times = getPrayerTimes().computeIfAbsent(player, (p) -> new HashMap<>());
-        return !times.containsKey(player) || times.get(spell) < time - 21000;
+        return !times.containsKey(spell) || times.get(spell) < time - 21000;
     }
 
     @Override

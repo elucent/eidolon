@@ -141,4 +141,38 @@ public class Tiers {
 
         public static SanguineTier INSTANCE = new SanguineTier();
     }
+
+    public static class NecroticTier implements Tier {
+        @Override
+        public int getUses() {
+            return 2161;
+        }
+
+        @Override
+        public float getSpeed() {
+            return 8.0f;
+        }
+
+        @Override
+        public float getAttackDamageBonus() {
+            return 3;
+        }
+
+        @Override
+        public int getLevel() {
+            return 3;
+        }
+
+        @Override
+        public int getEnchantmentValue() {
+            return 30;
+        }
+
+        @Override
+        public Ingredient getRepairIngredient() {
+            return Ingredient.of(Registry.DEATH_ESSENCE.get());
+        }
+
+        public static MagicToolTier INSTANCE = new MagicToolTier();
+    }
 }

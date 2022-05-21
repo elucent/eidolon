@@ -1,36 +1,37 @@
 package elucent.eidolon.mixin;
 
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
-import elucent.eidolon.event.SpeedFactorEvent;
-import elucent.eidolon.item.ReaperScytheItem;
-import net.minecraft.world.entity.Entity;
+import elucent.eidolon.capability.IPlayerData;
+import elucent.eidolon.item.IWingsItem;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
-    @Inject(method = "getSpeedFactor()F", at = @At("RETURN"), cancellable = true)
-    private void customGetSpeedFactor(CallbackInfoReturnable<Float> cir) {
-        float factor = cir.getReturnValue();
-        SpeedFactorEvent event = new SpeedFactorEvent((Entity)(Object)this, factor);
-        MinecraftForge.EVENT_BUS.post(event);
-        cir.setReturnValue(event.getSpeedFactor());
+    @Inject(method = "getMobType", at = @At("HEAD"), cancellable = true)
+    public void getMobType(CallbackInfoReturnable<MobType> ci) {
+    	if (((LivingEntity)(Object)this).hasEffect(Registry.UNDEATH_EFFECT.get()) && !Eidolon.trueMobType) {
+    		ci.setReturnValue(MobType.UNDEAD);
+    	}
     }
 
-    @Inject(method = "dropFromLootTable", at = @At("HEAD"), cancellable = true)
-    protected void customDropFromLootTable(DamageSource source, boolean hitRecently, CallbackInfo ci) {
-        if (((LivingEntity)(Object)this).isInvertedHealAndHarm()
-            && (source.getMsgId() == Registry.RITUAL_DAMAGE.getMsgId()
-                || source.getEntity() instanceof LivingEntity
-                    && ((LivingEntity) source.getEntity()).getMainHandItem().getItem() instanceof ReaperScytheItem)) {
-            ci.cancel();
-        }
+    @Inject(method = "isFallFlying", at = @At("HEAD"), cancellable = true)
+    public void isFallFlying(CallbackInfoReturnable<Boolean> ci) {
+       if ((LivingEntity)(Object)this instanceof Player p) {
+    	   Optional<IPlayerData> opt = p.getCapability(IPlayerData.INSTANCE).resolve();
+    	   if (opt.isPresent() && opt.get().isDashing(p)) ci.setReturnValue(true);
+       }
     }
 }

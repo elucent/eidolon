@@ -35,8 +35,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class EnchantedAshBlock extends BlockBase {
     public static final EnumProperty<RedstoneSide> NORTH = BlockStateProperties.NORTH_REDSTONE;
     public static final EnumProperty<RedstoneSide> EAST = BlockStateProperties.EAST_REDSTONE;

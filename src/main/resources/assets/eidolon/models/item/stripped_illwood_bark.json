@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "eidolon:block/stripped_illwood_log",
+    "side": "eidolon:block/stripped_illwood_log"
+  }
+}

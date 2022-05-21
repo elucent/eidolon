@@ -202,11 +202,10 @@ public class WoodenStandTileEntity extends BaseContainerBlockEntity implements W
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        super.save(compound);
+    public void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
         compound.putShort("BrewTime", (short)this.brewTime);
         ContainerHelper.saveAllItems(compound, this.brewingItemStacks);
-        return compound;
     }
 
     @Override

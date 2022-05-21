@@ -13,8 +13,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.Level;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class WorktableBlock extends BlockBase {
     public WorktableBlock(Properties properties) {
         super(properties);

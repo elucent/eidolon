@@ -30,9 +30,7 @@ public class EffigyTileEntity extends TileEntityBase {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        tag = super.save(tag);
+    public void saveAdditional(CompoundTag tag) {
         tag.putLong("previous", previous);
-        return tag;
     }
 }

@@ -3,8 +3,6 @@ package elucent.eidolon.item.model;// Made with Blockbench 3.7.4
 // Paste this class into your mod and generate all required imports
 
 
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -14,7 +12,6 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.EquipmentSlot;
 
 public class TopHatModel extends ArmorModel {
 	public TopHatModel(ModelPart part) {

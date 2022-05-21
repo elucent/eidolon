@@ -1,8 +1,8 @@
 package elucent.eidolon.deity;
 
 import elucent.eidolon.capability.IReputation;
-import elucent.eidolon.spell.KnowledgeUtil;
 import elucent.eidolon.spell.Signs;
+import elucent.eidolon.util.KnowledgeUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
 

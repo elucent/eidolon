@@ -1,20 +1,17 @@
 package elucent.eidolon.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.util.RenderUtil;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderStateShard.ShaderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -25,7 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class NecromancerRenderer extends MobRenderer<NecromancerEntity, NecromancerModel> {
     public NecromancerRenderer(Context erm) {
-        super(erm, new NecromancerModel(erm.bakeLayer(Registry.NECROMANCER_LAYER)), 0.6f);
+        super(erm, new NecromancerModel(erm.bakeLayer(ClientRegistry.NECROMANCER_LAYER)), 0.6f);
         this.addLayer(new NecromancerEyesLayer(this));
     }
 
@@ -37,7 +34,7 @@ public class NecromancerRenderer extends MobRenderer<NecromancerEntity, Necroman
             DefaultVertexFormat.NEW_ENTITY,
             Mode.QUADS, 256, true, false,
             RenderType.CompositeState.builder()
-            	.setShaderState(new ShaderStateShard(Registry::getGlowingEntityShader))
+            	.setShaderState(new ShaderStateShard(ClientRegistry::getGlowingEntityShader))
                 .setWriteMaskState(new RenderStateShard.WriteMaskStateShard(true, false))
                 .setLightmapState(new RenderStateShard.LightmapStateShard(false))
                 .setTransparencyState(RenderUtil.ADDITIVE_TRANSPARENCY)

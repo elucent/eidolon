@@ -9,31 +9,29 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 public abstract class StaticSpell extends Spell {
-    List<Sign> signs;
+    SignSequence signs;
 
     public StaticSpell(ResourceLocation name, Sign... signs) {
         super(name);
-        this.signs = Arrays.asList(signs);
+        this.signs = new SignSequence(signs);
     }
 
     @Override
-    public boolean matches(List<Sign> signs) {
-        if (this.signs.size() != signs.size()) return false;
-        for (int i = 0; i < signs.size(); i ++) if (this.signs.get(i) != signs.get(i)) return false;
-        return true;
+    public boolean matches(SignSequence signs) {
+        return this.signs.equals(signs);
     }
 
     public abstract boolean canCast(Level world, BlockPos pos, Player player);
 
     @Override
-    public boolean canCast(Level world, BlockPos pos, Player player, List<Sign> signs) {
+    public boolean canCast(Level world, BlockPos pos, Player player, SignSequence signs) {
         return canCast(world, pos, player);
     }
 
     public abstract void cast(Level world, BlockPos pos, Player player);
 
     @Override
-    public void cast(Level world, BlockPos pos, Player player, List<Sign> signs) {
+    public void cast(Level world, BlockPos pos, Player player, SignSequence signs) {
         cast(world, pos, player);
     }
 }

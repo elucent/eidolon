@@ -1,12 +1,11 @@
 package elucent.eidolon.codex;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import elucent.eidolon.ClientEvents;
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.capability.IKnowledge;
@@ -59,16 +58,16 @@ public class SignIndexPage extends Page {
         IKnowledge knowledge = entity.getCapability(IKnowledge.INSTANCE, null).resolve().get();
         for (int i = 0; i < entries.length; i ++) {
             int xx = x + 8 + (i % 2) * 56, yy = y + 4 + (i / 2) * 52;
-            if (knowledge.knowsSign(entries[i].sign) && mouseX >= xx + 38 && mouseY >= yy + 38 && mouseX <= xx + 50 && mouseY <= yy + 50) {
+            if (knowledge.knowsSign(entries[i].sign) && mouseX >= xx && mouseX <= xx + 48 && mouseY >= yy && mouseY <= yy + 48) {
                 gui.changeChapter(entries[i].chapter);
                 Minecraft.getInstance().player.playNotifySound(SoundEvents.UI_BUTTON_CLICK, SoundSource.NEUTRAL, 1.0f, 1.0f);
                 return true;
             }
-            else if (knowledge.knowsSign(entries[i].sign) && mouseX >= xx && mouseX <= xx + 48 && mouseY >= yy && mouseY <= yy + 48) {
-                gui.addToChant(entries[i].sign);
-                entity.playNotifySound(Registry.SELECT_SIGN.get(), SoundSource.NEUTRAL, 0.5f, entity.level.random.nextFloat() * 0.25f + 0.75f);
-                return true;
-            }
+//            else if (knowledge.knowsSign(entries[i].sign) && mouseX >= xx && mouseX <= xx + 48 && mouseY >= yy && mouseY <= yy + 48) {
+//                gui.addToChant(entries[i].sign);
+//                entity.playNotifySound(Registry.SELECT_SIGN.get(), SoundSource.NEUTRAL, 0.5f, entity.level.random.nextFloat() * 0.25f + 0.75f);
+//                return true;
+//            }
         }
         return false;
     }
@@ -109,7 +108,7 @@ public class SignIndexPage extends Page {
                 Tesselator tess = Tesselator.getInstance();
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-                RenderSystem.setShader(Registry::getGlowingSpriteShader);
+                RenderSystem.setShader(ClientRegistry::getGlowingSpriteShader);
                 if (hover && !infoHover) {
                     mStack.pushPose();
                     mStack.translate(xx + 24, yy + 24, 0);
@@ -119,6 +118,7 @@ public class SignIndexPage extends Page {
                 }
                 RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
                 for (int j = 0; j < (hover && !infoHover ? 2 : 1); j++) {
+                	float r = sign.getRed(), g = sign.getGreen(), b = sign.getBlue();
                     RenderUtil.litQuad(mStack, MultiBufferSource.immediate(tess.getBuilder()), xx + 12, yy + 12, 24, 24,
                         sign.getRed(), sign.getGreen(), sign.getBlue(), Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(sign.getSprite()));
                     tess.end();

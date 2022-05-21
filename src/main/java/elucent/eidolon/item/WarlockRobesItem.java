@@ -1,5 +1,6 @@
 package elucent.eidolon.item;
 
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.item.model.WarlockArmorModel;
@@ -19,7 +20,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.extensions.IForgeItem;
-import net.minecraft.world.item.Item.Properties;
 
 public class WarlockRobesItem extends ArmorItem implements IForgeItem {
     private static final int[] MAX_DAMAGE_ARRAY = new int[]{13, 15, 16, 11};
@@ -92,10 +92,10 @@ public class WarlockRobesItem extends ArmorItem implements IForgeItem {
                 float f1 = Mth.rotLerp(pticks, entity.yHeadRotO, entity.yHeadRot);
                 float netHeadYaw = f1 - f;
                 float netHeadPitch = Mth.lerp(pticks, entity.xRotO, entity.getXRot());
-                Registry.WARLOCK_ARMOR_MODEL.slot = slot;
-                Registry.WARLOCK_ARMOR_MODEL.copyFromDefault(_default);
-                Registry.WARLOCK_ARMOR_MODEL.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount + pticks, netHeadYaw, netHeadPitch);
-                return Registry.WARLOCK_ARMOR_MODEL;
+                ClientRegistry.WARLOCK_ARMOR_MODEL.slot = slot;
+                ClientRegistry.WARLOCK_ARMOR_MODEL.copyFromDefault(_default);
+                ClientRegistry.WARLOCK_ARMOR_MODEL.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount + pticks, netHeadYaw, netHeadPitch);
+                return ClientRegistry.WARLOCK_ARMOR_MODEL;
             }
         });
     } 

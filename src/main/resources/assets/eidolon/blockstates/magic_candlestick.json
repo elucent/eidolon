@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "eidolon:block/magic_candlestick"
+    },
+    "facing=north": {
+      "model": "eidolon:block/magic_candlestick_wall",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "eidolon:block/magic_candlestick_wall",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "eidolon:block/magic_candlestick_wall",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "eidolon:block/magic_candlestick_wall",
+      "y": 270
+    }
+  }
+}

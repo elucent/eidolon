@@ -2,15 +2,10 @@ package elucent.eidolon.potion;
 
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMobEffect;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class VulnerableEffect extends MobEffect implements IForgeMobEffect {
     public VulnerableEffect() {

@@ -40,7 +40,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import net.minecraft.world.item.Item.Properties;
 import java.util.Random;
 
 public class AthameItem extends SwordItem {

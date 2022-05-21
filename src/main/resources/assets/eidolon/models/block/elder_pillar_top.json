@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "eidolon:block/elder_pillar_end",
+    "side": "eidolon:block/elder_pillar_top_side"
+  }
+}

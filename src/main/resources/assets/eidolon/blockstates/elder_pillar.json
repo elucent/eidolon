@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "top=false,bottom=false": {
+      "model": "eidolon:item/elder_pillar"
+    },
+    "top=true,bottom=false": {
+      "model": "eidolon:block/elder_pillar_bottom"
+    },
+    "top=true,bottom=true": {
+      "model": "eidolon:block/elder_pillar_mid"
+    },
+    "top=false,bottom=true": {
+      "model": "eidolon:block/elder_pillar_top"
+    }
+  }
+}

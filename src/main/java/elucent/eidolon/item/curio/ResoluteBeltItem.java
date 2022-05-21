@@ -24,8 +24,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class ResoluteBeltItem extends ItemBase {
     UUID ATTR_ID = new UUID(3701779382882225399l, 5035874982077300549l);
 

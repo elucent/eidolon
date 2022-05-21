@@ -12,6 +12,6 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 public class PlayerRendererMixin {
     @Inject(method = "<init>", at = @At("RETURN"), cancellable = true)
     public void constructor(CallbackInfo ci) {
-        // ((PlayerRenderer)(Object)this).addLayer(new RavenVariantLayer<>(((PlayerRenderer)(Object)this)));
+         ((PlayerRenderer)(Object)this).addLayer(new RavenVariantLayer<>(((PlayerRenderer)(Object)this)));
     }
 }

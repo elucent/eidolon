@@ -1,0 +1,28 @@
+{
+  "type": "eidolon:crucible",
+  "steps": [
+    {
+      "items": [
+      	{ "item": "minecraft:leather" }
+      ]
+    },
+    {
+      "stirs": 1
+    },
+    {
+      "stirs": 1
+    },
+    {
+      "items": [
+        { "item": "minecraft:paper" },
+        { "item": "minecraft:paper" },
+        { "item": "minecraft:paper" },
+        { "item": "eidolon:enchanted_ash" }
+      ]
+    }
+  ],
+  "result": {
+    "item": "eidolon:parchment",
+    "count": 4
+  }
+}

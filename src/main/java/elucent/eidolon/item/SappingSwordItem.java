@@ -17,8 +17,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import net.minecraft.world.item.Item.Properties;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 
 public class SappingSwordItem extends SwordItem {
     public SappingSwordItem(Properties builderIn) {
@@ -40,6 +40,12 @@ public class SappingSwordItem extends SwordItem {
             tooltip.add(new TextComponent("" + ChatFormatting.DARK_PURPLE + ChatFormatting.ITALIC + I18n.get(this.loreTag)));
         }
     }
+    
+//    @Override
+//	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
+//    	if (toolAction == ToolActions.SWORD_SWEEP) return false;
+//    	return super.canPerformAction(stack, toolAction);
+//    }
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {

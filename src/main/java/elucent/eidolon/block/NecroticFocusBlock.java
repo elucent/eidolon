@@ -2,7 +2,6 @@ package elucent.eidolon.block;
 
 import net.minecraft.world.level.block.state.BlockState;
 import elucent.eidolon.tile.NecroticFocusTileEntity;
-import elucent.eidolon.tile.SoulEnchanterTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -10,7 +9,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class NecroticFocusBlock extends HorizontalWaterloggableBlock implements EntityBlock {
     VoxelShape SOUTH = Shapes.box(0, 0, 0, 1, 1, 0.5),

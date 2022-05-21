@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
+import elucent.eidolon.Config;
 import elucent.eidolon.Registry;
 import elucent.eidolon.network.CrucibleFailPacket;
 import elucent.eidolon.network.CrucibleSuccessPacket;
@@ -156,8 +157,7 @@ public class CrucibleTileEntity extends TileEntityBase {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        tag = super.save(tag);
+    public void saveAdditional(CompoundTag tag) {
         ListTag steps = new ListTag();
         for (CrucibleStep step : this.steps) steps.add(step.write());
         tag.put("steps", steps);
@@ -165,7 +165,6 @@ public class CrucibleTileEntity extends TileEntityBase {
         tag.putBoolean("hasWater", hasWater);
         tag.putInt("stirs", stirs);
         tag.putInt("stirTicks", stirTicks);
-        return tag;
     }
 
     public void tick() {
@@ -252,7 +251,7 @@ public class CrucibleTileEntity extends TileEntityBase {
                     }
                     else {
                         level.playSound(null, worldPosition, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 1.0f, 1.0f); // try continue
-                        stepCounter = 100;
+                        stepCounter = Config.CRUCIBLE_STEP_DURATION.get();
                     }
                     stirs = 0;
                     sync();
@@ -263,7 +262,7 @@ public class CrucibleTileEntity extends TileEntityBase {
         if (!level.isClientSide && stepCounter == 0 && steps.size() == 0
             && hasWater && boiling && level.getGameTime() % 100 == 0) {
             List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(worldPosition).deflate(0.125));
-            if (items.size() > 0) stepCounter = 40;
+            if (items.size() > 0) stepCounter = Config.CRUCIBLE_STEP_DURATION.get() / 2;
         }
     }
 }

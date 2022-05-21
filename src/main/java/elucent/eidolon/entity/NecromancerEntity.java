@@ -211,7 +211,7 @@ public class NecromancerEntity extends SpellcasterIllager {
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.targetSelector.addGoal(2, (new NearestAttackableTargetGoal<>(this, Player.class, 10, false, false, (e) -> e.getCommandSenderWorld().getCapability(IReputation.INSTANCE).isPresent() && e.getCommandSenderWorld().getCapability(IReputation.INSTANCE).resolve().get().getReputation((Player)e, Deities.DARK_DEITY.getId()) >= 50)).setUnseenMemoryTicks(300));
+        this.targetSelector.addGoal(2, (new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (e) -> e.getCommandSenderWorld().getCapability(IReputation.INSTANCE).isPresent() && e.getCommandSenderWorld().getCapability(IReputation.INSTANCE).resolve().get().getReputation((Player)e, Deities.DARK_DEITY.getId()) >= 50)).setUnseenMemoryTicks(300));
     }
 
     protected SoundEvent getCastingSoundEvent() {

@@ -6,8 +6,12 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
 public class Config {
+	// generic
+	public static ConfigValue<Integer> CRUCIBLE_STEP_DURATION, MAX_ETHEREAL_HEALTH;
+	
     // mobs
-    public static ConfigValue<Integer> WRAITH_SPAWN_WEIGHT, ZOMBIE_BRUTE_SPAWN_WEIGHT, RAVEN_SPAWN_WEIGHT;
+    public static ConfigValue<Integer> WRAITH_SPAWN_WEIGHT, ZOMBIE_BRUTE_SPAWN_WEIGHT, RAVEN_SPAWN_WEIGHT,
+    	ABOVEGROUND_SLUG_WEIGHT, UNDERGROUND_SLUG_WEIGHT;
 
     // world
     public static ConfigValue<Integer> LEAD_MIN_Y, LEAD_MAX_Y, LEAD_VEIN_SIZE, LEAD_VEIN_COUNT;
@@ -17,22 +21,33 @@ public class Config {
         LAB_ENABLED, STRAY_TOWER_ENABLED, CATACOMB_ENABLED;
 
     public Config(ForgeConfigSpec.Builder builder) {
+        builder.comment("Generic settings").push("generic");
+        CRUCIBLE_STEP_DURATION = builder.comment("Duration in ticks of each step of a crucible recipe.")
+        		.defineInRange("crucibleStepDuration", 100, 20, 1200);
+        MAX_ETHEREAL_HEALTH = builder.comment("Maximum amount of ethereal health (soul half-hearts) an entity can have at once.")
+        		.defineInRange("maxEtherealHealth", 80, 0, 1000);
+        builder.pop();
+        
         builder.comment("Mob settings").push("mobs");
         WRAITH_SPAWN_WEIGHT = builder.comment("Spawn weight for wraith entity. Set to zero to disable spawning.")
-            .defineInRange("wraithSpawnWeight", 40, 0, 1000);
+            .defineInRange("wraithSpawnWeight", 60, 0, 1000);
         ZOMBIE_BRUTE_SPAWN_WEIGHT = builder.comment("Spawn weight for zombie brute entity. Set to zero to disable spawning.")
-            .defineInRange("zombieBruteSpawnWeight", 40, 0, 1000);
+            .defineInRange("zombieBruteSpawnWeight", 60, 0, 1000);
         RAVEN_SPAWN_WEIGHT = builder.comment("Spawn weight for raven entity. Set to zero to disable spawning.")
             .defineInRange("ravenSpawnWeight", 6, 0, 1000);
+        ABOVEGROUND_SLUG_WEIGHT = builder.comment("Spawn weight for slug entity in aboveground biomes. Set to zero to disable spawning.")
+            .defineInRange("slugWeightAboveground", 8, 0, 1000);
+        UNDERGROUND_SLUG_WEIGHT = builder.comment("Spawn weight for slug entity in underground biomes. Set to zero to disable spawning.")
+            .defineInRange("slugWeightUnderground", 6, 0, 1000);
         builder.pop();
 
         builder.comment("World generation settings").push("world");
         LEAD_ENABLED = builder.comment("Whether lead ore is enabled. Set to false to disable spawning.")
             .define("leadEnabled", true);
         LEAD_MIN_Y = builder.comment("Minimum Y value for lead ore veins")
-            .defineInRange("leadOreMinY", -27, 0, 254);
+            .defineInRange("leadOreMinY", -27, -63, 318);
         LEAD_MAX_Y = builder.comment("Maximum Y value for lead ore veins")
-            .defineInRange("leadOreMaxY", 41, 1, 255);
+            .defineInRange("leadOreMaxY", 41, -62, 319);
         LEAD_VEIN_SIZE = builder.comment("Maximum number of blocks per lead ore vein")
             .defineInRange("leadOreVeinSize", 6, 1, 255);
         LEAD_VEIN_COUNT = builder.comment("Number of lead ore veins per chunk")
@@ -40,9 +55,9 @@ public class Config {
         SILVER_ENABLED = builder.comment("Whether silver ore is enabled. Set to false to disable spawning.")
             .define("silverEnabled", true);
         SILVER_MIN_Y = builder.comment("Minimum Y value for silver ore veins")
-            .defineInRange("silverOreMinY", -60, 0, 254);
+            .defineInRange("silverOreMinY", -60, -63, 318);
         SILVER_MAX_Y = builder.comment("Maximum Y value for silver ore veins")
-            .defineInRange("silverOreMaxY", 33, 1, 255);
+            .defineInRange("silverOreMaxY", 33, -62, 319);
         SILVER_VEIN_SIZE = builder.comment("Maximum number of blocks per silver ore vein")
             .defineInRange("silverOreVeinSize", 6, 1, 255);
         SILVER_VEIN_COUNT = builder.comment("Number of silver ore veins per chunk")

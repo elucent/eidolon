@@ -1,0 +1,34 @@
+{
+  "type": "eidolon:crucible",
+  "steps": [
+    {
+      "items": [
+      	{ "tag": "forge:dyes/black" },
+      	{ "tag": "forge:dyes/black" },
+      	{ "item": "minecraft:glow_ink_sac" }
+      ]
+    },
+    {
+      "items": [
+      	{ "tag": "forge:dyes/blue" }
+      ],
+      "stirs": 1
+    },
+    {
+      "items": [
+      	{ "tag": "forge:nuggets/silver" },
+      	{ "tag": "forge:nuggets/silver" }
+      ],
+      "stirs": 1
+    },
+    {
+      "items": [
+        { "item": "minecraft:glass_bottle" }
+      ]
+    }
+  ],
+  "result": {
+    "item": "eidolon:magic_ink",
+    "count": 2
+  }
+}

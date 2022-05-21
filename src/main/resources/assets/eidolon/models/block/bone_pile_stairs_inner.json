@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "eidolon:block/bone_pile",
+    "top": "eidolon:block/bone_pile",
+    "side": "eidolon:block/bone_pile"
+  }
+}

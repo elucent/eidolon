@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "end": "eidolon:block/illwood_log_top",
+    "side": "eidolon:block/illwood_log"
+  }
+}

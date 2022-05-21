@@ -2,9 +2,9 @@ package elucent.eidolon.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 public class RavenRenderer extends MobRenderer<RavenEntity, RavenModel> {
     protected static final ResourceLocation TEXTURE = new ResourceLocation(Eidolon.MODID, "textures/entity/raven.png");
     public RavenRenderer(Context erm) {
-        super(erm, new RavenModel(erm.bakeLayer(Registry.RAVEN_LAYER)), 0.25f);
+        super(erm, new RavenModel(erm.bakeLayer(ClientRegistry.RAVEN_LAYER)), 0.25f);
     }
 
     @Override

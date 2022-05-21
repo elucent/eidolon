@@ -1,6 +1,8 @@
 package elucent.eidolon.ritual;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.network.RitualConsumePacket;
@@ -31,10 +33,13 @@ public class FocusItemRequirement implements IRequirement {
         this.match = item;
     }
 
+    public FocusItemRequirement(Function<ItemStack, Boolean> item) {
+        this.match = item;
+    }
+
     @Override
     public RequirementInfo isMet(Ritual ritual, Level world, BlockPos pos) {
-        List<IRitualItemProvider> tiles = Ritual.getTilesWithinAABB(IRitualItemProvider.class, world, ritual.getSearchBounds(pos));
-        System.out.println(tiles.size());
+        List<IRitualItemFocus> tiles = Ritual.getTilesWithinAABB(IRitualItemFocus.class, world, ritual.getSearchBounds(pos));
         if (tiles.isEmpty()) return RequirementInfo.FALSE;
         for (int i = 0; i < tiles.size(); i ++) {
             ItemStack stack = tiles.get(i).provide();
@@ -47,6 +52,9 @@ public class FocusItemRequirement implements IRequirement {
             }
             else if (match instanceof Tag && ((Tag<Item>)match).contains(stack.getItem())) {
                 return new RequirementInfo(true, ((BlockEntity)tiles.get(i)).getBlockPos());
+            }
+            else if (match instanceof Function && ((Function<ItemStack, Boolean>)match).apply(stack)) {
+            	return new RequirementInfo(true, ((BlockEntity)tiles.get(i)).getBlockPos());
             }
         }
 

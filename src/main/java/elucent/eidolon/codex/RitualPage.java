@@ -1,11 +1,10 @@
 package elucent.eidolon.codex;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.ritual.Ritual;
@@ -61,11 +60,11 @@ public class RitualPage extends Page {
         Tesselator tess = Tesselator.getInstance();
         RenderSystem.disableTexture();
         RenderSystem.depthMask(false);
-        RenderSystem.setShader(Registry::getGlowingShader);
+        RenderSystem.setShader(ClientRegistry::getGlowingShader);
         RenderUtil.dragon(mStack, MultiBufferSource.immediate(tess.getBuilder()), x + 64, y + 48, 20, 20, ritual.getRed(), ritual.getGreen(), ritual.getBlue());
         tess.end();
         RenderSystem.enableTexture();
-        RenderSystem.setShader(Registry::getGlowingSpriteShader);
+        RenderSystem.setShader(ClientRegistry::getGlowingSpriteShader);
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
         for (int j = 0; j < 2; j++) {
             RenderUtil.litQuad(mStack, MultiBufferSource.immediate(tess.getBuilder()), x + 52, y + 36, 24, 24,

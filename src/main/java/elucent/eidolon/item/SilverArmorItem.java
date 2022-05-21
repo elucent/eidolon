@@ -1,9 +1,9 @@
 package elucent.eidolon.item;
 
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.item.model.SilverArmorModel;
-import elucent.eidolon.item.model.WarlockArmorModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.Entity;
@@ -19,7 +19,6 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraft.world.item.Item.Properties;
 
 public class SilverArmorItem extends ArmorItem {
     private static final int[] MAX_DAMAGE_ARRAY = new int[]{13, 15, 16, 11};
@@ -94,10 +93,10 @@ public class SilverArmorItem extends ArmorItem {
                 float f1 = Mth.rotLerp(pticks, entity.yHeadRotO, entity.yHeadRot);
                 float netHeadYaw = f1 - f;
                 float netHeadPitch = Mth.lerp(pticks, entity.xRotO, entity.getXRot());
-                Registry.SILVER_ARMOR_MODEL.slot = slot;
-                Registry.SILVER_ARMOR_MODEL.copyFromDefault(_default);
-                Registry.SILVER_ARMOR_MODEL.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount + pticks, netHeadYaw, netHeadPitch);
-                return Registry.SILVER_ARMOR_MODEL;
+                ClientRegistry.SILVER_ARMOR_MODEL.slot = slot;
+                ClientRegistry.SILVER_ARMOR_MODEL.copyFromDefault(_default);
+                ClientRegistry.SILVER_ARMOR_MODEL.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount + pticks, netHeadYaw, netHeadPitch);
+                return ClientRegistry.SILVER_ARMOR_MODEL;
             }
         });
     } 

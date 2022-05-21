@@ -17,7 +17,6 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
@@ -93,14 +92,12 @@ public class BrazierTileEntity extends TileEntityBase {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        tag = super.save(tag);
+    public void saveAdditional(CompoundTag tag) {
         tag.put("stack", stack.save(new CompoundTag()));
         tag.putBoolean("burning", burning);
         if (ritual != null) tag.putString("ritual", ritual.getRegistryName().toString());
         tag.putInt("step", step);
         tag.putBoolean("ritualDone", ritualDone);
-        return tag;
     }
 
     protected void complete() {

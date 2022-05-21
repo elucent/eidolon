@@ -17,8 +17,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.phys.AABB;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class GenericBarterGoal<E extends PathfinderMob> extends Goal {
     static Random rand = new Random();
     Predicate<ItemStack> valid;

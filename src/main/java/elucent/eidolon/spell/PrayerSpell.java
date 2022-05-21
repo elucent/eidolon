@@ -49,7 +49,6 @@ public class PrayerSpell extends StaticSpell {
             world.getCapability(IReputation.INSTANCE, null).ifPresent((rep) -> {
                 rep.pray(player, getRegistryName(), world.getGameTime());
                 double prev = rep.getReputation(player, deity.getId());
-                KnowledgeUtil.grantSign(player, Signs.FLAME_SIGN);
                 rep.addReputation(player, deity.getId(), 1.0 + 0.25 * info.getPower());
             });
         }

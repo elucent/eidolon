@@ -14,8 +14,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class CleavingAxeItem extends AxeItem {
     public CleavingAxeItem(Properties builderIn) {
         super(Tiers.PewterTier.INSTANCE, 7, -3.2f, builderIn);

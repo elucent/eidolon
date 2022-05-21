@@ -1,0 +1,23 @@
+{
+  "type": "eidolon:crucible",
+  "steps": [
+    {
+      "items": [
+        { "item": "minecraft:glow_berries" },
+        { "item": "minecraft:glow_berries" },
+        { "item": "minecraft:glow_berries" },
+        { "item": "minecraft:glow_berries" }
+      ]
+    },
+    {
+      "stirs": 2,
+      "items": [
+        { "tag": "forge:dusts/sulfur" }
+      ]
+    }
+  ],
+  "result": {
+    "item": "minecraft:glowstone_dust",
+    "count": 2
+  }
+}

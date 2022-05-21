@@ -8,8 +8,18 @@
     "eidolon:polished_planks_stairs",
     "eidolon:polished_planks",
     "eidolon:polished_wood_pillar",
+    "eidolon:illwood_planks_fence_gate",
+    "eidolon:illwood_planks_fence",
+    "eidolon:illwood_planks_slab",
+    "eidolon:illwood_planks_stairs",
+    "eidolon:illwood_planks",
+    "eidolon:illwood_log",
+    "eidolon:illwood_bark",
+    "eidolon:stripped_illwood_log",
+    "eidolon:stripped_illwood_bark",
     "eidolon:wooden_altar",
     "eidolon:wooden_brewing_stand",
-    "eidolon:worktable"
+    "eidolon:worktable",
+    "eidolon:research_table"
   ]
 }

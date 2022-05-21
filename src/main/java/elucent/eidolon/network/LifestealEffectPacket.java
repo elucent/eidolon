@@ -11,8 +11,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-
-
 public class LifestealEffectPacket {
     BlockPos src, dst;
     float r, g, b;

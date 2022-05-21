@@ -14,8 +14,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class ReaperScytheItem extends SwordItem {
     public ReaperScytheItem(Properties builderIn) {
         super(Tiers.PewterTier.INSTANCE, 5, -2.9f, builderIn);

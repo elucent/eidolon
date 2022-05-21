@@ -5,7 +5,6 @@ import java.util.Random;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.levelgen.feature.StructurePieceType;

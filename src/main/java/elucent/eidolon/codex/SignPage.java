@@ -1,12 +1,11 @@
 package elucent.eidolon.codex;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import elucent.eidolon.ClientEvents;
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.spell.Sign;
@@ -61,7 +60,7 @@ public class SignPage extends Page {
         Tesselator tess = Tesselator.getInstance();
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        RenderSystem.setShader(Registry::getGlowingSpriteShader);
+        RenderSystem.setShader(ClientRegistry::getGlowingSpriteShader);
         mStack.pushPose();
         mStack.translate(x + 64, y + 80, 0);
         // mStack.scale(0.9f, 0.9f, 0.9f);

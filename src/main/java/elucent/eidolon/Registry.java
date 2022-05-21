@@ -15,19 +15,23 @@ import elucent.eidolon.block.CisternBlock;
 import elucent.eidolon.block.CrucibleBlock;
 import elucent.eidolon.block.EffigyBlock;
 import elucent.eidolon.block.EnchantedAshBlock;
+import elucent.eidolon.block.GobletBlock;
 import elucent.eidolon.block.HandBlock;
 import elucent.eidolon.block.HerbBlockBase;
-import elucent.eidolon.block.HorizontalWaterloggableBlock;
 import elucent.eidolon.block.NecroticFocusBlock;
 import elucent.eidolon.block.PillarBlockBase;
 import elucent.eidolon.block.PipeBlock;
+import elucent.eidolon.block.ResearchTableBlock;
 import elucent.eidolon.block.SoulEnchanterBlock;
 import elucent.eidolon.block.TableBlockBase;
 import elucent.eidolon.block.TwoHighBlockBase;
 import elucent.eidolon.block.WoodenStandBlock;
 import elucent.eidolon.block.WorktableBlock;
 import elucent.eidolon.capability.IKnowledge;
+import elucent.eidolon.capability.IPlayerData;
 import elucent.eidolon.capability.IReputation;
+import elucent.eidolon.capability.ISoul;
+import elucent.eidolon.capability.KnowledgeCommand;
 import elucent.eidolon.entity.AngelArrowEntity;
 import elucent.eidolon.entity.AngelArrowRenderer;
 import elucent.eidolon.entity.BonechillProjectileEntity;
@@ -49,19 +53,26 @@ import elucent.eidolon.entity.WraithRenderer;
 import elucent.eidolon.entity.ZombieBruteEntity;
 import elucent.eidolon.entity.ZombieBruteModel;
 import elucent.eidolon.entity.ZombieBruteRenderer;
+import elucent.eidolon.gui.ResearchTableContainer;
 import elucent.eidolon.gui.SoulEnchanterContainer;
 import elucent.eidolon.gui.WoodenBrewingStandContainer;
 import elucent.eidolon.gui.WorktableContainer;
 import elucent.eidolon.item.AthameItem;
 import elucent.eidolon.item.BonechillWandItem;
+import elucent.eidolon.item.BonelordArmorItem;
 import elucent.eidolon.item.CleavingAxeItem;
 import elucent.eidolon.item.CodexItem;
+import elucent.eidolon.item.CompletedResearchItem;
+import elucent.eidolon.item.DeathbringerScytheItem;
 import elucent.eidolon.item.ItemBase;
+import elucent.eidolon.item.NotetakingToolsItem;
 import elucent.eidolon.item.ReaperScytheItem;
+import elucent.eidolon.item.ResearchNotesItem;
 import elucent.eidolon.item.ReversalPickItem;
 import elucent.eidolon.item.SappingSwordItem;
 import elucent.eidolon.item.SilverArmorItem;
 import elucent.eidolon.item.SoulfireWandItem;
+import elucent.eidolon.item.SummoningStaffItem;
 import elucent.eidolon.item.Tiers;
 import elucent.eidolon.item.TongsItem;
 import elucent.eidolon.item.TopHatItem;
@@ -76,8 +87,10 @@ import elucent.eidolon.item.curio.GlassHandItem;
 import elucent.eidolon.item.curio.GravityBeltItem;
 import elucent.eidolon.item.curio.MindShieldingPlateItem;
 import elucent.eidolon.item.curio.PrestigiousPalmItem;
+import elucent.eidolon.item.curio.RavenCloakItem;
 import elucent.eidolon.item.curio.ResoluteBeltItem;
 import elucent.eidolon.item.curio.SanguineAmuletItem;
+import elucent.eidolon.item.curio.SoulboneAmuletItem;
 import elucent.eidolon.item.curio.TerminusMirrorItem;
 import elucent.eidolon.item.curio.VoidAmuletItem;
 import elucent.eidolon.item.curio.WardedMailItem;
@@ -87,8 +100,11 @@ import elucent.eidolon.item.model.WarlockArmorModel;
 import elucent.eidolon.mixin.PotionBrewingMixin;
 import elucent.eidolon.particle.BubbleParticleType;
 import elucent.eidolon.particle.FlameParticleType;
+import elucent.eidolon.particle.GlowingSlashParticleType;
 import elucent.eidolon.particle.LineWispParticleType;
+import elucent.eidolon.particle.RuneParticleType;
 import elucent.eidolon.particle.SignParticleType;
+import elucent.eidolon.particle.SlashParticleType;
 import elucent.eidolon.particle.SmokeParticleType;
 import elucent.eidolon.particle.SparkleParticleType;
 import elucent.eidolon.particle.SteamParticleType;
@@ -96,11 +112,13 @@ import elucent.eidolon.particle.WispParticleType;
 import elucent.eidolon.potion.AnchoredEffect;
 import elucent.eidolon.potion.ChilledEffect;
 import elucent.eidolon.potion.ReinforcedEffect;
+import elucent.eidolon.potion.UndeathEffect;
 import elucent.eidolon.potion.VulnerableEffect;
 import elucent.eidolon.reagent.Reagent;
 import elucent.eidolon.reagent.ReagentRegistry;
 import elucent.eidolon.recipe.CrucibleRecipe;
 import elucent.eidolon.recipe.WorktableRecipe;
+import elucent.eidolon.research.Research;
 import elucent.eidolon.ritual.AllureRitual;
 import elucent.eidolon.ritual.CrystalRitual;
 import elucent.eidolon.ritual.DaylightRitual;
@@ -114,10 +132,12 @@ import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
 import elucent.eidolon.tile.BrazierTileEntity;
 import elucent.eidolon.tile.CrucibleTileEntity;
+import elucent.eidolon.tile.CrucibleTileRenderer;
 import elucent.eidolon.tile.EffigyTileEntity;
 import elucent.eidolon.tile.GobletTileEntity;
 import elucent.eidolon.tile.HandTileEntity;
 import elucent.eidolon.tile.NecroticFocusTileEntity;
+import elucent.eidolon.tile.ResearchTableTileEntity;
 import elucent.eidolon.tile.SoulEnchanterTileEntity;
 import elucent.eidolon.tile.SoulEnchanterTileRenderer;
 import elucent.eidolon.tile.WoodenStandTileEntity;
@@ -125,6 +145,7 @@ import elucent.eidolon.tile.reagent.CisternTileEntity;
 import elucent.eidolon.tile.reagent.PipeTileEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -134,8 +155,8 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -143,9 +164,12 @@ import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -166,9 +190,11 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.BlockEntitySupplier;
@@ -182,11 +208,13 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -213,6 +241,9 @@ public class Registry {
     static DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Eidolon.MODID);
     static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Eidolon.MODID);
     static DeferredRegister<RecipeSerializer<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Eidolon.MODID);
+    static DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, Eidolon.MODID);
+    
+    public static Tag<Item> ZOMBIE_FOOD_TAG = ItemTags.createOptional(new ResourceLocation(Eidolon.MODID, "zombie_food"));
 
     static Item.Properties itemProps() {
         return new Item.Properties().tab(Eidolon.TAB);
@@ -237,6 +268,10 @@ public class Registry {
     static RegistryObject<Item> addItem(String name, Item item) {
         ITEM_MAP.put(name, item);
         return ITEMS.register(name, () -> item);
+    }
+
+    static RegistryObject<Item> addItem(String name, Supplier<Item> item) {
+        return ITEMS.register(name, item);
     }
 
     static RegistryObject<Block> addBlock(String name, Block.Properties props) {
@@ -325,7 +360,7 @@ public class Registry {
         CAST_BONECHILL_EVENT = addSound("cast_bonechill"),
         SPLASH_SOULFIRE_EVENT = addSound("splash_soulfire"),
         SPLASH_BONECHILL_EVENT = addSound("splash_bonechill"),
-        SELECT_SIGN = addSound("select_sign"),
+        SELECT_RUNE = addSound("select_rune"),
         CHANT_WORD = addSound("chant_word"),
         PAROUSIA = addSound("parousia");
 
@@ -335,7 +370,8 @@ public class Registry {
         REINFORCED_EFFECT = POTIONS.register("reinforced", () -> new ReinforcedEffect()
         		.addAttributeModifier(Attributes.ARMOR, "483b6415-421e-45d1-ab28-d85d11a19c70", 0.25, Operation.MULTIPLY_TOTAL)),
         VULNERABLE_EFFECT = POTIONS.register("vulnerable", () -> new VulnerableEffect()
-        		.addAttributeModifier(Attributes.ARMOR, "e5bae4de-2019-4316-b8cc-b4d879d676f9", -0.25, Operation.MULTIPLY_TOTAL));
+        		.addAttributeModifier(Attributes.ARMOR, "e5bae4de-2019-4316-b8cc-b4d879d676f9", -0.25, Operation.MULTIPLY_TOTAL)),
+        UNDEATH_EFFECT = POTIONS.register("undeath", () -> new UndeathEffect());
 
     public static RegistryObject<Potion>
         CHILLED_POTION = POTION_TYPES.register("chilled", () -> new Potion(new MobEffectInstance(CHILLED_EFFECT.get(), 3600))),
@@ -347,7 +383,12 @@ public class Registry {
 		STRONG_REINFORCED_POTION = POTION_TYPES.register("strong_reinforced", () -> new Potion(new MobEffectInstance(REINFORCED_EFFECT.get(), 1800, 1))),
 		VULNERABLE_POTION = POTION_TYPES.register("vulnerable", () -> new Potion(new MobEffectInstance(VULNERABLE_EFFECT.get(), 3600))),
         LONG_VULNERABLE_POTION = POTION_TYPES.register("long_vulnerable", () -> new Potion(new MobEffectInstance(VULNERABLE_EFFECT.get(), 9600))),
-        STRONG_VULNERABLE_POTION = POTION_TYPES.register("strong_vulnerable", () -> new Potion(new MobEffectInstance(VULNERABLE_EFFECT.get(), 1800, 1)));
+        STRONG_VULNERABLE_POTION = POTION_TYPES.register("strong_vulnerable", () -> new Potion(new MobEffectInstance(VULNERABLE_EFFECT.get(), 1800, 1))),
+        UNDEATH_POTION = POTION_TYPES.register("undeath", () -> new Potion(new MobEffectInstance(UNDEATH_EFFECT.get(), 3600))),
+        LONG_UNDEATH_POTION = POTION_TYPES.register("long_undeath", () -> new Potion(new MobEffectInstance(UNDEATH_EFFECT.get(), 9600))),
+		DECAY_POTION = POTION_TYPES.register("decay", () -> new Potion(new MobEffectInstance(MobEffects.WITHER, 900))),
+        LONG_DECAY_POTION = POTION_TYPES.register("long_decay", () -> new Potion(new MobEffectInstance(MobEffects.WITHER, 1800))),
+        STRONG_DECAY_POTION = POTION_TYPES.register("strong_decay", () -> new Potion(new MobEffectInstance(MobEffects.WITHER, 450, 1)));
 
     public static RegistryObject<Item>
         LEAD_INGOT = addItem("lead_ingot"),
@@ -362,10 +403,15 @@ public class Registry {
         PEWTER_INLAY = addItem("pewter_inlay"),
         ARCANE_GOLD_INGOT = addItem("arcane_gold_ingot"),
         ARCANE_GOLD_NUGGET = addItem("arcane_gold_nugget"),
+        ELDER_BRICK = addItem("elder_brick"),
         SULFUR = addItem("sulfur"),
         GOLD_INLAY = addItem("gold_inlay"),
-        ZOMBIE_HEART = addItem("zombie_heart", new ItemBase(itemProps().rarity(Rarity.UNCOMMON))
-            .setLore("lore.eidolon.zombie_heart")),
+        ZOMBIE_HEART = addItem("zombie_heart", new ItemBase(itemProps().rarity(Rarity.UNCOMMON).food(
+        	new FoodProperties.Builder()
+        		.nutrition(2).saturationMod(1.5f)
+        		.effect(() -> new MobEffectInstance(MobEffects.HUNGER, 1800), 0.875f)
+        		.effect(() -> new MobEffectInstance(MobEffects.POISON, 900, 1), 1.0f)
+        		.build())).setLore("lore.eidolon.zombie_heart")),
         TATTERED_CLOTH = addItem("tattered_cloth"),
         WRAITH_HEART = addItem("wraith_heart", new ItemBase(itemProps()
             .rarity(Rarity.UNCOMMON)).setLore("lore.eidolon.wraith_heart")),
@@ -434,35 +480,66 @@ public class Registry {
             .rarity(Rarity.RARE).stacksTo(1)).setLore("lore.eidolon.terminus_mirror")),
         ANGELS_SIGHT = addItem("angels_sight", new AngelSightItem(itemProps()
             .rarity(Rarity.RARE).stacksTo(1)).setLore("lore.eidolon.angels_sight")),
+        WITHERED_HEART = addItem("withered_heart", new ItemBase(itemProps().rarity(Rarity.RARE).food(
+        	new FoodProperties.Builder()
+        		.nutrition(2).saturationMod(1.5f)
+        		.effect(() -> new MobEffectInstance(MobEffects.HUNGER, 1800), 0.875f)
+        		.effect(() -> new MobEffectInstance(MobEffects.WITHER, 900, 1), 1.0f)
+        		.build())).setLore("lore.eidolon.withered_heart")),
+        IMBUED_BONES = addItem("imbued_bones", itemProps().rarity(Rarity.UNCOMMON)),
+        SUMMONING_STAFF = addItem("summoning_staff", new SummoningStaffItem(itemProps().rarity(Rarity.RARE))),
+        DEATHBRINGER_SCYTHE = addItem("deathbringer_scythe", new DeathbringerScytheItem(itemProps().rarity(Rarity.RARE))
+        	.setLore("lore.eidolon.deathbringer_scythe")),
+        SOULBONE_AMULET = addItem("soulbone_amulet", new SoulboneAmuletItem(itemProps()
+            .rarity(Rarity.RARE).stacksTo(1)).setLore("lore.eidolon.soulbone_amulet")),
+        BONELORD_HELM = addItem("bonelord_helm", new BonelordArmorItem(EquipmentSlot.HEAD, itemProps().rarity(Rarity.RARE))),
+        BONELORD_CHESTPLATE = addItem("bonelord_chestplate", new BonelordArmorItem(EquipmentSlot.CHEST, itemProps().rarity(Rarity.RARE))),
+        BONELORD_GREAVES = addItem("bonelord_greaves", new BonelordArmorItem(EquipmentSlot.LEGS, itemProps().rarity(Rarity.RARE))),
         PAROUSIA_DISC = addItem("music_disc_parousia", new RecordItem(9, () -> PAROUSIA.get(),
             itemProps().stacksTo(1).tab(CreativeModeTab.TAB_MISC).rarity(Rarity.RARE))),
         RAVEN_FEATHER = addItem("raven_feather"),
+        RAVEN_CLOAK = addItem("raven_cloak", new RavenCloakItem(itemProps().rarity(Rarity.RARE))),
         ALCHEMISTS_TONGS = addItem("alchemists_tongs", new TongsItem(itemProps().stacksTo(1))),
-        MERAMMER_RESIN = addItem("merammer_resin");
+        MERAMMER_RESIN = addItem("merammer_resin"),
+        MAGIC_INK = addItem("magic_ink"),
+        MAGICIANS_WAX = addItem("magicians_wax"),
+        ARCANE_SEAL = addItem("arcane_seal"),
+        PARCHMENT = addItem("parchment"),
+        NOTETAKING_TOOLS = addItem("notetaking_tools", new NotetakingToolsItem(itemProps().stacksTo(16))),
+        RESEARCH_NOTES = addItem("research_notes", new ResearchNotesItem(itemProps().rarity(Rarity.UNCOMMON).stacksTo(1))),
+        COMPLETED_RESEARCH = addItem("completed_research", new CompletedResearchItem(itemProps().rarity(Rarity.UNCOMMON).stacksTo(1))),
+        RED_CANDY = addItem("red_candy", new ItemBase(itemProps().rarity(Rarity.COMMON).food(
+        	new FoodProperties.Builder()
+        		.nutrition(2).saturationMod(2)
+        		.build())).setLore(ChatFormatting.RED, "lore.eidolon.red_candy")),
+        GRAPE_CANDY = addItem("grape_candy", new ItemBase(itemProps().rarity(Rarity.COMMON).food(
+        	new FoodProperties.Builder()
+        		.nutrition(2).saturationMod(2)
+        		.build())).setLore(ChatFormatting.LIGHT_PURPLE, "lore.eidolon.grape_candy"));
 
     public static RegistryObject<Block>
         LEAD_ORE = addBlock("lead_ore", blockProps(Material.STONE, MaterialColor.STONE)
-            .sound(SoundType.STONE).strength(2.8f, 3.0f)),
+            .sound(SoundType.STONE).strength(2.8f, 3.0f).requiresCorrectToolForDrops()),
 	    DEEP_LEAD_ORE = addBlock("deep_lead_ore", blockProps(Material.STONE, MaterialColor.DEEPSLATE)
-	    	.sound(SoundType.STONE).strength(3.2f, 3.0f)),
+	    	.sound(SoundType.DEEPSLATE).strength(3.2f, 3.0f).requiresCorrectToolForDrops()),
         LEAD_BLOCK = addBlock("lead_block", blockProps(Material.STONE, MaterialColor.TERRACOTTA_PURPLE)
-            .sound(SoundType.METAL).strength(3.0f, 3.0f)),
+            .sound(SoundType.METAL).strength(3.0f, 3.0f).requiresCorrectToolForDrops()),
         RAW_LEAD_BLOCK = addBlock("raw_lead_block", blockProps(Material.STONE, MaterialColor.TERRACOTTA_PURPLE)
-        	.sound(SoundType.STONE).strength(2.4f, 3.0f)),
+        	.sound(SoundType.DEEPSLATE).strength(2.4f, 3.0f).requiresCorrectToolForDrops()),
         SILVER_ORE = addBlock("silver_ore", blockProps(Material.STONE, MaterialColor.STONE)
-            .sound(SoundType.STONE).strength(3.2f, 3.0f)),
+            .sound(SoundType.STONE).strength(3.2f, 3.0f).requiresCorrectToolForDrops()),
         DEEP_SILVER_ORE = addBlock("deep_silver_ore", blockProps(Material.STONE, MaterialColor.DEEPSLATE)
-        	.sound(SoundType.STONE).strength(3.6f, 3.0f)),
+        	.sound(SoundType.DEEPSLATE).strength(3.6f, 3.0f).requiresCorrectToolForDrops()),
         SILVER_BLOCK = addBlock("silver_block", blockProps(Material.STONE, MaterialColor.COLOR_LIGHT_BLUE)
-            .sound(SoundType.METAL).strength(3.0f, 3.0f)),
+            .sound(SoundType.METAL).strength(3.0f, 3.0f).requiresCorrectToolForDrops()),
         RAW_SILVER_BLOCK = addBlock("raw_silver_block", blockProps(Material.STONE, MaterialColor.COLOR_LIGHT_BLUE)
-        		.sound(SoundType.STONE).strength(2.4f, 3.0f)),
+        		.sound(SoundType.STONE).strength(2.4f, 3.0f).requiresCorrectToolForDrops()),
         PEWTER_BLOCK = addBlock("pewter_block", blockProps(Material.STONE, MaterialColor.COLOR_LIGHT_GRAY)
-            .sound(SoundType.METAL).strength(4.0f, 4.0f)),
+            .sound(SoundType.METAL).strength(4.0f, 4.0f).requiresCorrectToolForDrops()),
         ARCANE_GOLD_BLOCK = addBlock("arcane_gold_block", blockProps(Material.STONE, MaterialColor.GOLD)
-            .sound(SoundType.METAL).strength(3.0f, 4.0f)),
+            .sound(SoundType.METAL).strength(3.0f, 4.0f).requiresCorrectToolForDrops()),
         SHADOW_GEM_BLOCK = addBlock("shadow_gem_block", blockProps(Material.STONE, MaterialColor.COLOR_PURPLE)
-            .sound(SoundType.METAL).strength(3.0f, 4.0f)),
+            .sound(SoundType.METAL).strength(3.0f, 4.0f).requiresCorrectToolForDrops()),
         WOODEN_ALTAR = addBlock("wooden_altar", new TableBlockBase(blockProps(Material.WOOD, MaterialColor.WOOD)
             .sound(SoundType.WOOD).strength(1.6f, 3.0f))),
         STONE_ALTAR = addBlock("stone_altar", new TableBlockBase(blockProps(Material.STONE, MaterialColor.STONE)
@@ -476,12 +553,16 @@ public class Registry {
             .sound(SoundType.STONE).lightLevel((state) -> 15).strength(0.6f, 0.8f).noOcclusion())),
         CANDLESTICK = addBlock("candlestick", new CandlestickBlock(blockProps(Material.METAL, MaterialColor.GOLD)
             .sound(SoundType.STONE).lightLevel((state) -> 15).strength(1.2f, 2.0f).noOcclusion())),
+        MAGIC_CANDLE = addBlock("magic_candle", new CandleBlock(blockProps(Material.DECORATION, MaterialColor.TERRACOTTA_RED)
+        	.sound(SoundType.STONE).lightLevel((state) -> 15).strength(0.6f, 0.8f).noOcclusion())),
+        MAGIC_CANDLESTICK = addBlock("magic_candlestick", new CandlestickBlock(blockProps(Material.DECORATION, MaterialColor.GOLD)
+        	.sound(SoundType.STONE).lightLevel((state) -> 15).strength(1.2f, 2.0f).noOcclusion())),
         STRAW_EFFIGY = addBlock("straw_effigy", new EffigyBlock(blockProps(Material.PLANT, MaterialColor.COLOR_YELLOW)
             .sound(SoundType.WOOD).strength(1.4f, 2.0f)
             .noOcclusion()).setShape(
                 Shapes.box(0.28125, 0, 0.28125, 0.71875, 1, 0.71875)
             )),
-        GOBLET = addBlock("goblet", new BlockBase(blockProps(Material.METAL, MaterialColor.GOLD)
+        GOBLET = addBlock("goblet", new GobletBlock(blockProps(Material.METAL, MaterialColor.GOLD)
             .sound(SoundType.METAL).strength(1.4f, 2.0f).requiresCorrectToolForDrops()
             .noOcclusion()).setShape(Shapes.box(0.3125, 0, 0.3125, 0.6875, 0.5, 0.6875))),
         UNHOLY_EFFIGY = addBlock("unholy_effigy", new EffigyBlock(blockProps(Material.STONE, MaterialColor.STONE)
@@ -497,14 +578,21 @@ public class Registry {
                 Shapes.box(0.125, 0.25, 0.125, 0.875, 0.625, 0.875),
                 Shapes.box(0, 0.625, 0, 1, 1, 1)
             ))),
+        RESEARCH_TABLE = addBlock("research_table", new ResearchTableBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
+            .sound(SoundType.WOOD).strength(1.6f, 3.0f)
+            .noOcclusion()).setShape(Shapes.or(
+                Shapes.box(0, 0, 0, 1, 0.25, 1),
+                Shapes.box(0.125, 0.25, 0.125, 0.875, 0.625, 0.875),
+                Shapes.box(0, 0.625, 0, 1, 1, 1)
+            ))),
         PLINTH = addBlock("plinth", new PillarBlockBase(blockProps(Material.STONE, MaterialColor.STONE)
             .sound(SoundType.STONE).strength(2.0f, 3.0f)
             .requiresCorrectToolForDrops().noOcclusion())
             .setShape(Shapes.box(0.25, 0, 0.25, 0.75, 1, 0.75))),
 		OBELISK = addBlock("obelisk", new PillarBlockBase(blockProps(Material.STONE, MaterialColor.STONE)
-	            .sound(SoundType.STONE).strength(2.0f, 3.0f)
-	            .requiresCorrectToolForDrops().noOcclusion())
-	            .setShape(Shapes.box(0.125, 0, 0.125, 0.875, 1, 0.875))),
+            .sound(SoundType.STONE).strength(2.0f, 3.0f)
+            .requiresCorrectToolForDrops().noOcclusion())
+            .setShape(Shapes.box(0.125, 0, 0.125, 0.875, 1, 0.875))),
         BRAZIER = addBlock("brazier", new BrazierBlock(blockProps(Material.WOOD, MaterialColor.METAL)
             .sound(SoundType.METAL).strength(2.5f, 3.0f)
             .noOcclusion())
@@ -548,6 +636,18 @@ public class Registry {
             .sound(SoundType.GRASS).noOcclusion())),
         SILDRIAN_SEED = addBlock("sildrian_seed", new HerbBlockBase(blockProps(Material.PLANT, MaterialColor.GRASS)
             .sound(SoundType.GRASS).noOcclusion())),
+        ILLWOOD_SAPLING = addBlock("illwood_sapling", new BushBlock(blockProps(Material.PLANT, MaterialColor.GRASS)
+        	.sound(SoundType.GRASS).noOcclusion().noCollission())),
+        ILLWOOD_LEAVES = addBlock("illwood_leaves", new BlockBase(blockProps(Material.PLANT, MaterialColor.GRASS)
+        	.sound(SoundType.GRASS).noOcclusion())),
+        ILLWOOD_LOG = addBlock("illwood_log", new RotatedPillarBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
+            .sound(SoundType.WOOD).strength(1.6f, 3.0f))),
+        ILLWOOD_BARK = addBlock("illwood_bark", new RotatedPillarBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
+            .sound(SoundType.WOOD).strength(1.6f, 3.0f))),
+        STRIPPED_ILLWOOD_LOG = addBlock("stripped_illwood_log", new RotatedPillarBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
+            .sound(SoundType.WOOD).strength(1.4f, 3.0f))),
+		STRIPPED_ILLWOOD_BARK = addBlock("stripped_illwood_bark", new RotatedPillarBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
+            .sound(SoundType.WOOD).strength(1.4f, 3.0f))),
         SOUL_ENCHANTER = addBlock("soul_enchanter", new SoulEnchanterBlock(blockProps(Material.STONE, MaterialColor.PODZOL)
             .sound(SoundType.STONE).strength(5.0f, 1200.0f)
             .requiresCorrectToolForDrops().noOcclusion())
@@ -569,12 +669,33 @@ public class Registry {
             .addWall(),
         SMOOTH_STONE_TILES = new DecoBlockPack(BLOCKS, "smooth_stone_tiles", blockProps(Material.STONE, MaterialColor.STONE)
             .sound(SoundType.STONE).requiresCorrectToolForDrops().strength(2.0f, 3.0f)),
+        SMOOTH_STONE_MASONRY = new DecoBlockPack(BLOCKS, "smooth_stone_masonry", blockProps(Material.STONE, MaterialColor.STONE)
+            .sound(SoundType.STONE).requiresCorrectToolForDrops().strength(1.6f, 3.0f)),
         POLISHED_PLANKS = new DecoBlockPack(BLOCKS, "polished_planks", blockProps(Material.WOOD, MaterialColor.WOOD)
             .sound(SoundType.WOOD).strength(1.6f, 3.0f))
-            .addFence();
+            .addFence(),
+        ILLWOOD_PLANKS = new DecoBlockPack(BLOCKS, "illwood_planks", blockProps(Material.WOOD, MaterialColor.WOOD)
+            .sound(SoundType.WOOD).strength(1.6f, 3.0f))
+            .addFence(),
+        ELDER_BRICKS = new DecoBlockPack(BLOCKS, "elder_bricks", blockProps(Material.STONE, MaterialColor.TERRACOTTA_ORANGE)
+            .sound(SoundType.STONE).requiresCorrectToolForDrops().strength(3.0f, 3.0f))
+            .addWall(),
+        ELDER_MASONRY = new DecoBlockPack(BLOCKS, "elder_masonry", blockProps(Material.STONE, MaterialColor.TERRACOTTA_ORANGE)
+            .sound(SoundType.STONE).requiresCorrectToolForDrops().strength(2.4f, 3.0f)),
+        BONE_PILE = new DecoBlockPack(BLOCKS, "bone_pile", blockProps(Material.STONE, MaterialColor.QUARTZ)
+            .sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops().strength(1.6f, 3.0f));
     public static RegistryObject<Block>
         POLISHED_WOOD_PILLAR = addBlock("polished_wood_pillar", new RotatedPillarBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
-            .strength(1.6f, 3.0f)));
+            .strength(1.6f, 3.0f))),
+        SMOOTH_STONE_ARCH = addBlock("smooth_stone_arch", new PillarBlockBase(blockProps(Material.STONE, MaterialColor.STONE)
+            .sound(SoundType.STONE).strength(2.0f, 3.0f).requiresCorrectToolForDrops())),
+        MOSSY_SMOOTH_STONE_BRICKS = addBlock("mossy_smooth_stone_bricks", blockProps(Material.STONE, MaterialColor.STONE)
+            .sound(SoundType.STONE).strength(2.0f, 3.0f).requiresCorrectToolForDrops()),
+        ELDER_BRICKS_EYE = addBlock("elder_bricks_eye", blockProps(Material.STONE, MaterialColor.TERRACOTTA_ORANGE)
+            .sound(SoundType.STONE).strength(3.0f, 3.0f).requiresCorrectToolForDrops()),
+		ELDER_PILLAR = addBlock("elder_pillar", new PillarBlockBase(blockProps(Material.STONE, MaterialColor.TERRACOTTA_ORANGE)
+            .sound(SoundType.STONE).strength(3.0f, 3.0f)
+            .requiresCorrectToolForDrops()));
 
     public static RegistryObject<EntityType<ZombieBruteEntity>>
         ZOMBIE_BRUTE = addEntity("zombie_brute", 7969893, 44975, 1.2f, 2.5f, ZombieBruteEntity::new, MobCategory.MONSTER);
@@ -603,13 +724,31 @@ public class Registry {
         SOUL_ENCHANTER_CONTAINER = addContainer("soul_enchanter", SoulEnchanterContainer::new);
     public static RegistryObject<MenuType<WoodenBrewingStandContainer>>
         WOODEN_STAND_CONTAINER = addContainer("wooden_brewing_stand", WoodenBrewingStandContainer::new);
+    public static RegistryObject<MenuType<ResearchTableContainer>>
+    	RESEARCH_TABLE_CONTAINER = addContainer("research_table", ResearchTableContainer::new);
 
     public static RegistryObject<RecipeSerializer<WorktableRecipe>>
         WORKTABLE_RECIPE = RECIPE_TYPES.register("worktable", () -> new WorktableRecipe.Serializer());
     public static RegistryObject<RecipeSerializer<CrucibleRecipe>>
         CRUCIBLE_RECIPE = RECIPE_TYPES.register("crucible", () -> new CrucibleRecipe.Serializer());
+    
+    public static RegistryObject<Attribute> 
+    	MAX_SOUL_HEARTS = ATTRIBUTES.register("max_soul_hearts", () -> new RangedAttribute(Eidolon.MODID + ".max_soul_hearts", Config.MAX_ETHEREAL_HEALTH.get(), 0, 2000).setSyncable(true)),
+    	PERSISTENT_SOUL_HEARTS = ATTRIBUTES.register("persistent_soul_hearts", () -> new RangedAttribute(Eidolon.MODID + ".persistent_soul_hearts", 0, 0, 2000).setSyncable(true));
 
+    
+    @SubscribeEvent
+    public void addCustomAttributes(EntityAttributeModificationEvent event) {
+    	for (EntityType<? extends LivingEntity> t : event.getTypes()) {
+    		if (event.has(t, Attributes.MAX_HEALTH)) {
+    			event.add(t, Registry.PERSISTENT_SOUL_HEARTS.get());
+    			event.add(t, Registry.MAX_SOUL_HEARTS.get());
+    		}
+    	}
+    }
+    
     public static void init() {
+        ATTRIBUTES.register(FMLJavaModLoadingContext.get().getModEventBus());
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -628,12 +767,17 @@ public class Registry {
         PotionBrewingMixin.callAddMix(Registry.CHILLED_POTION.get(), Items.REDSTONE, Registry.LONG_CHILLED_POTION.get());
         PotionBrewingMixin.callAddMix(Potions.AWKWARD, Registry.WARPED_SPROUTS.get(), Registry.ANCHORED_POTION.get());
         PotionBrewingMixin.callAddMix(Registry.ANCHORED_POTION.get(), Items.REDSTONE, Registry.LONG_ANCHORED_POTION.get());
-        PotionBrewingMixin.callAddMix(Potions.AWKWARD, Items.LEATHER, Registry.REINFORCED_POTION.get());
+        PotionBrewingMixin.callAddMix(Potions.AWKWARD, Items.NAUTILUS_SHELL, Registry.REINFORCED_POTION.get());
         PotionBrewingMixin.callAddMix(Registry.REINFORCED_POTION.get(), Items.REDSTONE, Registry.LONG_REINFORCED_POTION.get());
         PotionBrewingMixin.callAddMix(Registry.REINFORCED_POTION.get(), Items.GLOWSTONE, Registry.STRONG_REINFORCED_POTION.get());
         PotionBrewingMixin.callAddMix(Potions.AWKWARD, Registry.TATTERED_CLOTH.get(), Registry.VULNERABLE_POTION.get());
         PotionBrewingMixin.callAddMix(Registry.VULNERABLE_POTION.get(), Items.REDSTONE, Registry.LONG_VULNERABLE_POTION.get());
         PotionBrewingMixin.callAddMix(Registry.VULNERABLE_POTION.get(), Items.GLOWSTONE, Registry.STRONG_VULNERABLE_POTION.get());
+        PotionBrewingMixin.callAddMix(Potions.AWKWARD, Registry.DEATH_ESSENCE.get(), Registry.UNDEATH_POTION.get());
+        PotionBrewingMixin.callAddMix(Registry.UNDEATH_POTION.get(), Items.REDSTONE, Registry.LONG_UNDEATH_POTION.get());
+        PotionBrewingMixin.callAddMix(Potions.AWKWARD, Registry.WITHERED_HEART.get(), Registry.DECAY_POTION.get());
+        PotionBrewingMixin.callAddMix(Registry.DECAY_POTION.get(), Items.REDSTONE, Registry.LONG_DECAY_POTION.get());
+        PotionBrewingMixin.callAddMix(Registry.DECAY_POTION.get(), Items.GLOWSTONE, Registry.STRONG_DECAY_POTION.get());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -650,6 +794,7 @@ public class Registry {
     public static BlockEntityType<GobletTileEntity> GOBLET_TILE_ENTITY;
     public static BlockEntityType<CisternTileEntity> CISTERN_TILE_ENTITY;
     public static BlockEntityType<PipeTileEntity> PIPE_TILE_ENTITY;
+    public static BlockEntityType<ResearchTableTileEntity> RESEARCH_TABLE_TILE_ENTITY;
 
     @SubscribeEvent
     public void registerTiles(RegistryEvent.Register<BlockEntityType<?>> evt) {
@@ -663,6 +808,7 @@ public class Registry {
         GOBLET_TILE_ENTITY = addTileEntity(evt.getRegistry(), "goblet", GobletTileEntity::new, GOBLET.get());
         CISTERN_TILE_ENTITY = addTileEntity(evt.getRegistry(), "cistern", CisternTileEntity::new, CISTERN.get());
         PIPE_TILE_ENTITY = addTileEntity(evt.getRegistry(), "pipe", PipeTileEntity::new, GLASS_TUBE.get());
+        RESEARCH_TABLE_TILE_ENTITY = addTileEntity(evt.getRegistry(), "research_table", ResearchTableTileEntity::new, RESEARCH_TABLE.get());
     }
 
     public static DamageSource RITUAL_DAMAGE = new DamageSource("ritual").bypassArmor().bypassMagic();
@@ -671,6 +817,8 @@ public class Registry {
     public void registerCaps(RegisterCapabilitiesEvent event) {
     	event.register(IReputation.class);
         event.register(IKnowledge.class);
+        event.register(ISoul.class);
+        event.register(IPlayerData.class);
     }
 
     @SubscribeEvent
@@ -700,6 +848,12 @@ public class Registry {
         STEAM_PARTICLE = PARTICLES.register("steam_particle", SteamParticleType::new);
     public static RegistryObject<SignParticleType>
         SIGN_PARTICLE = PARTICLES.register("sign_particle", SignParticleType::new);
+    public static RegistryObject<SlashParticleType>
+    	SLASH_PARTICLE = PARTICLES.register("slash_particle", SlashParticleType::new);
+    public static RegistryObject<GlowingSlashParticleType>
+		GLOWING_SLASH_PARTICLE = PARTICLES.register("glowing_slash_particle", GlowingSlashParticleType::new);
+    public static RegistryObject<RuneParticleType>
+    	RUNE_PARTICLE = PARTICLES.register("rune_particle", RuneParticleType::new);
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
@@ -712,109 +866,8 @@ public class Registry {
         Minecraft.getInstance().particleEngine.register(STEAM_PARTICLE.get(), SteamParticleType.Factory::new);
         Minecraft.getInstance().particleEngine.register(LINE_WISP_PARTICLE.get(), LineWispParticleType.Factory::new);
         Minecraft.getInstance().particleEngine.register(SIGN_PARTICLE.get(), (sprite) -> new SignParticleType.Factory());
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public void onTextureStitch(TextureStitchEvent.Pre event) {
-        event.addSprite(CrystalRitual.SYMBOL);
-        event.addSprite(SummonRitual.SYMBOL);
-        event.addSprite(DeceitRitual.SYMBOL);
-        event.addSprite(AllureRitual.SYMBOL);
-        event.addSprite(DaylightRitual.SYMBOL);
-        event.addSprite(MoonlightRitual.SYMBOL);
-        event.addSprite(PurifyRitual.SYMBOL);
-        event.addSprite(RepellingRitual.SYMBOL);
-        event.addSprite(SanguineRitual.SYMBOL);
-        event.addSprite(SoulEnchanterTileRenderer.BOOK_TEXTURE);
-
-        for (Reagent r : ReagentRegistry.getReagents()) event.addSprite(r.getTexture());
-        for (Sign s : Signs.getSigns()) event.addSprite(s.getSprite());
-    }
-    
-    public static ModelLayerLocation 
-    	SILVER_ARMOR_LAYER = new ModelLayerLocation(new ResourceLocation(Eidolon.MODID, "silver_armor"), "main"),
-    	WARLOCK_ARMOR_LAYER = new ModelLayerLocation(new ResourceLocation(Eidolon.MODID, "warlock_armor"), "main"),
-    	TOP_HAT_LAYER = new ModelLayerLocation(new ResourceLocation(Eidolon.MODID, "top_hat"), "main"),
-    	RAVEN_LAYER = new ModelLayerLocation(new ResourceLocation(Eidolon.MODID, "raven"), "main"),
-    	NECROMANCER_LAYER = new ModelLayerLocation(new ResourceLocation(Eidolon.MODID, "necromancer"), "main"),
-    	WRAITH_LAYER = new ModelLayerLocation(new ResourceLocation(Eidolon.MODID, "wraith"), "main"),
-    	ZOMBIE_BRUTE_LAYER = new ModelLayerLocation(new ResourceLocation(Eidolon.MODID, "zombie_brute"), "main"),
-    	SLUG_LAYER = new ModelLayerLocation(new ResourceLocation(Eidolon.MODID, "slimy_slug"), "main");
-    
-    public static WarlockArmorModel WARLOCK_ARMOR_MODEL = null;
-    public static TopHatModel TOP_HAT_MODEL = null;
-    public static SilverArmorModel SILVER_ARMOR_MODEL = null;
-    public static ZombieBruteModel ZOMBIE_BRUTE_MODEL = null;
-    public static WraithModel WRAITH_MODEL = null;
-    public static RavenModel RAVEN_MODEL = null;
-    public static NecromancerModel NECROMANCER_MODEL = null;
-    public static SlimySlugModel SLUG_MODEL = null;
-
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
-    	event.registerLayerDefinition(WARLOCK_ARMOR_LAYER, WarlockArmorModel::createBodyLayer);
-    	event.registerLayerDefinition(TOP_HAT_LAYER, TopHatModel::createBodyLayer);
-    	event.registerLayerDefinition(SILVER_ARMOR_LAYER, SilverArmorModel::createBodyLayer);
-
-    	event.registerLayerDefinition(RAVEN_LAYER, RavenModel::createBodyLayer);
-    	event.registerLayerDefinition(ZOMBIE_BRUTE_LAYER, ZombieBruteModel::createBodyLayer);
-    	event.registerLayerDefinition(WRAITH_LAYER, WraithModel::createBodyLayer);
-    	event.registerLayerDefinition(NECROMANCER_LAYER, NecromancerModel::createBodyLayer);
-    	event.registerLayerDefinition(SLUG_LAYER, SlimySlugModel::createBodyLayer);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public void onRegisterLayers(EntityRenderersEvent.AddLayers event) {
-    	WARLOCK_ARMOR_MODEL = new WarlockArmorModel(event.getEntityModels().bakeLayer(WARLOCK_ARMOR_LAYER));
-    	TOP_HAT_MODEL = new TopHatModel(event.getEntityModels().bakeLayer(TOP_HAT_LAYER));
-    	SILVER_ARMOR_MODEL = new SilverArmorModel(event.getEntityModels().bakeLayer(SILVER_ARMOR_LAYER));
-    	
-    	RAVEN_MODEL = new RavenModel(event.getEntityModels().bakeLayer(RAVEN_LAYER));
-    	ZOMBIE_BRUTE_MODEL = new ZombieBruteModel(event.getEntityModels().bakeLayer(ZOMBIE_BRUTE_LAYER));
-    	WRAITH_MODEL = new WraithModel(event.getEntityModels().bakeLayer(WRAITH_LAYER));
-    	NECROMANCER_MODEL = new NecromancerModel(event.getEntityModels().bakeLayer(NECROMANCER_LAYER));
-    	SLUG_MODEL = new SlimySlugModel(event.getEntityModels().bakeLayer(SLUG_LAYER));
-    }
-    
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public void onRegisterEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
-    	EntityRenderers.register(Registry.ZOMBIE_BRUTE.get(), ZombieBruteRenderer::new);
-    	EntityRenderers.register(Registry.WRAITH.get(), WraithRenderer::new);
-    	EntityRenderers.register(Registry.NECROMANCER.get(), NecromancerRenderer::new);
-    	EntityRenderers.register(Registry.SOULFIRE_PROJECTILE.get(), NoopRenderer::new);
-    	EntityRenderers.register(Registry.BONECHILL_PROJECTILE.get(), NoopRenderer::new);
-    	EntityRenderers.register(Registry.NECROMANCER_SPELL.get(), NoopRenderer::new);
-    	EntityRenderers.register(Registry.CHANT_CASTER.get(), NoopRenderer::new);
-    	EntityRenderers.register(Registry.RAVEN.get(), RavenRenderer::new);
-    	EntityRenderers.register(Registry.ANGEL_ARROW.get(), AngelArrowRenderer::new);
-    	EntityRenderers.register(Registry.SLIMY_SLUG.get(), SlimySlugRenderer::new);
-    }
-    
-    @OnlyIn(Dist.CLIENT)
-    public static ShaderInstance GLOWING_SHADER, GLOWING_SPRITE_SHADER, GLOWING_PARTICLE_SHADER, VAPOR_SHADER, GLOWING_ENTITY_SHADER;
-    
-    public static ShaderInstance getGlowingShader() { return GLOWING_SHADER; }
-    public static ShaderInstance getGlowingSpriteShader() { return GLOWING_SPRITE_SHADER; }
-    public static ShaderInstance getGlowingParticleShader() { return GLOWING_PARTICLE_SHADER; }
-    public static ShaderInstance getGlowingEntityShader() { return GLOWING_ENTITY_SHADER; }
-    public static ShaderInstance getVaporShader() { return VAPOR_SHADER; }
-
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public void shaderRegistry(RegisterShadersEvent event) throws IOException {
-        event.registerShader(new ShaderInstance(event.getResourceManager(), new ResourceLocation("eidolon:glowing"), DefaultVertexFormat.POSITION_COLOR), 
-        	shader -> { GLOWING_SHADER = shader; });
-        event.registerShader(new ShaderInstance(event.getResourceManager(), new ResourceLocation("eidolon:glowing_sprite"), DefaultVertexFormat.POSITION_TEX_COLOR), 
-            	shader -> { GLOWING_SPRITE_SHADER = shader; });
-        event.registerShader(new ShaderInstance(event.getResourceManager(), new ResourceLocation("eidolon:glowing_particle"), DefaultVertexFormat.PARTICLE), 
-            	shader -> { GLOWING_PARTICLE_SHADER = shader; });
-        event.registerShader(new ShaderInstance(event.getResourceManager(), new ResourceLocation("eidolon:glowing_entity"), DefaultVertexFormat.NEW_ENTITY), 
-            	shader -> { GLOWING_ENTITY_SHADER = shader; });
-        event.registerShader(new ShaderInstance(event.getResourceManager(), new ResourceLocation("eidolon:vapor"), DefaultVertexFormat.BLOCK), 
-            	shader -> { VAPOR_SHADER = shader; });
+        Minecraft.getInstance().particleEngine.register(SLASH_PARTICLE.get(), SlashParticleType.Factory::new);
+        Minecraft.getInstance().particleEngine.register(GLOWING_SLASH_PARTICLE.get(), GlowingSlashParticleType.Factory::new);
+        Minecraft.getInstance().particleEngine.register(RUNE_PARTICLE.get(), (sprite) -> new RuneParticleType.Factory());
     }
 }

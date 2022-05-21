@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "eidolon:block/illwood_bark_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "eidolon:item/illwood_bark"
+    },
+    "axis=z": {
+      "model": "eidolon:block/illwood_bark_horizontal",
+      "x": 90
+    }
+  }
+}

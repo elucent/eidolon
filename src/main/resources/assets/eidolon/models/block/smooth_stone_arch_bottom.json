@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "eidolon:block/smooth_stone_bricks",
+    "side": "eidolon:block/smooth_stone_arch_bottom"
+  }
+}

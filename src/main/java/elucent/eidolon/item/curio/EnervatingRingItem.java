@@ -5,8 +5,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class EnervatingRingItem extends ItemBase {
     public EnervatingRingItem(Properties properties) {
         super(properties);

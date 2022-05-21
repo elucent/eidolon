@@ -13,9 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class ItemBase extends Item {
+	String loreFormat = "" + ChatFormatting.DARK_PURPLE + ChatFormatting.ITALIC;
     String loreTag = null;
 
     public ItemBase(Properties properties) {
@@ -27,12 +26,23 @@ public class ItemBase extends Item {
         return this;
     }
 
+    public ItemBase setLore(ChatFormatting format, String tag) {
+    	this.loreFormat = "" + format;
+        this.loreTag = tag;
+        return this;
+    }
+
+    public ItemBase setLore(String format, String tag) {
+    	this.loreFormat = format;
+        this.loreTag = tag;
+        return this;
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (this.loreTag != null) {
-            tooltip.add(new TextComponent(""));
-            tooltip.add(new TextComponent("" + ChatFormatting.DARK_PURPLE + ChatFormatting.ITALIC + I18n.get(this.loreTag)));
+            tooltip.add(new TextComponent(loreFormat + I18n.get(this.loreTag)));
         }
     }
 }

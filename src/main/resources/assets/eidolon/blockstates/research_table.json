@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "eidolon:item/research_table",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "eidolon:item/research_table",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "eidolon:item/research_table"
+    },
+    "facing=east": {
+      "model": "eidolon:item/research_table",
+      "y": 270
+    }
+  }
+}

@@ -11,6 +11,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 
 import elucent.eidolon.ClientEvents;
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Registry;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -23,7 +24,7 @@ public class SpriteParticleRenderType implements ParticleRenderType {
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        RenderSystem.setShader(Registry::getGlowingSpriteShader);
+        RenderSystem.setShader(ClientRegistry::getSpriteParticleShader);
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
         ClientEvents.particleMVMatrix = RenderSystem.getModelViewMatrix();
         bufferBuilder.begin(Mode.QUADS, DefaultVertexFormat.PARTICLE);

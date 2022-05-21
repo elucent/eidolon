@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "eidolon:block/smooth_stone_masonry",
+    "top": "eidolon:block/smooth_stone_masonry",
+    "side": "eidolon:block/smooth_stone_masonry"
+  }
+}

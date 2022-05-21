@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "eidolon",
+  "pattern": [
+    " w ",
+    "www",
+    " w "
+  ],
+  "key": {
+    "w": {
+      "item": "eidolon:magicians_wax"
+    }
+  },
+  "result": {
+    "item": "eidolon:arcane_seal",
+    "count": 2
+  }
+}

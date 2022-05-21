@@ -23,8 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class CandlestickBlock extends BlockBase {
     public static final DirectionProperty FACING = DirectionProperty.create("facing", (d) -> d != Direction.DOWN);
     protected static final VoxelShape UP_SHAPE = Block.box(6.0D, 0.0D, 6.0D, 10.0D, 14.0D, 10.0D);

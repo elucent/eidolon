@@ -4,9 +4,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.ItemStack;
 
-import net.minecraft.world.item.Item.Properties;
-
-public class WandItem extends ItemBase {
+public class WandItem extends ItemBase implements IRechargeableWand {
     public WandItem(Properties properties) {
         super(properties);
     }
@@ -22,4 +20,10 @@ public class WandItem extends ItemBase {
             || enchant == Enchantments.UNBREAKING
             || enchant == Enchantments.MENDING;
     }
+
+	@Override
+	public ItemStack recharge(ItemStack stack) {
+		stack.setDamageValue(0);
+		return stack;
+	}
 }

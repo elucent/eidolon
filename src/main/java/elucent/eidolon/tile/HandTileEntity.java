@@ -56,10 +56,8 @@ public class HandTileEntity extends TileEntityBase implements IRitualItemProvide
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        tag = super.save(tag);
+    public void saveAdditional(CompoundTag tag) {
         tag.put("stack", stack.save(new CompoundTag()));
-        return tag;
     }
 
     @Override

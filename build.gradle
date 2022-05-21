@@ -17,7 +17,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 // apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = '0.3'
+version = '0.3b'
 group = 'elucent.eidolon' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'eidolon'
 
@@ -105,7 +105,9 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.1-39.0.5'
+    minecraft 'net.minecraftforge:forge:1.18.1-39.0.55'
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18-5.0.2.4:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18-5.0.2.4")

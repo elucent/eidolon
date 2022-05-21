@@ -17,8 +17,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class TableBlockBase extends BlockBase implements SimpleWaterloggedBlock {
     VoxelShape NORMAL = Shapes.box(0, 0.75, 0, 1, 1, 1),
         CORNER = Shapes.joinUnoptimized(

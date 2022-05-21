@@ -13,7 +13,6 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -46,6 +45,7 @@ public interface IReputation {
     void subtractReputation(UUID player, ResourceLocation deity, double amount);
     void setReputation(UUID player, ResourceLocation deity, double amount);
     boolean isLocked(UUID player, ResourceLocation deity);
+    boolean hasLock(UUID player, ResourceLocation deity, ResourceLocation lock);
     void lock(UUID player, ResourceLocation deity, ResourceLocation key);
     boolean unlock(UUID player, ResourceLocation deity, ResourceLocation key);
     void pray(UUID player, ResourceLocation spell, long time);
@@ -92,6 +92,10 @@ public interface IReputation {
         return false;
     }
 
+    default boolean hasLock(Player player, ResourceLocation deity, ResourceLocation key) {
+        return hasLock(player.getUUID(), deity, key);
+    }
+
     default void pray(Player player, ResourceLocation spell, long time) {
         pray(player.getUUID(), spell, time);
     }
@@ -102,6 +106,9 @@ public interface IReputation {
 
     Map<UUID, Map<ResourceLocation, Long>> getPrayerTimes();
     Map<UUID, Map<ResourceLocation, ReputationEntry>> getReputationMap();
+    default Map<ResourceLocation, Long> getPrayerTimeMap(UUID player) {
+        return getPrayerTimes().computeIfAbsent(player, (k) -> new HashMap<>());
+    }
     default Map<ResourceLocation, ReputationEntry> getReputationMap(UUID player) {
         return getReputationMap().computeIfAbsent(player, (k) -> new HashMap<>());
     }

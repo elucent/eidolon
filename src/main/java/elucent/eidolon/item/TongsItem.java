@@ -5,8 +5,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.InteractionResult;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class TongsItem extends ItemBase {
     public TongsItem(Properties properties) {
         super(properties);

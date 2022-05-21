@@ -1,12 +1,11 @@
 package elucent.eidolon.codex;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import elucent.eidolon.ClientEvents;
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.capability.IKnowledge;
 import elucent.eidolon.spell.Sign;
@@ -86,6 +85,7 @@ public class ChantPage extends Page {
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
             Sign sign = chant[i];
             float flicker = 0.875f + 0.125f * (float)Math.sin(Math.toRadians(12 * ClientEvents.getClientTicks()));
+            RenderSystem.setShader(ClientRegistry::getGlowingSpriteShader);
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             RenderUtil.litQuad(mStack, MultiBufferSource.immediate(tess.getBuilder()), baseX + i * 24 + 4, y + 32, 16, 16,
                 sign.getRed(), sign.getGreen(), sign.getBlue(), Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(sign.getSprite()));

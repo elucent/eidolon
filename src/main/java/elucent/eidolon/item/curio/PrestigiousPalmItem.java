@@ -14,8 +14,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class PrestigiousPalmItem extends ItemBase {
     UUID ATTR_ID = new UUID(297661999713141389l, 6434109711109552363l);
     public PrestigiousPalmItem(Properties properties) {

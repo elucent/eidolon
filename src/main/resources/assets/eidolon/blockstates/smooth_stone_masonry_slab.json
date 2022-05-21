@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "eidolon:item/smooth_stone_masonry_slab"
+    },
+    "type=double": {
+      "model": "eidolon:item/smooth_stone_masonry"
+    },
+    "type=top": {
+      "model": "eidolon:block/smooth_stone_masonry_slab_top"
+    }
+  }
+}

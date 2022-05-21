@@ -56,10 +56,8 @@ public class NecroticFocusTileEntity extends TileEntityBase implements IRitualIt
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        tag = super.save(tag);
+    public void saveAdditional(CompoundTag tag) {
         tag.put("stack", stack.save(new CompoundTag()));
-        return tag;
     }
 
     @Override
@@ -72,4 +70,10 @@ public class NecroticFocusTileEntity extends TileEntityBase implements IRitualIt
         stack = ItemStack.EMPTY;
         if (!level.isClientSide) sync();
     }
+
+	@Override
+	public void replace(ItemStack stack) {
+		this.stack = stack;
+        if (!level.isClientSide) sync();
+	}
 }

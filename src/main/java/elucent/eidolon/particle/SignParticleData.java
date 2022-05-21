@@ -13,8 +13,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.resources.ResourceLocation;
 
-import net.minecraft.core.particles.ParticleOptions.Deserializer;
-
 public class SignParticleData implements ParticleOptions {
     Sign sign;
 

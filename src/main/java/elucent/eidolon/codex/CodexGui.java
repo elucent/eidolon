@@ -1,20 +1,19 @@
 package elucent.eidolon.codex;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import elucent.eidolon.ClientEvents;
+import elucent.eidolon.ClientRegistry;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.network.AttemptCastPacket;
 import elucent.eidolon.network.Networking;
+import elucent.eidolon.spell.Rune;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.util.RenderUtil;
 import net.minecraft.client.Minecraft;
@@ -37,7 +36,8 @@ public class CodexGui extends Screen {
     public static final CodexGui DUMMY = new CodexGui();
     public static final ResourceLocation CODEX_BACKGROUND = new ResourceLocation(Eidolon.MODID, "textures/gui/codex_bg.png");
     static int xSize = 312, ySize = 208;
-    List<Sign> chant = new ArrayList<>();
+    List<Rune> chant = new ArrayList<>();
+    Rune hoveredRune = null;
 
     Chapter currentChapter;
     int currentPage = 0;
@@ -65,12 +65,12 @@ public class CodexGui extends Screen {
         currentPage = 0;
     }
 
-    public void addToChant(Sign sign) {
-        if (this.chant.size() < 9) this.chant.add(sign);
+    public void addToChant(Rune rune) {
+        if (this.chant.size() < 18) this.chant.add(rune);
     }
 
     protected void renderChant(PoseStack mStack, int x, int y, int mouseX, int mouseY, float pticks) {
-        int chantWidth = 32 + 24 * chant.size();
+        int chantWidth = 32 + 12 * chant.size();
         int baseX = x + this.xSize / 2 - chantWidth / 2, baseY = y + 180;
 
         RenderSystem.enableBlend();
@@ -79,9 +79,9 @@ public class CodexGui extends Screen {
         blit(mStack, bgx, baseY, 256, 208, 16, 32, 512, 512);
         bgx += 16;
         for (int i = 0; i < chant.size(); i ++) {
-            blit(mStack, bgx, baseY, 272, 208, 24, 32, 512, 512);
-            blit(mStack, bgx, baseY, 312, 208, 24, 24, 512, 512);
-            bgx += 24;
+            blit(mStack, bgx, baseY, 272, 208, 12, 32, 512, 512);
+            blit(mStack, bgx, baseY + 6, 320, 240, 12, 12, 512, 512);
+            bgx += 12;
         }
         blit(mStack, bgx, baseY, 296, 208, 16, 32, 512, 512);
         bgx += 24;
@@ -94,25 +94,26 @@ public class CodexGui extends Screen {
         if (cancelHover) renderTooltip(mStack, new TranslatableComponent("eidolon.codex.cancel_hover"), mouseX, mouseY);
 
         RenderSystem.enableBlend();
+        RenderSystem.setShader(ClientRegistry::getGlowingSpriteShader);
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
         bgx = baseX + 16;
         Tesselator tess = Tesselator.getInstance();
         for (int i = 0; i < chant.size(); i ++) {
-            Sign sign = chant.get(i);
-            RenderUtil.litQuad(mStack, MultiBufferSource.immediate(tess.getBuilder()), bgx + 4, baseY + 4, 16, 16,
-                sign.getRed(), sign.getGreen(), sign.getBlue(), Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(sign.getSprite()));
+            Rune rune = chant.get(i);
+            RenderUtil.litQuad(mStack, MultiBufferSource.immediate(tess.getBuilder()), bgx + 2, baseY + 8, 8, 8,
+                1, 1, 1, 0.5f, Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(rune.getSprite()));
             tess.end();
-            bgx += 24;
+            bgx += 12;
         }
         bgx = baseX + 16;
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        float flicker = 0.875f + 0.125f * (float)Math.sin(Math.toRadians(12 * ClientEvents.getClientTicks()));
         for (int i = 0; i < chant.size(); i ++) {
-            Sign sign = chant.get(i);
-            RenderUtil.litQuad(mStack, MultiBufferSource.immediate(tess.getBuilder()), bgx + 4, baseY + 4, 16, 16,
-                sign.getRed() * flicker, sign.getGreen() * flicker, sign.getBlue() * flicker, Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(sign.getSprite()));
+            float flicker = 0.75f + 0.25f * (float)Math.sin(Math.toRadians(12 * ClientEvents.getClientTicks() - 360.0f * i / chant.size()));
+            Rune rune = chant.get(i);
+            RenderUtil.litQuad(mStack, MultiBufferSource.immediate(tess.getBuilder()), bgx + 2, baseY + 8, 8, 8,
+                flicker, flicker, flicker, 0.5f * flicker, Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(rune.getSprite()));
             tess.end();
-            bgx += 24;
+            bgx += 12;
         }
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableBlend();
@@ -188,7 +189,7 @@ public class CodexGui extends Screen {
     }
 
     protected boolean interactChant(int x, int y, int mouseX, int mouseY) {
-        int chantWidth = 32 + 24 * chant.size();
+        int chantWidth = 32 + 12 * chant.size();
         int baseX = x + this.xSize / 2 - chantWidth / 2, baseY = y + 180;
         int bgx = baseX + chantWidth + 8;
         boolean chantHover = mouseX >= bgx && mouseY >= baseY - 4 && mouseX <= bgx + 32 && mouseY <= baseY + 28;

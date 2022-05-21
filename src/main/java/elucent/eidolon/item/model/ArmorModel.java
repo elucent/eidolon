@@ -3,8 +3,6 @@ package elucent.eidolon.item.model;// Made with Blockbench 3.7.4
 // Paste this class into your mod and generate all required imports
 
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -12,7 +10,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
@@ -21,15 +18,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 public abstract class ArmorModel extends HumanoidModel {
 	public EquipmentSlot slot;
 	ModelPart root, head, body, leftArm, rightArm, pelvis, leftLegging, rightLegging, leftFoot, rightFoot;
-
-//	public ModelPart copyWithoutBoxes(ModelPart box) {
-//		ModelPart newbox = new ModelPart(this);
-//		newbox.setPos(box.x, box.y, box.z);
-//		setRotationAngle(newbox, box.xRot, box.yRot, box.zRot);
-//		newbox.mirror = box.mirror;
-//		newbox.visible = box.visible;
-//		return newbox;
-//	}
 
 	public ArmorModel(ModelPart root) {
 		super(root);
@@ -86,10 +74,7 @@ public abstract class ArmorModel extends HumanoidModel {
 	
 	public void copyFromDefault(HumanoidModel model) {
 		body.copyFrom(model.body);
-		pelvis.copyFrom(model.body);
-		head.copyFrom(model.head);
-		leftArm.copyFrom(model.leftArm);
-		rightArm.copyFrom(model.rightArm);
+		pelvis.copyFrom(body);
 		leftLegging.copyFrom(leftLeg);
 		rightLegging.copyFrom(rightLeg);
 		leftFoot.copyFrom(leftLeg);

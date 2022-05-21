@@ -13,7 +13,6 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import com.mojang.math.Vector3f;

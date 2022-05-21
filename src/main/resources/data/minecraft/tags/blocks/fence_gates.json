@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "eidolon:polished_planks_fence_gate"
+    "eidolon:polished_planks_fence_gate",
+    "eidolon:illwood_planks_fence_gate"
   ]
 }

@@ -19,8 +19,6 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class GravityBeltItem extends ItemBase {
     UUID ATTR_ID = new UUID(6937061617091731127l, 7120126291930051139l);
     public GravityBeltItem(Properties properties) {

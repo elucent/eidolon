@@ -15,6 +15,7 @@ import elucent.eidolon.Registry;
 import elucent.eidolon.codex.Page;
 import elucent.eidolon.codex.RitualPage;
 import elucent.eidolon.gui.jei.RecipeWrappers;
+import elucent.eidolon.item.IRechargeableWand;
 import elucent.eidolon.util.RecipeUtil;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -172,8 +173,9 @@ public class RitualRegistry {
         SUMMON_ZOMBIE, SUMMON_SKELETON, SUMMON_PHANTOM, SUMMON_HUSK, SUMMON_DROWNED,
         SUMMON_STRAY, SUMMON_WITHER_SKELETON, SUMMON_WRAITH,
         ALLURE_RITUAL, REPELLING_RITUAL, DECEIT_RITUAL, DAYLIGHT_RITUAL, MOONLIGHT_RITUAL,
-        PURIFY_RITUAL,
-        SANGUINE_SWORD, SANGUINE_AMULET;
+        PURIFY_RITUAL, RECHARGE_SOULFIRE_RITUAL, RECHARGE_BONECHILL_RITUAL,
+        SANGUINE_SWORD, SANGUINE_AMULET,
+        ABSORB_RITUAL;
 
     public static void init() {
         CRYSTAL_RITUAL = register(Items.BONE_MEAL, new CrystalRitual().setRegistryName(Eidolon.MODID, "crystal")
@@ -273,5 +275,24 @@ public class RitualRegistry {
             .addRequirement(new ItemRequirement(Tags.Items.DUSTS_REDSTONE))
             .addRequirement(new ItemRequirement(Registry.LESSER_SOUL_GEM.get()))
             .addRequirement(new HealthRequirement(40)));
+
+        RECHARGE_SOULFIRE_RITUAL = register(Registry.LESSER_SOUL_GEM.get(), new RechargingRitual().setRegistryName(Eidolon.MODID, "recharging")
+            .addRequirement(new ItemRequirement(Items.BLAZE_POWDER))
+            .addRequirement(new ItemRequirement(Items.BLAZE_POWDER))
+            .addRequirement(new ItemRequirement(Tags.Items.DUSTS_REDSTONE))
+            .addInvariant(new FocusItemPresentRequirement(Registry.SOULFIRE_WAND.get())));
+
+        RECHARGE_BONECHILL_RITUAL = register(Registry.LESSER_SOUL_GEM.get(), new RechargingRitual().setRegistryName(Eidolon.MODID, "recharging")
+            .addRequirement(new ItemRequirement(Items.SNOWBALL))
+            .addRequirement(new ItemRequirement(Items.SNOWBALL))
+            .addRequirement(new ItemRequirement(Tags.Items.DUSTS_REDSTONE))
+            .addInvariant(new FocusItemPresentRequirement(Registry.BONECHILL_WAND.get())));
+
+        ABSORB_RITUAL = register(Registry.DEATH_ESSENCE.get(), new AbsorptionRitual().setRegistryName(Eidolon.MODID, "absorption")
+            .addRequirement(new ItemRequirement(Registry.TATTERED_CLOTH.get()))
+            .addRequirement(new ItemRequirement(Registry.TATTERED_CLOTH.get()))
+            .addRequirement(new ItemRequirement(Items.BONE))
+            .addRequirement(new ItemRequirement(Registry.SOUL_SHARD.get()))
+            .addRequirement(new ItemRequirement(Registry.SOUL_SHARD.get())));
     }
 }

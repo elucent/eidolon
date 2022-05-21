@@ -20,8 +20,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class VoidAmuletItem extends ItemBase {
     public VoidAmuletItem(Properties properties) {
         super(properties);

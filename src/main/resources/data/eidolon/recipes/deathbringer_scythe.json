@@ -1,0 +1,33 @@
+{
+  "type": "eidolon:worktable",
+  "pattern": [
+    "bwb",
+    "brb",
+    "bsb"
+  ],
+  "reagents": "gege",
+  "key": {
+    "e": {
+    	"item": "eidolon:death_essence"
+    },
+    "b": {
+    	"tag": "forge:bones"
+    },
+    "r": {
+    	"item": "eidolon:reaper_scythe"
+    },
+    "s": {
+    	"item": "minecraft:skeleton_skull"
+    },
+    "g": {
+    	"item": "eidolon:shadow_gem"
+    },
+    "w": {
+    	"item": "minecraft:wither_skeleton_skull"
+    }
+    
+  },
+  "result": {
+    "item": "eidolon:deathbringer_scythe"
+  }
+}

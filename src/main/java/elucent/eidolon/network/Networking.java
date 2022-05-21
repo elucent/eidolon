@@ -138,6 +138,54 @@ public class Networking {
             SpellCastPacket::decode,
             SpellCastPacket::consume
         );
+
+        INSTANCE.registerMessage(
+            ++ id,
+            ResearchActionPacket.class,
+            ResearchActionPacket::encode,
+            ResearchActionPacket::decode,
+            ResearchActionPacket::consume
+        );
+
+        INSTANCE.registerMessage(
+            ++ id,
+            DeathbringerSlashEffectPacket.class,
+            DeathbringerSlashEffectPacket::encode,
+            DeathbringerSlashEffectPacket::decode,
+            DeathbringerSlashEffectPacket::consume
+        );
+
+        INSTANCE.registerMessage(
+            ++ id,
+            SoulUpdatePacket.class,
+            SoulUpdatePacket::encode,
+            SoulUpdatePacket::decode,
+            SoulUpdatePacket::consume
+        );
+
+        INSTANCE.registerMessage(
+            ++ id,
+            WingsFlapPacket.class,
+            WingsFlapPacket::encode,
+            WingsFlapPacket::decode,
+            WingsFlapPacket::consume
+        );
+
+        INSTANCE.registerMessage(
+            ++ id,
+            WingsDashPacket.class,
+            WingsDashPacket::encode,
+            WingsDashPacket::decode,
+            WingsDashPacket::consume
+        );
+
+        INSTANCE.registerMessage(
+            ++ id,
+            WingsDataUpdatePacket.class,
+            WingsDataUpdatePacket::encode,
+            WingsDataUpdatePacket::decode,
+            WingsDataUpdatePacket::consume
+        );
     }
 
     public static <MSG> void sendToDimension(Level world, MSG msg, ResourceKey<Level> dimension) {

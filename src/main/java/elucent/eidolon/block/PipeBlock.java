@@ -2,7 +2,6 @@ package elucent.eidolon.block;
 
 import com.google.common.base.Predicates;
 
-import elucent.eidolon.tile.SoulEnchanterTileEntity;
 import elucent.eidolon.tile.reagent.PipeTileEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -19,8 +18,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class PipeBlock extends BlockBase implements EntityBlock {
     static final VoxelShape

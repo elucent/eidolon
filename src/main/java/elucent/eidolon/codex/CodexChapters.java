@@ -23,13 +23,14 @@ import net.minecraft.world.item.alchemy.Potions;
 
 public class CodexChapters {
     static List<Category> categories = new ArrayList<>();
-    static Category NATURE, RITUALS, ARTIFICE, THEURGY, SIGNS;
+    static Category NATURE, RITUALS, ARTIFICE, THEURGY, SIGNS, RUNES;
 
     static Chapter NATURE_INDEX, MONSTERS, ORES, PEWTER, ENCHANTED_ASH,
         RITUALS_INDEX, BRAZIER, ITEM_PROVIDERS, CRYSTAL_RITUAL, SUMMON_RITUAL, ALLURE_RITUAL, REPELLING_RITUAL, DECEIT_RITUAL, TIME_RITUALS, PURIFY_RITUAL, SANGUINE_RITUAL,
         ARTIFICE_INDEX, WOODEN_STAND, TALLOW, CRUCIBLE, ARCANE_GOLD, REAGENTS, SOUL_GEMS, SHADOW_GEM, WARPED_SPROUTS, BASIC_ALCHEMY, INLAYS, BASIC_BAUBLES, MAGIC_WORKBENCH, VOID_AMULET, WARDED_MAIL, SOULFIRE_WAND, BONECHILL_WAND, REAPER_SCYTHE, CLEAVING_AXE, SOUL_ENCHANTER, REVERSAL_PICK, WARLOCK_ARMOR, GRAVITY_BELT, PRESTIGIOUS_PALM, MIND_SHIELDING_PLATE, RESOLUTE_BELT, GLASS_HAND,
         THEURGY_INDEX, INTRO_SIGNS, EFFIGY, ALTARS, ALTAR_LIGHTS, ALTAR_SKULLS, ALTAR_HERBS, GOBLET, DARK_PRAYER, ANIMAL_SACRIFICE, DARK_TOUCH, STONE_ALTAR, UNHOLY_EFFIGY, VILLAGER_SACRIFICE,
-        SIGNS_INDEX, WICKED_SIGN, SACRED_SIGN, BLOOD_SIGN, SOUL_SIGN, MIND_SIGN, FLAME_SIGN;
+        SIGNS_INDEX, WICKED_SIGN, SACRED_SIGN, BLOOD_SIGN, SOUL_SIGN, MIND_SIGN, FLAME_SIGN, WINTER_SIGN, HARMONY_SIGN, DEATH_SIGN, WARDING_SIGN, MAGIC_SIGN,
+        RUNES_INDEX;
 
     public static void init() {
         MONSTERS = new Chapter(
@@ -810,6 +811,36 @@ public class CodexChapters {
             new SignPage(Signs.FLAME_SIGN)
         );
 
+        WINTER_SIGN = new Chapter(
+            "eidolon.codex.chapter.winter_sign",
+            new TitlePage("eidolon.codex.page.winter_sign"),
+            new SignPage(Signs.WINTER_SIGN)
+        );
+
+        HARMONY_SIGN = new Chapter(
+            "eidolon.codex.chapter.harmony_sign",
+            new TitlePage("eidolon.codex.page.harmony_sign"),
+            new SignPage(Signs.HARMONY_SIGN)
+        );
+
+        DEATH_SIGN = new Chapter(
+            "eidolon.codex.chapter.death_sign",
+            new TitlePage("eidolon.codex.page.death_sign"),
+            new SignPage(Signs.DEATH_SIGN)
+        );
+
+        WARDING_SIGN = new Chapter(
+            "eidolon.codex.chapter.warding_sign",
+            new TitlePage("eidolon.codex.page.warding_sign"),
+            new SignPage(Signs.WARDING_SIGN)
+        );
+
+        MAGIC_SIGN = new Chapter(
+            "eidolon.codex.chapter.magic_sign",
+            new TitlePage("eidolon.codex.page.magic_sign"),
+            new SignPage(Signs.MAGIC_SIGN)
+        );
+
         SIGNS_INDEX = new Chapter(
             "eidolon.codex.chapter.signs_index",
             new SignIndexPage(
@@ -819,6 +850,13 @@ public class CodexChapters {
                 new SignEntry(SOUL_SIGN, Signs.SOUL_SIGN),
                 new SignEntry(MIND_SIGN, Signs.MIND_SIGN),
                 new SignEntry(FLAME_SIGN, Signs.FLAME_SIGN)
+            ),
+            new SignIndexPage(
+	            new SignEntry(WINTER_SIGN, Signs.WINTER_SIGN),
+	            new SignEntry(HARMONY_SIGN, Signs.HARMONY_SIGN),
+	            new SignEntry(DEATH_SIGN, Signs.DEATH_SIGN),
+	            new SignEntry(WARDING_SIGN, Signs.WARDING_SIGN),
+	            new SignEntry(MAGIC_SIGN, Signs.MAGIC_SIGN)
             )
         );
 
@@ -827,6 +865,18 @@ public class CodexChapters {
             new ItemStack(Registry.UNHOLY_SYMBOL.get()),
             ColorUtil.packColor(255, 163, 74, 207),
             SIGNS_INDEX
+        ));
+
+        RUNES_INDEX = new Chapter(
+            "eidolon.codex.chapter.runes_index",
+            new RuneDescPage(), new RuneIndexPage()
+        );
+
+        categories.add(RUNES = new Category(
+            "runes",
+            new ItemStack(Registry.PARCHMENT.get()),
+            ColorUtil.packColor(255, 70, 70, 194),
+            RUNES_INDEX
         ));
     }
 }

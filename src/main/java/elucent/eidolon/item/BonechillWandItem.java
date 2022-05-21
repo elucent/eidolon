@@ -20,8 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class BonechillWandItem extends WandItem {
 	private Random random = new Random();
 	

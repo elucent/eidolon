@@ -14,8 +14,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 
-
-
 public class ChilledEffectPacket {
     double x, y, z;
 

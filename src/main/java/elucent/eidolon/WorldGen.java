@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
@@ -18,11 +19,15 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -117,13 +122,13 @@ public class WorldGen {
             Registry.LEAD_ORE.get().defaultBlockState(), Config.LEAD_VEIN_SIZE.get())), "lead_ore");
         LEAD_ORE_GEN = PlacementUtils.register("lead_ore", LEAD_ORE.placed(
     		InSquarePlacement.spread(), BiomeFilter.biome(), CountPlacement.of(Config.LEAD_VEIN_COUNT.get()), 
-    		HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.LEAD_MIN_Y.get()), VerticalAnchor.absolute(Config.LEAD_MAX_Y.get()))
+    		HeightRangePlacement.uniform(VerticalAnchor.absolute(Math.max(0, Config.LEAD_MIN_Y.get())), VerticalAnchor.absolute(Config.LEAD_MAX_Y.get()))
 		));
         ConfiguredFeature<?, ?> DEEP_LEAD_ORE = register(Feature.ORE.configured(new OreConfiguration(IN_DEEPSLATE,
             Registry.DEEP_LEAD_ORE.get().defaultBlockState(), Config.LEAD_VEIN_SIZE.get())), "deep_lead_ore");
         DEEP_LEAD_ORE_GEN = PlacementUtils.register("deep_lead_ore", DEEP_LEAD_ORE.placed(
     		InSquarePlacement.spread(), BiomeFilter.biome(), CountPlacement.of(Config.LEAD_VEIN_COUNT.get()), 
-    		HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.LEAD_MIN_Y.get()), VerticalAnchor.absolute(Config.LEAD_MAX_Y.get()))
+    		HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.LEAD_MIN_Y.get()), VerticalAnchor.absolute(Math.min(0, Config.LEAD_MAX_Y.get())))
 		));
         if (Config.LEAD_ENABLED.get()) {
         	ORES.add(LEAD_ORE_GEN);
@@ -134,13 +139,13 @@ public class WorldGen {
             Registry.SILVER_ORE.get().defaultBlockState(), Config.SILVER_VEIN_SIZE.get())), "silver_ore");
         SILVER_ORE_GEN = PlacementUtils.register("silver_ore", SILVER_ORE.placed(
     		InSquarePlacement.spread(), BiomeFilter.biome(), CountPlacement.of(Config.SILVER_VEIN_COUNT.get()), 
-    		HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.SILVER_MIN_Y.get()), VerticalAnchor.absolute(Config.SILVER_MAX_Y.get()))
+    		HeightRangePlacement.uniform(VerticalAnchor.absolute(Math.max(0, Config.SILVER_MIN_Y.get())), VerticalAnchor.absolute(Config.SILVER_MAX_Y.get()))
         ));
         ConfiguredFeature<?, ?> DEEP_SILVER_ORE = register(Feature.ORE.configured(new OreConfiguration(IN_DEEPSLATE,
             Registry.DEEP_SILVER_ORE.get().defaultBlockState(), Config.SILVER_VEIN_SIZE.get())), "deep_silver_ore");
         DEEP_SILVER_ORE_GEN = PlacementUtils.register("deep_silver_ore", DEEP_SILVER_ORE.placed(
     		InSquarePlacement.spread(), BiomeFilter.biome(), CountPlacement.of(Config.SILVER_VEIN_COUNT.get()), 
-    		HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.SILVER_MIN_Y.get()), VerticalAnchor.absolute(Config.SILVER_MAX_Y.get()))
+    		HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.SILVER_MIN_Y.get()), VerticalAnchor.absolute(Math.min(0, Config.SILVER_MAX_Y.get())))
         ));
         if (Config.SILVER_ENABLED.get()) {
         	ORES.add(SILVER_ORE_GEN);
@@ -181,18 +186,43 @@ public class WorldGen {
     
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
-//        if (event.getWorld() instanceof ServerLevel level) {
-//            StructureSettings settings = level.getChunkSource().getGenerator().getSettings();
-//            
-//            ImmutableMap<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>>
-//	        if (Config.LAB_ENABLED.get())
-//	        	Structure
-//	            settings.structureConfig.computeIfAbsent(LAB_STRUCTURE.get(), ).addFeature(LAB_FEATURE);
-//	        if (Config.CATACOMB_ENABLED.get())
-//	            event.getGeneration().addStructureStart(CATACOMB_FEATURE);
-//	        if (event.getCategory() == Biome.BiomeCategory.ICY && Config.STRAY_TOWER_ENABLED.get())
-//	            event.getGeneration().addStructureStart(STRAY_TOWER_FEATURE);
-//        }
+        if (event.getWorld() instanceof ServerLevel sl) {
+            ChunkGenerator chunkGenerator = sl.getChunkSource().getGenerator();
+
+            if (chunkGenerator instanceof FlatLevelSource && sl.dimensionType().equals(DimensionType.OVERWORLD_LOCATION)) {
+                return;
+            }
+
+            StructureSettings worldStructureConfig = chunkGenerator.getSettings();
+            HashMap<StructureFeature<?>, HashMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> structureMap = new HashMap<>();
+            
+            for(Map.Entry<ResourceKey<Biome>, Biome> biomeEntry : sl.registryAccess().ownedRegistryOrThrow(net.minecraft.core.Registry.BIOME_REGISTRY).entrySet()) {
+                Biome.BiomeCategory biomeCategory = biomeEntry.getValue().getBiomeCategory();
+                if (Config.LAB_ENABLED.get()) 
+    	        	associateBiomeToConfiguredStructure(structureMap, LAB_FEATURE, biomeEntry.getKey());
+                if ((biomeCategory == BiomeCategory.ICY || biomeCategory == BiomeCategory.TAIGA) && Config.STRAY_TOWER_ENABLED.get())
+    	        	associateBiomeToConfiguredStructure(structureMap, STRAY_TOWER_FEATURE, biomeEntry.getKey());
+                if (Config.CATACOMB_ENABLED.get()) 
+    	        	associateBiomeToConfiguredStructure(structureMap, CATACOMB_FEATURE, biomeEntry.getKey());
+            }
+            
+            ImmutableMap.Builder<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> tempStructureToMultiMap = ImmutableMap.builder();
+            worldStructureConfig.configuredStructures.entrySet().stream().filter(entry -> !structureMap.containsKey(entry.getKey())).forEach(tempStructureToMultiMap::put);
+            structureMap.forEach((key, value) -> tempStructureToMultiMap.put(key, ImmutableMultimap.copyOf(value)));
+            worldStructureConfig.configuredStructures = tempStructureToMultiMap.build();
+
+            Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(worldStructureConfig.structureConfig());
+            tempMap.putIfAbsent(STRAY_TOWER_STRUCTURE.get(), STRUCTURE_SETTINGS.get(STRAY_TOWER_STRUCTURE.getId()));
+            tempMap.putIfAbsent(LAB_STRUCTURE.get(), STRUCTURE_SETTINGS.get(LAB_STRUCTURE.getId()));
+            tempMap.putIfAbsent(CATACOMB_STRUCTURE.get(), STRUCTURE_SETTINGS.get(CATACOMB_STRUCTURE.getId()));
+            worldStructureConfig.structureConfig = tempMap;
+        }
+    }
+
+    private static void associateBiomeToConfiguredStructure(Map<StructureFeature<?>, HashMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> STStructureToMultiMap, ConfiguredStructureFeature<?, ?> configuredStructureFeature, ResourceKey<Biome> biomeRegistryKey) {
+        STStructureToMultiMap.putIfAbsent(configuredStructureFeature.feature, HashMultimap.create());
+        HashMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>> configuredStructureToBiomeMultiMap = STStructureToMultiMap.get(configuredStructureFeature.feature);
+        configuredStructureToBiomeMultiMap.put(configuredStructureFeature, biomeRegistryKey);
     }
 
     @SubscribeEvent

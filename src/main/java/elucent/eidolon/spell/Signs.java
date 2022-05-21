@@ -53,19 +53,34 @@ public class Signs {
             new ResourceLocation(Eidolon.MODID, "particle/mind_sign"),
             ColorUtil.packColor(255, 90, 121, 255)
         )),
-        WARDING_SIGN = register(new Sign(
-            new ResourceLocation(Eidolon.MODID, "warding"),
-            new ResourceLocation(Eidolon.MODID, "particle/warding_sign"),
-            ColorUtil.packColor(255, 190, 212, 184)
-        )),
-        ENERGY_SIGN = register(new Sign(
-            new ResourceLocation(Eidolon.MODID, "energy"),
-            new ResourceLocation(Eidolon.MODID, "particle/energy_sign"),
-            ColorUtil.packColor(255, 145, 250, 100)
-        )),
         FLAME_SIGN = register(new Sign(
             new ResourceLocation(Eidolon.MODID, "flame"),
             new ResourceLocation(Eidolon.MODID, "particle/flame_sign"),
             ColorUtil.packColor(255, 255, 128, 64)
+        )),
+        WINTER_SIGN = register(new Sign(
+            new ResourceLocation(Eidolon.MODID, "winter"),
+            new ResourceLocation(Eidolon.MODID, "particle/winter_sign"),
+            ColorUtil.packColor(255, 112, 149, 210)
+        )),
+        HARMONY_SIGN = register(new Sign(
+            new ResourceLocation(Eidolon.MODID, "harmony"),
+            new ResourceLocation(Eidolon.MODID, "particle/harmony_sign"),
+            ColorUtil.packColor(255, 141, 141, 195)
+        )),
+        DEATH_SIGN = register(new Sign(
+            new ResourceLocation(Eidolon.MODID, "death"),
+            new ResourceLocation(Eidolon.MODID, "particle/death_sign"),
+            ColorUtil.packColor(255, 123, 140, 70)
+        )),
+        WARDING_SIGN = register(new Sign(
+            new ResourceLocation(Eidolon.MODID, "warding"),
+            new ResourceLocation(Eidolon.MODID, "particle/warding_sign"),
+            ColorUtil.packColor(255, 118, 204, 175)
+        )),
+        MAGIC_SIGN = register(new Sign(
+            new ResourceLocation(Eidolon.MODID, "magic"),
+            new ResourceLocation(Eidolon.MODID, "particle/magic_sign"),
+            ColorUtil.packColor(255, 167, 85, 192)
         ));
 }

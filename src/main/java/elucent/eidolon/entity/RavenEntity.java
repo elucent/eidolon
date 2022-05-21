@@ -24,6 +24,8 @@ import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.animal.ShoulderRidingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -39,6 +41,7 @@ import net.minecraft.server.level.ServerLevel;
 
 public class RavenEntity extends ShoulderRidingEntity implements FlyingAnimal {
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.of(Items.RABBIT, Items.BEETROOT_SEEDS);
+    public int featherTime = this.random.nextInt(12000) + 12000;
 
     public RavenEntity(EntityType<RavenEntity> type, Level worldIn) {
         super(type, worldIn);
@@ -82,16 +85,24 @@ public class RavenEntity extends ShoulderRidingEntity implements FlyingAnimal {
             .build();
     }
 
+    @Override
     public void aiStep() {
         super.aiStep();
         Vec3 motion = this.getDeltaMovement();
         if (!this.onGround && motion.y < 0.0D) {
             this.setDeltaMovement(motion.multiply(1.0D, 0.6D, 1.0D));
         }
+
+       if (!this.level.isClientSide && this.isAlive() && !this.isBaby() && --this.featherTime <= 0) {
+          this.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+          this.spawnAtLocation(Registry.RAVEN_FEATHER.get());
+          this.featherTime = this.random.nextInt(12000) + 12000;
+       }
     }
 
-    public boolean causeFallDamage(float distance, float damageMultiplier) {
-        return false;
+    @Override
+    public int calculateFallDamage(float distance, float damageMultiplier) {
+        return 0;
     }
 
     @Override

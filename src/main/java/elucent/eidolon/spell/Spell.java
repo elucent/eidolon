@@ -17,7 +17,7 @@ public abstract class Spell {
         return registryName;
     }
 
-    public abstract boolean matches(List<Sign> signs);
-    public abstract boolean canCast(Level world, BlockPos pos, Player player, List<Sign> signs);
-    public abstract void cast(Level world, BlockPos pos, Player player, List<Sign> signs);
+    public abstract boolean matches(SignSequence signs);
+    public abstract boolean canCast(Level world, BlockPos pos, Player player, SignSequence signs);
+    public abstract void cast(Level world, BlockPos pos, Player player, SignSequence signs);
 }

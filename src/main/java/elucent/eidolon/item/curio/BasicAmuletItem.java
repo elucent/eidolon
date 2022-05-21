@@ -14,8 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class BasicAmuletItem extends Item {
     UUID ATTR_ID = new UUID(1821688469367197801l, 2986247575840977557l);
     public BasicAmuletItem(Properties properties) {

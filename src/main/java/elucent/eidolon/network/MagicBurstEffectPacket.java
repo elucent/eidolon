@@ -12,8 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-
-
 public class MagicBurstEffectPacket {
     float x, y, z;
     int c1, c2;
