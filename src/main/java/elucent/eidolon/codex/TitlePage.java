@@ -1,10 +1,10 @@
 package elucent.eidolon.codex;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import elucent.eidolon.Eidolon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -20,10 +20,10 @@ public class TitlePage extends Page {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
-        String title = I18n.format(this.title);
-        int titleWidth = Minecraft.getInstance().fontRenderer.getStringWidth(title);
-        drawText(gui, mStack, title, x + 64 - titleWidth / 2, y + 15 - Minecraft.getInstance().fontRenderer.FONT_HEIGHT);
-        drawWrappingText(gui, mStack, I18n.format(text), x + 4, y + 24, 120);
+    public void render(CodexGui gui, PoseStack mStack, int x, int y, int mouseX, int mouseY) {
+        String title = I18n.get(this.title);
+        int titleWidth = Minecraft.getInstance().font.width(title);
+        drawText(gui, mStack, title, x + 64 - titleWidth / 2, y + 15 - Minecraft.getInstance().font.lineHeight);
+        drawWrappingText(gui, mStack, I18n.get(text), x + 4, y + 24, 120);
     }
 }

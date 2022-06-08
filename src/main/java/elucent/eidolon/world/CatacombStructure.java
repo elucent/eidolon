@@ -3,11 +3,11 @@ package elucent.eidolon.world;
 import com.mojang.serialization.Codec;
 import elucent.eidolon.Config;
 import elucent.eidolon.Eidolon;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.util.SharedSeedRandom;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.world.biome.Biome;
@@ -24,13 +24,15 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 
 import java.util.*;
 
+import net.minecraft.world.gen.feature.structure.Structure.IStartFactory;
+
 public class CatacombStructure extends Structure<NoFeatureConfig> {
     public CatacombStructure(Codec<NoFeatureConfig> codec) {
         super(codec);
     }
 
     @Override
-    public GenerationStage.Decoration getDecorationStage() {
+    public GenerationStage.Decoration step() {
         return GenerationStage.Decoration.UNDERGROUND_STRUCTURES;
     }
 
@@ -40,7 +42,7 @@ public class CatacombStructure extends Structure<NoFeatureConfig> {
     }
 
     @Override
-    protected boolean func_230363_a_(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom rand, int chunkX, int chunkZ, Biome biome, ChunkPos pos, NoFeatureConfig config) {
+    protected boolean isFeatureChunk(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom rand, int chunkX, int chunkZ, Biome biome, ChunkPos pos, NoFeatureConfig config) {
         int i = chunkX >> 4;
         int j = chunkZ >> 4;
         rand.setSeed((long) (i ^ j << 4) ^ seed);
@@ -49,7 +51,7 @@ public class CatacombStructure extends Structure<NoFeatureConfig> {
     }
 
     @Override
-    public String getStructureName() {
+    public String getFeatureName() {
         return new ResourceLocation(Eidolon.MODID, "catacomb").toString();
     }
 
@@ -58,15 +60,15 @@ public class CatacombStructure extends Structure<NoFeatureConfig> {
             super(config, chunkX, chunkZ, bounds, refs, seed);
         }
 
-        public void func_230364_a_(DynamicRegistries registries, ChunkGenerator generator, TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
+        public void generatePieces(DynamicRegistries registries, ChunkGenerator generator, TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
             int i = chunkX * 16;
             int j = chunkZ * 16;
-            int k = Math.min(32, generator.getNoiseHeight(i, j, Heightmap.Type.OCEAN_FLOOR_WG));
+            int k = Math.min(32, generator.getFirstFreeHeight(i, j, Heightmap.Type.OCEAN_FLOOR_WG));
             if (k < 17) k = 17;
-            BlockPos blockpos = new BlockPos(i + rand.nextInt(16), rand.nextInt(k - 16) + 8, j + rand.nextInt(16));
+            BlockPos blockpos = new BlockPos(i + random.nextInt(16), random.nextInt(k - 16) + 8, j + random.nextInt(16));
 
-            generate(templateManager, blockpos, rand, components);
-            this.recalculateStructureSize();
+            generate(templateManager, blockpos, random, pieces);
+            this.calculateBoundingBox();
         }
 
         enum RoomType {
@@ -129,7 +131,7 @@ public class CatacombStructure extends Structure<NoFeatureConfig> {
         }
 
         BlockPos adjDims(ResourceLocation rl, TemplateManager tm) {
-            Template t = tm.getTemplate(rl);
+            Template t = tm.get(rl);
             BlockPos dims = t.getSize();
             return new BlockPos((dims.getX() - 3) / 4, 0, (dims.getZ() - 3) / 4);
         }
@@ -170,11 +172,11 @@ public class CatacombStructure extends Structure<NoFeatureConfig> {
                     boolean can = true;
                     for (int i = 0; i < w; i ++) {
                         for (int j = 0; j < h; j ++) {
-                            if (rooms.getOrDefault(desired.add(i, 0, j), RoomType.CORRIDOR) != RoomType.CORRIDOR)
+                            if (rooms.getOrDefault(desired.offset(i, 0, j), RoomType.CORRIDOR) != RoomType.CORRIDOR)
                                 can = false;
                         }
                     }
-                    if (can) return desired.add(-xx, 0, -yy);
+                    if (can) return desired.offset(-xx, 0, -yy);
                 }
             }
             return null;
@@ -184,14 +186,14 @@ public class CatacombStructure extends Structure<NoFeatureConfig> {
             rooms.put(pos, type);
             for (int i = 0; i < w; i ++) {
                 for (int j = 0; j < h; j ++) {
-                    if (i != 0 || j != 0) rooms.put(pos.add(i, 0, j), RoomType.EMPTY);
+                    if (i != 0 || j != 0) rooms.put(pos.offset(i, 0, j), RoomType.EMPTY);
                     if (i > 0) {
-                        edges.remove(new Edge(pos.add(i, 0, j), pos.add(i - 1, 0, j), 0));
-                        edges.remove(new Edge(pos.add(i - 1, 0, j), pos.add(i, 0, j), 0));
+                        edges.remove(new Edge(pos.offset(i, 0, j), pos.offset(i - 1, 0, j), 0));
+                        edges.remove(new Edge(pos.offset(i - 1, 0, j), pos.offset(i, 0, j), 0));
                     }
                     if (j > 0) {
-                        edges.remove(new Edge(pos.add(i, 0, j), pos.add(i, 0, j - 1), 0));
-                        edges.remove(new Edge(pos.add(i, 0, j - 1), pos.add(i, 0, j), 0));
+                        edges.remove(new Edge(pos.offset(i, 0, j), pos.offset(i, 0, j - 1), 0));
+                        edges.remove(new Edge(pos.offset(i, 0, j - 1), pos.offset(i, 0, j), 0));
                     }
                 }
             }
@@ -267,7 +269,7 @@ public class CatacombStructure extends Structure<NoFeatureConfig> {
 
             for (Map.Entry<BlockPos, RoomType> e : rooms.entrySet()) {
                 ICatacombFactory factory = e.getValue() == RoomType.EMPTY ? null : roomFor(e.getValue(), random);
-                BlockPos loc = pos.add(e.getKey().getX() * 4, 0, e.getKey().getZ() * 4);
+                BlockPos loc = pos.offset(e.getKey().getX() * 4, 0, e.getKey().getZ() * 4);
                 switch (e.getValue()) {
                     case SMALL_ROOM:
                         components.add(factory.create(tm, loc, random));
@@ -288,7 +290,7 @@ public class CatacombStructure extends Structure<NoFeatureConfig> {
                     south = new Edge(e.getKey(), e.getKey().south(), 0),
                     west = new Edge(e.getKey(), e.getKey().west(), 0),
                     east = new Edge(e.getKey(), e.getKey().east(), 0);
-                BlockPos loc = pos.add(e.getKey().getX() * 4, 0, e.getKey().getZ() * 4);
+                BlockPos loc = pos.offset(e.getKey().getX() * 4, 0, e.getKey().getZ() * 4);
                 if (maze.contains(north))
                     components.add(new CatacombPieces.CorridorDoor(tm, loc, Rotation.NONE, random));
                 if (maze.contains(west))
@@ -298,7 +300,7 @@ public class CatacombStructure extends Structure<NoFeatureConfig> {
                 if (maze.contains(east))
                     components.add(new CatacombPieces.CorridorDoor(tm, loc, Rotation.CLOCKWISE_90, random));
             }
-            this.recalculateStructureSize();
+            this.calculateBoundingBox();
         }
     }
 }

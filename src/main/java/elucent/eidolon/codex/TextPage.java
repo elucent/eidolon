@@ -1,9 +1,9 @@
 package elucent.eidolon.codex;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import elucent.eidolon.Eidolon;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,7 +18,7 @@ public class TextPage extends Page {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
-        drawWrappingText(gui, mStack, I18n.format(text), x + 4, y + 4, 120);
+    public void render(CodexGui gui, PoseStack mStack, int x, int y, int mouseX, int mouseY) {
+        drawWrappingText(gui, mStack, I18n.get(text), x + 4, y + 4, 120);
     }
 }

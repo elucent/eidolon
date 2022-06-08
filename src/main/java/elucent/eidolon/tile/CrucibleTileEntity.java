@@ -7,24 +7,24 @@ import elucent.eidolon.network.Networking;
 import elucent.eidolon.particle.Particles;
 import elucent.eidolon.recipe.CrucibleRecipe;
 import elucent.eidolon.recipe.CrucibleRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.block.CampfireBlock;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
@@ -74,17 +74,17 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
             return contents;
         }
 
-        public CrucibleStep(CompoundNBT nbt) {
+        public CrucibleStep(CompoundTag nbt) {
             stirs = nbt.getInt("stirs");
-            ListNBT list = nbt.getList("contents", Constants.NBT.TAG_COMPOUND);
-            for (INBT item : list) contents.add(ItemStack.read((CompoundNBT)item));
+            ListTag list = nbt.getList("contents", Constants.NBT.TAG_COMPOUND);
+            for (INBT item : list) contents.add(ItemStack.of((CompoundTag)item));
         }
 
-        public CompoundNBT write() {
-            CompoundNBT nbt = new CompoundNBT();
+        public CompoundTag write() {
+            CompoundTag nbt = new CompoundTag();
             nbt.putInt("stirs", stirs);
-            ListNBT list = new ListNBT();
-            for (ItemStack stack : contents) list.add(stack.write(new CompoundNBT()));
+            ListTag list = new ListTag();
+            for (ItemStack stack : contents) list.add(stack.save(new CompoundTag()));
             nbt.put("contents", list);
             return nbt;
         }
@@ -95,60 +95,60 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
         (BlockState b) -> b.getBlock() == Blocks.FIRE,
         (BlockState b) -> b.getBlock() == Blocks.SOUL_FIRE,
         (BlockState b) -> b.getBlock() == Blocks.LAVA,
-        (BlockState b) -> b.getBlock() == Blocks.CAMPFIRE && b.get(CampfireBlock.LIT),
-        (BlockState b) -> b.getBlock() == Blocks.SOUL_CAMPFIRE && b.get(CampfireBlock.LIT)
+        (BlockState b) -> b.getBlock() == Blocks.CAMPFIRE && b.getValue(CampfireBlock.LIT),
+        (BlockState b) -> b.getBlock() == Blocks.SOUL_CAMPFIRE && b.getValue(CampfireBlock.LIT)
     };
 
     public CrucibleTileEntity() {
         this(Registry.CRUCIBLE_TILE_ENTITY);
     }
 
-    public CrucibleTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CrucibleTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
-    public ActionResultType onActivated(BlockState state, BlockPos pos, PlayerEntity player, Hand hand) {
-        if (hand == Hand.MAIN_HAND) {
-            if (player.isSneaking() && player.getHeldItem(hand).isEmpty() && hasWater) {
+    public InteractionResult onActivated(BlockState state, BlockPos pos, Player player, InteractionHand hand) {
+        if (hand == InteractionHand.MAIN_HAND) {
+            if (player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty() && hasWater) {
                 boiling = false;
                 hasWater = false;
                 stirs = 0;
                 steps.clear();
-                if (!world.isRemote) {
+                if (!level.isClientSide) {
                     sync();
-                    world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                    level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            else if (player.getHeldItem(hand).isEmpty() && stirTicks == 0 && this.steps.size() > 0) {
+            else if (player.getItemInHand(hand).isEmpty() && stirTicks == 0 && this.steps.size() > 0) {
                 stirs ++;
                 stirTicks = 20;
-                if (!world.isRemote) {
-                    world.playSound(null, pos, SoundEvents.ENTITY_GENERIC_SPLASH, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                if (!level.isClientSide) {
+                    level.playSound(null, pos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 1.0f, 1.0f);
                     sync();
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            if (player.getHeldItem(hand).getItem() == Items.WATER_BUCKET) {
-                player.setHeldItem(hand, new ItemStack(Items.BUCKET));
+            if (player.getItemInHand(hand).getItem() == Items.WATER_BUCKET) {
+                player.setItemInHand(hand, new ItemStack(Items.BUCKET));
                 hasWater = true;
-                if (!world.isRemote) {
+                if (!level.isClientSide) {
                     sync();
-                    world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                    level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag) {
-        super.read(state, tag);
+    public void load(BlockState state, CompoundTag tag) {
+        super.load(state, tag);
         this.steps.clear();
-        ListNBT steps = tag.getList("steps", Constants.NBT.TAG_COMPOUND);
-        for (INBT step : steps) this.steps.add(new CrucibleStep((CompoundNBT)step));
+        ListTag steps = tag.getList("steps", Constants.NBT.TAG_COMPOUND);
+        for (INBT step : steps) this.steps.add(new CrucibleStep((CompoundTag)step));
         boiling = tag.getBoolean("boiling");
         hasWater = tag.getBoolean("hasWater");
         stirs = tag.getInt("stirs");
@@ -157,9 +157,9 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
-        tag = super.write(tag);
-        ListNBT steps = new ListNBT();
+    public CompoundTag save(CompoundTag tag) {
+        tag = super.save(tag);
+        ListTag steps = new ListTag();
         for (CrucibleStep step : this.steps) steps.add(step.write());
         tag.put("steps", steps);
         tag.putBoolean("boiling", boiling);
@@ -173,17 +173,17 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
     public void tick() {
         if (stirTicks > 0) stirTicks --;
 
-        if (hasWater && world.getGameTime() % 200 == 0) {
-            BlockState state = world.getBlockState(pos.down());
+        if (hasWater && level.getGameTime() % 200 == 0) {
+            BlockState state = level.getBlockState(worldPosition.below());
             boolean isHeated = false;
             for (Predicate pred : HOT_BLOCKS) if (pred.test(state)) isHeated = true;
             if (boiling && !isHeated) {
                 boiling = false;
-                if (!world.isRemote) sync();
+                if (!level.isClientSide) sync();
             }
             else if (!boiling && isHeated) {
                 boiling = true;
-                if (!world.isRemote) sync();
+                if (!level.isClientSide) sync();
             }
         }
 
@@ -194,31 +194,31 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
         float steamG = steps.size() > 0 ? Math.min(1.0f, 1 - (float)Math.pow(1 - getGreen(), 2)) : 1.0f;
         float steamB = steps.size() > 0 ? Math.min(1.0f, 1 - (float)Math.pow(1 - getBlue(), 2)) : 1.0f;
 
-        if (world.isRemote && hasWater && boiling) for (int i = 0; i < 2; i ++){
+        if (level.isClientSide && hasWater && boiling) for (int i = 0; i < 2; i ++){
             Particles.create(Registry.BUBBLE_PARTICLE)
                 .setScale(0.05f)
                 .setLifetime(10)
                 .addVelocity(0, 0.015625, 0)
                 .setColor(bubbleR, bubbleG, bubbleB)
                 .setAlpha(1.0f, 0.75f)
-                .spawn(world, pos.getX() + 0.125 + 0.75 * world.rand.nextFloat(), pos.getY() + 0.6875, pos.getZ() + 0.125 + 0.75 * world.rand.nextFloat());
-            if (world.rand.nextInt(8) == 0) Particles.create(Registry.STEAM_PARTICLE)
+                .spawn(level, worldPosition.getX() + 0.125 + 0.75 * level.random.nextFloat(), worldPosition.getY() + 0.6875, worldPosition.getZ() + 0.125 + 0.75 * level.random.nextFloat());
+            if (level.random.nextInt(8) == 0) Particles.create(Registry.STEAM_PARTICLE)
                 .setAlpha(0.0625f, 0).setScale(0.375f, 0.125f).setLifetime(80)
                 .randomOffset(0.375, 0.125).randomVelocity(0.0125f, 0.025f)
                 .addVelocity(0, 0.05f, 0)
                 .setColor(steamR, steamG, steamB)
-                .spawn(world, pos.getX() + 0.5, pos.getY() + 0.625, pos.getZ() + 0.5);
+                .spawn(level, worldPosition.getX() + 0.5, worldPosition.getY() + 0.625, worldPosition.getZ() + 0.5);
         }
 
-        if (!world.isRemote && boiling && hasWater && world.getGameTime() % 8 == 0) {
-            List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(pos).shrink(0.125));
-            for (ItemEntity item : items) item.setPickupDelay(20);
+        if (!level.isClientSide && boiling && hasWater && level.getGameTime() % 8 == 0) {
+            List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(worldPosition).deflate(0.125));
+            for (ItemEntity item : items) item.setPickUpDelay(20);
         }
 
-        if (!world.isRemote && stepCounter > 0) {
+        if (!level.isClientSide && stepCounter > 0) {
             -- stepCounter;
             if (stepCounter == 0) {
-                List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(pos).shrink(0.125));
+                List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(worldPosition).deflate(0.125));
                 List<ItemStack> contents = new ArrayList<>();
                 for (ItemEntity item : items) {
                     for (int i = 0; i < item.getItem().getCount(); i ++) {
@@ -229,7 +229,7 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
                     item.remove();
                 }
                 if (stirs == 0 && contents.isEmpty()) { // no action done; end recipe
-                    Networking.sendToTracking(world, pos, new CrucibleFailPacket(pos));
+                    Networking.sendToTracking(level, worldPosition, new CrucibleFailPacket(worldPosition));
                     contents.clear();
                     steps.clear();
                     stirs = 0;
@@ -242,18 +242,18 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
 
                     CrucibleRecipe recipe = CrucibleRegistry.find(steps);
                     if (recipe != null) { // if recipe found
-                        Networking.sendToTracking(world, pos, new CrucibleSuccessPacket(pos, steamR, steamG, steamB));
-                        double angle = world.rand.nextDouble() * Math.PI * 2;
-                        ItemEntity entity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.75, pos.getZ() + 0.5, recipe.getResult().copy());
-                        entity.setMotion(Math.sin(angle) * 0.125, 0.25, Math.cos(angle) * 0.125);
-                        entity.setPickupDelay(10);
-                        world.addEntity(entity);
+                        Networking.sendToTracking(level, worldPosition, new CrucibleSuccessPacket(worldPosition, steamR, steamG, steamB));
+                        double angle = level.random.nextDouble() * Math.PI * 2;
+                        ItemEntity entity = new ItemEntity(level, worldPosition.getX() + 0.5, worldPosition.getY() + 0.75, worldPosition.getZ() + 0.5, recipe.getResult().copy());
+                        entity.setDeltaMovement(Math.sin(angle) * 0.125, 0.25, Math.cos(angle) * 0.125);
+                        entity.setPickUpDelay(10);
+                        level.addFreshEntity(entity);
                         contents.clear();
                         steps.clear();
                         hasWater = boiling = false;
                     }
                     else {
-                        world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0f, 1.0f); // try continue
+                        level.playSound(null, worldPosition, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 1.0f, 1.0f); // try continue
                         stepCounter = 100;
                     }
                     stirs = 0;
@@ -262,9 +262,9 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
             }
         }
 
-        if (!world.isRemote && stepCounter == 0 && steps.size() == 0
-            && hasWater && boiling && world.getGameTime() % 100 == 0) {
-            List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(pos).shrink(0.125));
+        if (!level.isClientSide && stepCounter == 0 && steps.size() == 0
+            && hasWater && boiling && level.getGameTime() % 100 == 0) {
+            List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(worldPosition).deflate(0.125));
             if (items.size() > 0) stepCounter = 40;
         }
     }

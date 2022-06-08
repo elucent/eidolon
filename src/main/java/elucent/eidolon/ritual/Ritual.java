@@ -1,11 +1,11 @@
 package elucent.eidolon.ritual;
 
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.chunk.IChunk;
 
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public abstract class Ritual {
         TERMINATE
     }
 
-    public SetupResult setup(World world, BlockPos pos, int step) {
+    public SetupResult setup(Level world, BlockPos pos, int step) {
         if (step >= stepRequirements.size()) return SetupResult.SUCCEED;
         for (IRequirement req : continuousRequirements) {
             RequirementInfo info = req.isMet(this, world, pos);
@@ -101,30 +101,30 @@ public abstract class Ritual {
         return SetupResult.PASS;
     }
 
-    public AxisAlignedBB getSearchBounds(BlockPos pos) {
+    public AABB getSearchBounds(BlockPos pos) {
         return getDefaultBounds(pos);
     }
 
-    public static AxisAlignedBB getDefaultBounds(BlockPos pos) {
-        return new AxisAlignedBB(pos.getX() - 8, pos.getY() - 6, pos.getZ() - 8, pos.getX() + 9, pos.getY() + 11, pos.getZ() + 9);
+    public static AABB getDefaultBounds(BlockPos pos) {
+        return new AABB(pos.getX() - 8, pos.getY() - 6, pos.getZ() - 8, pos.getX() + 9, pos.getY() + 11, pos.getZ() + 9);
     }
 
-    public RitualResult tick(World world, BlockPos pos) {
+    public RitualResult tick(Level world, BlockPos pos) {
         return RitualResult.PASS;
     }
 
-    public RitualResult start(World world, BlockPos pos) {
+    public RitualResult start(Level world, BlockPos pos) {
         return RitualResult.PASS;
     }
 
-    public static <T> List<T> getTilesWithinAABB(Class<T> type, World world, AxisAlignedBB bb) {
+    public static <T> List<T> getTilesWithinAABB(Class<T> type, Level world, AABB bb) {
         List<T> tileList = new ArrayList<>();
         for (int i = (int)Math.floor(bb.minX); i < (int)Math.ceil(bb.maxX) + 16; i += 16) {
             for (int j = (int)Math.floor(bb.minZ); j < (int)Math.ceil(bb.maxZ) + 16; j += 16) {
                 IChunk c = world.getChunk(new BlockPos(i, 0, j));
-                Set<BlockPos> tiles = c.getTileEntitiesPos();
+                Set<BlockPos> tiles = c.getBlockEntitiesPos();
                 for (BlockPos p : tiles) if (bb.contains(p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5)) {
-                    TileEntity t = world.getTileEntity(p);
+                    BlockEntity t = world.getBlockEntity(p);
                     if (type.isInstance(t)) tileList.add((T)t);
                 }
             }

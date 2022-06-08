@@ -3,9 +3,9 @@ package elucent.eidolon.mixin;
 import elucent.eidolon.Registry;
 import elucent.eidolon.event.SpeedFactorEvent;
 import elucent.eidolon.item.ReaperScytheItem;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,10 +25,10 @@ public class LivingEntityMixin {
 
     @Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
     protected void customDropLoot(DamageSource source, boolean hitRecently, CallbackInfo ci) {
-        if (((LivingEntity)(Object)this).isEntityUndead()
-            && (source.getDamageType().equals(Registry.RITUAL_DAMAGE.getDamageType())
-                || source.getTrueSource() instanceof LivingEntity
-                    && ((LivingEntity) source.getTrueSource()).getHeldItemMainhand().getItem() instanceof ReaperScytheItem)) {
+        if (((LivingEntity)(Object)this).isInvertedHealAndHarm()
+            && (source.getMsgId().equals(Registry.RITUAL_DAMAGE.getMsgId())
+                || source.getEntity() instanceof LivingEntity
+                    && ((LivingEntity) source.getEntity()).getMainHandItem().getItem() instanceof ReaperScytheItem)) {
             ci.cancel();
         }
     }

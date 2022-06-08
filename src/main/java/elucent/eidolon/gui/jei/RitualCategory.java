@@ -1,6 +1,6 @@
 package elucent.eidolon.gui.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.codex.CodexGui;
@@ -17,9 +17,9 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class RitualCategory implements IRecipeCategory<RecipeWrappers.RitualReci
 
     @Override
     public String getTitle() {
-        return I18n.format("jei." + Eidolon.MODID + ".ritual");
+        return I18n.get("jei." + Eidolon.MODID + ".ritual");
     }
 
     @Override
@@ -92,7 +92,7 @@ public class RitualCategory implements IRecipeCategory<RecipeWrappers.RitualReci
     }
 
     @Override
-    public void draw(RecipeWrappers.RitualRecipe recipe, MatrixStack mStack, double mouseX, double mouseY) {
+    public void draw(RecipeWrappers.RitualRecipe recipe, PoseStack mStack, double mouseX, double mouseY) {
         recipe.page.renderBackground(CodexGui.DUMMY, mStack, 5, 4, (int)mouseX, (int)mouseY);
         recipe.page.render(CodexGui.DUMMY, mStack, 5, 4, (int)mouseX, (int)mouseY);
     }

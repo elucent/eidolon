@@ -1,13 +1,13 @@
 package elucent.eidolon;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import elucent.eidolon.util.RenderUtil;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
@@ -15,10 +15,10 @@ import java.util.Map;
 
 public class ClientEvents {
     @OnlyIn(Dist.CLIENT)
-    static IRenderTypeBuffer.Impl DELAYED_RENDER = null;
+    static MultiBufferSource.Impl DELAYED_RENDER = null;
 
     @OnlyIn(Dist.CLIENT)
-    public static IRenderTypeBuffer.Impl getDelayedRender() {
+    public static MultiBufferSource.Impl getDelayedRender() {
         if (DELAYED_RENDER == null) {
             Map<RenderType, BufferBuilder> buffers = new HashMap<>();
             for (RenderType type : new RenderType[]{
@@ -27,9 +27,9 @@ public class ClientEvents {
                 RenderUtil.GLOWING_BLOCK_PARTICLE,
                 RenderUtil.GLOWING,
                 RenderUtil.GLOWING_SPRITE}) {
-                buffers.put(type, new BufferBuilder(type.getBufferSize()));
+                buffers.put(type, new BufferBuilder(type.bufferSize()));
             }
-            DELAYED_RENDER = IRenderTypeBuffer.getImpl(buffers, new BufferBuilder(256));
+            DELAYED_RENDER = MultiBufferSource.immediateWithBuffers(buffers, new BufferBuilder(256));
         }
         return DELAYED_RENDER;
     }
@@ -39,17 +39,17 @@ public class ClientEvents {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onRenderLast(RenderWorldLastEvent event) {
+    public void onRenderLast(RenderLevelLastEvent event) {
         if (ClientConfig.BETTER_LAYERING.get()) {
             RenderSystem.pushMatrix(); // this feels...cheaty
-            RenderSystem.multMatrix(event.getMatrixStack().getLast().getMatrix());
-            getDelayedRender().finish(RenderUtil.DELAYED_PARTICLE);
-            getDelayedRender().finish(RenderUtil.GLOWING_PARTICLE);
-            getDelayedRender().finish(RenderUtil.GLOWING_BLOCK_PARTICLE);
+            RenderSystem.multMatrix(event.getMatrixStack().last().pose());
+            getDelayedRender().endBatch(RenderUtil.DELAYED_PARTICLE);
+            getDelayedRender().endBatch(RenderUtil.GLOWING_PARTICLE);
+            getDelayedRender().endBatch(RenderUtil.GLOWING_BLOCK_PARTICLE);
             RenderSystem.popMatrix();
 
-            getDelayedRender().finish(RenderUtil.GLOWING_SPRITE);
-            getDelayedRender().finish(RenderUtil.GLOWING);
+            getDelayedRender().endBatch(RenderUtil.GLOWING_SPRITE);
+            getDelayedRender().endBatch(RenderUtil.GLOWING);
         }
         clientTicks += event.getPartialTicks();
     }

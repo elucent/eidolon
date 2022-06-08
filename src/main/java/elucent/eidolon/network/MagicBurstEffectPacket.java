@@ -4,11 +4,11 @@ import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.particle.Particles;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -28,12 +28,12 @@ public class MagicBurstEffectPacket {
         this.c2 = color2;
     }
 
-    public static void encode(MagicBurstEffectPacket object, PacketBuffer buffer) {
+    public static void encode(MagicBurstEffectPacket object, FriendlyByteBuf buffer) {
         buffer.writeFloat(object.x).writeFloat(object.y).writeFloat(object.z);
         buffer.writeInt(object.c1).writeInt(object.c2);
     }
 
-    public static MagicBurstEffectPacket decode(PacketBuffer buffer) {
+    public static MagicBurstEffectPacket decode(FriendlyByteBuf buffer) {
         return new MagicBurstEffectPacket(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readInt(), buffer.readInt());
     }
 
@@ -41,7 +41,7 @@ public class MagicBurstEffectPacket {
         ctx.get().enqueueWork(() -> {
             assert ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT;
 
-            World world = Eidolon.proxy.getWorld();
+            Level world = Eidolon.proxy.getWorld();
             if (world != null) {
                 double x = packet.x, y = packet.y, z = packet.z;
 
@@ -58,7 +58,7 @@ public class MagicBurstEffectPacket {
                     .addVelocity(0, 0.25f, 0)
                     .setColor(r1, g1, b1, r2, g2, b2)
                     .enableGravity().setSpin(0.4f)
-                    .repeat(world, x, y, z, world.rand.nextInt(4) + 3);
+                    .repeat(world, x, y, z, world.random.nextInt(4) + 3);
                 Particles.create(Registry.SMOKE_PARTICLE)
                     .setAlpha(0.25f, 0).setScale(0.375f, 0).setLifetime(20)
                     .randomOffset(0.25, 0.25).randomVelocity(0.015625f, 0.015625f)

@@ -4,11 +4,15 @@ import elucent.eidolon.Eidolon;
 import elucent.eidolon.spell.KnowledgeUtil;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class CodexItem extends ItemBase {
     public CodexItem(Properties properties) {
@@ -16,18 +20,18 @@ public class CodexItem extends ItemBase {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entity, Hand hand) {
-        if (world.isRemote) {
-            entity.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.PLAYERS, 1.0f, 1.0f);
+    public InteractionResultHolder<ItemStack> use(Level world, Player entity, InteractionHand hand) {
+        if (world.isClientSide) {
+            entity.playNotifySound(SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0f, 1.0f);
             Eidolon.proxy.openCodexGui();
         }
-        return ActionResult.resultPass(entity.getHeldItem(hand));
+        return InteractionResultHolder.pass(entity.getItemInHand(hand));
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+    public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, world, entity, slot, selected);
-        if (!world.isRemote && stack.hasTag() && stack.getTag().contains("sign")) {
+        if (!world.isClientSide && stack.hasTag() && stack.getTag().contains("sign")) {
             ResourceLocation loc = new ResourceLocation(stack.getTag().getString("sign"));
             stack.getTag().remove("sign");
             Sign sign = Signs.find(loc);

@@ -1,6 +1,6 @@
 package elucent.eidolon.event;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public class SpeedFactorEvent extends net.minecraftforge.eventbus.api.Event {
     Entity entity;

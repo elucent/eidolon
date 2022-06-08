@@ -4,13 +4,13 @@ import com.mojang.serialization.Codec;
 import elucent.eidolon.Config;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.WorldGen;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.util.SharedSeedRandom;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.world.IServerWorld;
@@ -31,13 +31,15 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 
 import java.util.Random;
 
+import net.minecraft.world.gen.feature.structure.Structure.IStartFactory;
+
 public class LabStructure extends Structure<NoFeatureConfig> {
     public LabStructure(Codec<NoFeatureConfig> codec) {
         super(codec);
     }
 
     @Override
-    public GenerationStage.Decoration getDecorationStage() {
+    public GenerationStage.Decoration step() {
         return GenerationStage.Decoration.UNDERGROUND_STRUCTURES;
     }
 
@@ -47,7 +49,7 @@ public class LabStructure extends Structure<NoFeatureConfig> {
     }
 
     @Override
-    protected boolean func_230363_a_(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom rand, int chunkX, int chunkZ, Biome biome, ChunkPos pos, NoFeatureConfig config) {
+    protected boolean isFeatureChunk(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom rand, int chunkX, int chunkZ, Biome biome, ChunkPos pos, NoFeatureConfig config) {
         int i = chunkX >> 4;
         int j = chunkZ >> 4;
         rand.setSeed((long) (i ^ j << 4) ^ seed);
@@ -56,7 +58,7 @@ public class LabStructure extends Structure<NoFeatureConfig> {
     }
 
     @Override
-    public String getStructureName() {
+    public String getFeatureName() {
         return new ResourceLocation(Eidolon.MODID, "lab").toString();
     }
 
@@ -65,16 +67,16 @@ public class LabStructure extends Structure<NoFeatureConfig> {
             super(config, chunkX, chunkZ, bounds, refs, seed);
         }
 
-        public void func_230364_a_(DynamicRegistries registries, ChunkGenerator generator, TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
+        public void generatePieces(DynamicRegistries registries, ChunkGenerator generator, TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
             int i = chunkX * 16;
             int j = chunkZ * 16;
-            int k = Math.min(generator.getSeaLevel(), generator.getNoiseHeight(i, j, Heightmap.Type.OCEAN_FLOOR_WG));
+            int k = Math.min(generator.getSeaLevel(), generator.getFirstFreeHeight(i, j, Heightmap.Type.OCEAN_FLOOR_WG));
             if (k < 33) k = 33;
-            BlockPos blockpos = new BlockPos(i + rand.nextInt(16), rand.nextInt(k - 32) + 8, j + rand.nextInt(16));
-            Rotation rotation = Rotation.randomRotation(rand);
+            BlockPos blockpos = new BlockPos(i + random.nextInt(16), random.nextInt(k - 32) + 8, j + random.nextInt(16));
+            Rotation rotation = Rotation.getRandom(random);
 
-            components.add(new Piece(templateManager, PART, blockpos, rotation, rand));
-            this.recalculateStructureSize();
+            pieces.add(new Piece(templateManager, PART, blockpos, rotation, random));
+            this.calculateBoundingBox();
         }
     }
 
@@ -84,18 +86,18 @@ public class LabStructure extends Structure<NoFeatureConfig> {
         private ResourceLocation loc;
         private Rotation rotation;
 
-        public Piece(IStructurePieceType structurePieceTypeIn, CompoundNBT nbt) {
+        public Piece(IStructurePieceType structurePieceTypeIn, CompoundTag nbt) {
             super(structurePieceTypeIn, nbt);
             this.loc = new ResourceLocation(nbt.getString("template"));
             this.rotation = Rotation.valueOf(nbt.getString("rot"));
         }
 
-        public Piece(TemplateManager templateManager, CompoundNBT nbt) {
+        public Piece(TemplateManager templateManager, CompoundTag nbt) {
             this(WorldGen.LAB_PIECE, nbt);
-            Template part = templateManager.getTemplateDefaulted(PART);
+            Template part = templateManager.getOrCreate(PART);
             PlacementSettings placement = (new PlacementSettings()).setRotation(this.rotation).setMirror(Mirror.NONE).addProcessor(BlockIgnoreStructureProcessor.STRUCTURE_BLOCK);
             this.setup(part, this.templatePosition, placement);
-            this.template = templateManager.getTemplate(PART);
+            this.template = templateManager.get(PART);
         }
 
         public Piece(TemplateManager templateManager, ResourceLocation template, BlockPos pos, Rotation rot, Random random) {
@@ -104,15 +106,15 @@ public class LabStructure extends Structure<NoFeatureConfig> {
             this.rotation = rot;
             this.loc = template;
 
-            Template part = templateManager.getTemplateDefaulted(PART);
+            Template part = templateManager.getOrCreate(PART);
             PlacementSettings placement = (new PlacementSettings()).setRotation(this.rotation).setMirror(Mirror.NONE).addProcessor(BlockIgnoreStructureProcessor.STRUCTURE_BLOCK);
             this.setup(part, this.templatePosition, placement);
-            this.template = templateManager.getTemplate(PART);
+            this.template = templateManager.get(PART);
         }
 
         @Override
-        protected void readAdditional(CompoundNBT tagCompound) {
-            super.readAdditional(tagCompound);
+        protected void addAdditionalSaveData(CompoundTag tagCompound) {
+            super.addAdditionalSaveData(tagCompound);
             tagCompound.putString("template", loc.toString());
             tagCompound.putString("rot", rotation.name());
         }

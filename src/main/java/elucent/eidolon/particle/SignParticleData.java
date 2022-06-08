@@ -7,12 +7,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import elucent.eidolon.Registry;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.resources.ResourceLocation;
 
-public class SignParticleData implements IParticleData {
+import net.minecraft.core.particles.ParticleOptions.IDeserializer;
+
+public class SignParticleData implements ParticleOptions {
     Sign sign;
 
     public static Codec<SignParticleData> codecFor(ParticleType<?> type) {
@@ -34,18 +36,18 @@ public class SignParticleData implements IParticleData {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
-        buffer.writeString(sign.toString());
+    public void writeToNetwork(FriendlyByteBuf buffer) {
+        buffer.writeUtf(sign.toString());
     }
 
     @Override
-    public String getParameters() {
+    public String writeToString() {
         return getClass().getSimpleName() + ":internal";
     }
 
     public static final IDeserializer<SignParticleData> DESERIALIZER = new IDeserializer<SignParticleData>() {
         @Override
-        public SignParticleData deserialize(ParticleType<SignParticleData> type, StringReader reader) throws CommandSyntaxException {
+        public SignParticleData fromCommand(ParticleType<SignParticleData> type, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             String loc = reader.readString();
             SignParticleData data = new SignParticleData(Signs.find(new ResourceLocation(loc)));
@@ -53,8 +55,8 @@ public class SignParticleData implements IParticleData {
         }
 
         @Override
-        public SignParticleData read(ParticleType<SignParticleData> type, PacketBuffer buf) {
-            String loc = buf.readString();
+        public SignParticleData fromNetwork(ParticleType<SignParticleData> type, FriendlyByteBuf buf) {
+            String loc = buf.readUtf();
             SignParticleData data = new SignParticleData(Signs.find(new ResourceLocation(loc)));
             return data;
         }

@@ -1,6 +1,6 @@
 package elucent.eidolon.spell;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
 

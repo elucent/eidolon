@@ -1,13 +1,13 @@
 package elucent.eidolon.codex;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.recipe.CrucibleRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,7 +42,7 @@ public class CruciblePage extends Page {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
+    public void render(CodexGui gui, PoseStack mStack, int x, int y, int mouseX, int mouseY) {
         int h = steps.length * 20 + 32;
         int yoff = 80 - h / 2;
         for (int i = 0; i < steps.length; i ++) {
@@ -62,10 +62,10 @@ public class CruciblePage extends Page {
         }
         gui.blit(mStack, x, y + yoff + steps.length * 20, 128, 64, 128, 32);
 
-        FontRenderer font = Minecraft.getInstance().fontRenderer;
+        Font font = Minecraft.getInstance().font;
         for (int i = 0; i < steps.length; i ++) {
             int tx = x, ty = y + yoff + i * 20;
-            drawText(gui, mStack, I18n.format("enchantment.level." + (i + 1)) + ".", tx + 7, ty + 17 - font.FONT_HEIGHT);
+            drawText(gui, mStack, I18n.get("enchantment.level." + (i + 1)) + ".", tx + 7, ty + 17 - font.lineHeight);
             tx += 24;
         }
     }
@@ -73,7 +73,7 @@ public class CruciblePage extends Page {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderIngredients(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
+    public void renderIngredients(CodexGui gui, PoseStack mStack, int x, int y, int mouseX, int mouseY) {
         int h = steps.length * 20 + 32;
         int yoff = 80 - h / 2;
         for (int i = 0; i < steps.length; i ++) {

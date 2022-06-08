@@ -2,7 +2,7 @@ package elucent.eidolon.spell;
 
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;

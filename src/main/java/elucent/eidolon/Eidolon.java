@@ -16,22 +16,22 @@ import elucent.eidolon.ritual.RitualRegistry;
 import elucent.eidolon.spell.AltarEntries;
 import elucent.eidolon.tile.*;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -48,9 +48,9 @@ public class Eidolon {
 
     public static final String MODID = "eidolon";
 
-    public static final ItemGroup TAB = new ItemGroup(MODID) {
+    public static final CreativeModeTab TAB = new CreativeModeTab(MODID) {
         @Override
-        public ItemStack createIcon() {
+        public ItemStack makeIcon() {
             return new ItemStack(Registry.SHADOW_GEM.get(), 1);
         }
     };
@@ -89,9 +89,9 @@ public class Eidolon {
         CapabilityManager.INSTANCE.register(IKnowledge.class, new KnowledgeStorage(), KnowledgeImpl::new);
 
         EntitySpawnPlacementRegistry.register(Registry.ZOMBIE_BRUTE.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-            MonsterEntity::canMonsterSpawnInLight);
+            Monster::checkMonsterSpawnRules);
         EntitySpawnPlacementRegistry.register(Registry.WRAITH.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-            MonsterEntity::canMonsterSpawnInLight);
+            Monster::checkMonsterSpawnRules);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -110,22 +110,22 @@ public class Eidolon {
         ClientRegistry.bindTileEntityRenderer(Registry.SOUL_ENCHANTER_TILE_ENTITY, (trd) -> new SoulEnchanterTileRenderer(trd));
         ClientRegistry.bindTileEntityRenderer(Registry.GOBLET_TILE_ENTITY, (trd) -> new GobletTileRenderer(trd));
 
-        RenderTypeLookup.setRenderLayer(Registry.ENCHANTED_ASH.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(Registry.WOODEN_STAND.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(Registry.GOBLET.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(Registry.UNHOLY_EFFIGY.get(), RenderType.getCutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.ENCHANTED_ASH.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.WOODEN_STAND.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.GOBLET.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(Registry.UNHOLY_EFFIGY.get(), RenderType.cutoutMipped());
 
         event.enqueueWork(() -> {
-            ScreenManager.registerFactory(Registry.WORKTABLE_CONTAINER.get(), WorktableScreen::new);
-            ScreenManager.registerFactory(Registry.SOUL_ENCHANTER_CONTAINER.get(), SoulEnchanterScreen::new);
-            ScreenManager.registerFactory(Registry.WOODEN_STAND_CONTAINER.get(), WoodenBrewingStandScreen::new);
+            ScreenManager.register(Registry.WORKTABLE_CONTAINER.get(), WorktableScreen::new);
+            ScreenManager.register(Registry.SOUL_ENCHANTER_CONTAINER.get(), SoulEnchanterScreen::new);
+            ScreenManager.register(Registry.WOODEN_STAND_CONTAINER.get(), WoodenBrewingStandScreen::new);
         });
     }
 
     public void defineAttributes() {
-        GlobalEntityTypeAttributes.put(Registry.ZOMBIE_BRUTE.get(), ZombieBruteEntity.createAttributes());
-        GlobalEntityTypeAttributes.put(Registry.WRAITH.get(), WraithEntity.createAttributes());
-        GlobalEntityTypeAttributes.put(Registry.NECROMANCER.get(), NecromancerEntity.createAttributes());
+        DefaultAttributes.put(Registry.ZOMBIE_BRUTE.get(), ZombieBruteEntity.createAttributes());
+        DefaultAttributes.put(Registry.WRAITH.get(), WraithEntity.createAttributes());
+        DefaultAttributes.put(Registry.NECROMANCER.get(), NecromancerEntity.createAttributes());
     }
 
     public void sendImc(InterModEnqueueEvent evt) {

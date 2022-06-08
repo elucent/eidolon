@@ -1,9 +1,9 @@
 package elucent.eidolon.spell;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
@@ -18,6 +18,6 @@ public abstract class Spell {
     }
 
     public abstract boolean matches(List<Sign> signs);
-    public abstract boolean canCast(World world, BlockPos pos, PlayerEntity player, List<Sign> signs);
-    public abstract void cast(World world, BlockPos pos, PlayerEntity player, List<Sign> signs);
+    public abstract boolean canCast(Level world, BlockPos pos, Player player, List<Sign> signs);
+    public abstract void cast(Level world, BlockPos pos, Player player, List<Sign> signs);
 }

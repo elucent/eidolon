@@ -1,9 +1,9 @@
 package elucent.eidolon.recipe.recipeobj;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
 
 public abstract class RecipeObject<T> {
     T obj;
@@ -20,9 +20,9 @@ public abstract class RecipeObject<T> {
 
     public abstract T fromJson(JsonObject json);
 
-    public abstract CompoundNBT toNBT();
+    public abstract CompoundTag toNBT();
 
-    public abstract T fromNBT(CompoundNBT nbt);
+    public abstract T fromNBT(CompoundTag nbt);
 
     public abstract RecipeObjectType<T, ? extends RecipeObject<T>> getType();
 }

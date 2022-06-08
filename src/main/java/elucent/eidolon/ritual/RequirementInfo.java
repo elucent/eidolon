@@ -1,6 +1,6 @@
 package elucent.eidolon.ritual;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 public class RequirementInfo {
     public static final RequirementInfo

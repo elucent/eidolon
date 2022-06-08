@@ -1,13 +1,13 @@
 package elucent.eidolon.entity.ai;
 
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.phys.AABB;
 
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -16,7 +16,7 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class GenericBarterGoal<E extends CreatureEntity> extends Goal {
+public class GenericBarterGoal<E extends PathfinderMob> extends Goal {
     static Random rand = new Random();
     Predicate<ItemStack> valid;
     Function<ItemStack, ItemStack> result;
@@ -28,11 +28,11 @@ public class GenericBarterGoal<E extends CreatureEntity> extends Goal {
         this.entity = entity;
         this.valid = valid;
         this.result = result;
-        this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.TARGET));
+        this.setFlags(EnumSet.of(Flag.MOVE, Flag.TARGET));
     }
 
     @Override
-    public boolean isPreemptible() {
+    public boolean isInterruptable() {
         return false;
     }
 
@@ -40,50 +40,50 @@ public class GenericBarterGoal<E extends CreatureEntity> extends Goal {
     public void tick() {
         if (cooldown > 0) return;
         if (progress > 0 && !backupHack.isEmpty())
-            entity.setHeldItem(Hand.MAIN_HAND, backupHack);
+            entity.setItemInHand(InteractionHand.MAIN_HAND, backupHack);
 
-        entity.setAttackTarget(null);
+        entity.setTarget(null);
         if (progress > 0) {
             progress --;
-            entity.getNavigator().clearPath();
+            entity.getNavigation().stop();
             if (progress == 0) {
-                if (!entity.world.isRemote) {
-                    entity.world.addEntity(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY() + 0.1, entity.getPosZ(), result.apply(entity.getHeldItemMainhand().copy())));
+                if (!entity.level.isClientSide) {
+                    entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY() + 0.1, entity.getZ(), result.apply(entity.getMainHandItem().copy())));
                 }
-                entity.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
+                entity.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
                 cooldown = 600;
             }
         }
         else {
-            List<ItemEntity> items = entity.world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.getPosition().add(-8, -8, -8), entity.getPosition().add(8, 8, 8)), (item) -> valid.test(item.getItem()));
-            ItemEntity nearest = items.stream().min(Comparator.comparingDouble(a -> a.getDistanceSq(entity))).get();
-            if (nearest.getDistanceSq(entity) < 2.25) {
+            List<ItemEntity> items = entity.level.getEntitiesOfClass(ItemEntity.class, new AABB(entity.blockPosition().offset(-8, -8, -8), entity.blockPosition().offset(8, 8, 8)), (item) -> valid.test(item.getItem()));
+            ItemEntity nearest = items.stream().min(Comparator.comparingDouble(a -> a.distanceToSqr(entity))).get();
+            if (nearest.distanceToSqr(entity) < 2.25) {
                 progress = 100;
-                entity.setHeldItem(Hand.MAIN_HAND, nearest.getItem());
+                entity.setItemInHand(InteractionHand.MAIN_HAND, nearest.getItem());
                 nearest.remove();
-                entity.world.playSound(null, entity.getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.HOSTILE, 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                entity.level.playSound(null, entity.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.HOSTILE, 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             }
-            entity.getNavigator().tryMoveToXYZ(nearest.getPosX(), nearest.getPosY(), nearest.getPosZ(), 1.0f);
+            entity.getNavigation().moveTo(nearest.getX(), nearest.getY(), nearest.getZ(), 1.0f);
         }
 
-        if (!entity.getHeldItemMainhand().isEmpty())
-            backupHack = entity.getHeldItemMainhand();
+        if (!entity.getMainHandItem().isEmpty())
+            backupHack = entity.getMainHandItem();
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         if (-- cooldown > 0) return false;
-        if (progress > 0 || entity.ticksExisted < lastTick + 20) return false;
-        lastTick = entity.ticksExisted;
-        List<ItemEntity> items = entity.world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.getPosition().add(-8, -8, -8), entity.getPosition().add(8, 8, 8)), (item) -> valid.test(item.getItem()));
+        if (progress > 0 || entity.tickCount < lastTick + 20) return false;
+        lastTick = entity.tickCount;
+        List<ItemEntity> items = entity.level.getEntitiesOfClass(ItemEntity.class, new AABB(entity.blockPosition().offset(-8, -8, -8), entity.blockPosition().offset(8, 8, 8)), (item) -> valid.test(item.getItem()));
         return items.size() > 0;
     }
 
     @Override
-    public boolean shouldContinueExecuting() {
+    public boolean canContinueToUse() {
         if (progress > 0) return true;
         else { // walking towards item
-            List<ItemEntity> items = entity.world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.getPosition().add(-8, -8, -8), entity.getPosition().add(8, 8, 8)), (item) -> valid.test(item.getItem()));
+            List<ItemEntity> items = entity.level.getEntitiesOfClass(ItemEntity.class, new AABB(entity.blockPosition().offset(-8, -8, -8), entity.blockPosition().offset(8, 8, 8)), (item) -> valid.test(item.getItem()));
             return items.size() > 0;
         }
     }

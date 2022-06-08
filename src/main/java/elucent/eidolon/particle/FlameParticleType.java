@@ -1,11 +1,11 @@
 package elucent.eidolon.particle;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
 
 public class FlameParticleType extends ParticleType<GenericParticleData> {
     public FlameParticleType() {
@@ -13,7 +13,7 @@ public class FlameParticleType extends ParticleType<GenericParticleData> {
     }
 
     @Override
-    public Codec<GenericParticleData> func_230522_e_() {
+    public Codec<GenericParticleData> codec() {
         return GenericParticleData.codecFor(this);
     }
 
@@ -25,9 +25,9 @@ public class FlameParticleType extends ParticleType<GenericParticleData> {
         }
 
         @Override
-        public Particle makeParticle(GenericParticleData data, ClientWorld world, double x, double y, double z, double mx, double my, double mz) {
+        public Particle createParticle(GenericParticleData data, ClientLevel world, double x, double y, double z, double mx, double my, double mz) {
             FlameParticle ret = new FlameParticle(world, data, x, y, z, mx, my, mz);
-            ret.selectSpriteRandomly(sprite);
+            ret.pickSprite(sprite);
             return ret;
         }
     }

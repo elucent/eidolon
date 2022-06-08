@@ -7,20 +7,20 @@ import elucent.eidolon.ritual.Ritual;
 import elucent.eidolon.ritual.Ritual.RitualResult;
 import elucent.eidolon.ritual.Ritual.SetupResult;
 import elucent.eidolon.ritual.RitualRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 
 public class BrazierTileEntity extends TileEntityBase implements ITickableTileEntity {
     ItemStack stack = ItemStack.EMPTY;
@@ -35,53 +35,53 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
         this(Registry.BRAZIER_TILE_ENTITY);
     }
 
-    public BrazierTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public BrazierTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
     public void onDestroyed(BlockState state, BlockPos pos) {
         super.onDestroyed(state, pos);
-        if (!stack.isEmpty()) InventoryHelper.spawnItemStack(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
+        if (!stack.isEmpty()) InventoryHelper.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
     }
 
     @Override
-    public ActionResultType onActivated(BlockState state, BlockPos pos, PlayerEntity player, Hand hand) {
-        if (hand == Hand.MAIN_HAND) {
-            if (burning && player.isSneaking() && player.getHeldItem(hand).isEmpty()) {
+    public InteractionResult onActivated(BlockState state, BlockPos pos, Player player, InteractionHand hand) {
+        if (hand == InteractionHand.MAIN_HAND) {
+            if (burning && player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
                 extinguish();
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            else if (!burning && player.getHeldItem(hand).isEmpty() && !stack.isEmpty()) {
-                player.addItemStackToInventory(stack);
+            else if (!burning && player.getItemInHand(hand).isEmpty() && !stack.isEmpty()) {
+                player.addItem(stack);
                 stack = ItemStack.EMPTY;
-                if (!world.isRemote) sync();
-                return ActionResultType.SUCCESS;
+                if (!level.isClientSide) sync();
+                return InteractionResult.SUCCESS;
             }
             else if (!burning && !stack.isEmpty()
-                && player.getHeldItem(hand).getItem() == Items.FLINT_AND_STEEL) {
-                player.getHeldItem(hand).damageItem(1, player, (p) -> {
-                    p.sendBreakAnimation(hand);
+                && player.getItemInHand(hand).getItem() == Items.FLINT_AND_STEEL) {
+                player.getItemInHand(hand).hurtAndBreak(1, player, (p) -> {
+                    p.broadcastBreakEvent(hand);
                 });
                 startBurning();
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            else if (!player.getHeldItem(hand).isEmpty() && stack.isEmpty()) {
-                stack = player.getHeldItem(hand).copy();
+            else if (!player.getItemInHand(hand).isEmpty() && stack.isEmpty()) {
+                stack = player.getItemInHand(hand).copy();
                 stack.setCount(1);
-                player.getHeldItem(hand).shrink(1);
-                if (player.getHeldItem(hand).isEmpty()) player.setHeldItem(hand, ItemStack.EMPTY);
-                if (!world.isRemote) sync();
-                return ActionResultType.SUCCESS;
+                player.getItemInHand(hand).shrink(1);
+                if (player.getItemInHand(hand).isEmpty()) player.setItemInHand(hand, ItemStack.EMPTY);
+                if (!level.isClientSide) sync();
+                return InteractionResult.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag) {
-        super.read(state, tag);
-        stack = ItemStack.read(tag.getCompound("stack"));
+    public void load(BlockState state, CompoundTag tag) {
+        super.load(state, tag);
+        stack = ItemStack.of(tag.getCompound("stack"));
         burning = tag.getBoolean("burning");
         ritual = tag.contains("ritual") ? RitualRegistry.find(new ResourceLocation(tag.getString("ritual"))) : null;
         step = tag.getInt("step");
@@ -89,9 +89,9 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
-        tag = super.write(tag);
-        tag.put("stack", stack.write(new CompoundNBT()));
+    public CompoundTag save(CompoundTag tag) {
+        tag = super.save(tag);
+        tag.put("stack", stack.save(new CompoundTag()));
         tag.putBoolean("burning", burning);
         if (ritual != null) tag.putString("ritual", ritual.getRegistryName().toString());
         tag.putInt("step", step);
@@ -103,11 +103,11 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
         burning = false;
         stepCounter = 0;
         findingCounter = 0;
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             if (ritual != null)
-                Networking.sendToTracking(world, pos.up(2), new RitualCompletePacket(pos.up(2), ritual.getRed(), ritual.getGreen(), ritual.getBlue()));
+                Networking.sendToTracking(level, worldPosition.above(2), new RitualCompletePacket(worldPosition.above(2), ritual.getRed(), ritual.getGreen(), ritual.getBlue()));
             ritual = null;
-            Networking.sendToTracking(world, pos, new ExtinguishEffectPacket(pos));
+            Networking.sendToTracking(level, worldPosition, new ExtinguishEffectPacket(worldPosition));
             sync();
         }
         ritual = null;
@@ -117,11 +117,11 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
         burning = false;
         stepCounter = 0;
         findingCounter = 0;
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             if (ritual != null)
-                Networking.sendToTracking(world, pos.up(2), new FlameEffectPacket(pos.up(2), ritual.getRed(), ritual.getGreen(), ritual.getBlue()));
+                Networking.sendToTracking(level, worldPosition.above(2), new FlameEffectPacket(worldPosition.above(2), ritual.getRed(), ritual.getGreen(), ritual.getBlue()));
             ritual = null;
-            Networking.sendToTracking(world, pos, new ExtinguishEffectPacket(pos));
+            Networking.sendToTracking(level, worldPosition, new ExtinguishEffectPacket(worldPosition));
             sync();
         }
         ritual = null;
@@ -130,8 +130,8 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
     protected void startBurning() {
         burning = true;
         findingCounter = 0;
-        if (!world.isRemote) {
-            Networking.sendToTracking(world, pos, new IgniteEffectPacket(pos, 1.0f, 0.5f, 0.25f));
+        if (!level.isClientSide) {
+            Networking.sendToTracking(level, worldPosition, new IgniteEffectPacket(worldPosition, 1.0f, 0.5f, 0.25f));
             sync();
         }
     }
@@ -143,8 +143,8 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
             stepCounter = 0;
             step = 0;
             ritualDone = false;
-            if (!world.isRemote) {
-                Networking.sendToTracking(world, pos.up(2), new FlameEffectPacket(pos.up(2), ritual.getRed(), ritual.getGreen(), ritual.getBlue()));
+            if (!level.isClientSide) {
+                Networking.sendToTracking(level, worldPosition.above(2), new FlameEffectPacket(worldPosition.above(2), ritual.getRed(), ritual.getGreen(), ritual.getBlue()));
                 sync();
             }
         }
@@ -156,19 +156,19 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
             float progress = (findingCounter - 40) / 40.0f;
             if (progress >= 0) for (int i = 0; i < 8; i ++) {
                 float angle = progress * (float)Math.PI / 4 + i * (float)Math.PI / 4;
-                float radius = 0.625f * MathHelper.sin(4 * angle);
+                float radius = 0.625f * Mth.sin(4 * angle);
                 angle += (float)Math.PI / 4;
-                float x = getPos().getX() + 0.5f + MathHelper.sin(angle) * radius;
-                float y = getPos().getY() + 0.875f;
-                float z = getPos().getZ() + 0.5f + MathHelper.cos(angle) * radius;
+                float x = getBlockPos().getX() + 0.5f + Mth.sin(angle) * radius;
+                float y = getBlockPos().getY() + 0.875f;
+                float z = getBlockPos().getZ() + 0.5f + Mth.cos(angle) * radius;
                 Particles.create(Registry.WISP_PARTICLE)
                     .setAlpha(0.25f * progress, 0).setScale(0.125f, 0.0625f).setLifetime(20)
                     .setColor(1.0f, 0.5f, 0.25f, 1.0f, 0.25f, 0.375f)
-                    .spawn(world, x, y, z);
+                    .spawn(level, x, y, z);
             }
             findingCounter ++;
             if (findingCounter == 80) {
-                Ritual r = RitualRegistry.find(world, pos, stack);
+                Ritual r = RitualRegistry.find(level, worldPosition, stack);
                 stack = ItemStack.EMPTY;
                 findingCounter = 81;
                 setRitual(r);
@@ -177,14 +177,14 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
         if (burning && ritual != null && !ritualDone) {
             stepCounter ++;
             if (stepCounter == 40) {
-                SetupResult result = ritual.setup(world, pos, step);
+                SetupResult result = ritual.setup(level, worldPosition, step);
                 if (result == SetupResult.SUCCEED) {
                     ritualDone = true;
-                    if (!world.isRemote) sync();
-                    if (ritual.start(world, pos) == RitualResult.TERMINATE) complete();
+                    if (!level.isClientSide) sync();
+                    if (ritual.start(level, worldPosition) == RitualResult.TERMINATE) complete();
                 }
-                else if (result == SetupResult.FAIL && !world.isRemote) extinguish();
-                else if (!world.isRemote) {
+                else if (result == SetupResult.FAIL && !level.isClientSide) extinguish();
+                else if (!level.isClientSide) {
                     stepCounter = 0;
                     step ++;
                     sync();
@@ -192,10 +192,10 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
             }
         }
         if (burning && ritual != null && ritualDone) {
-            if (ritual.tick(world, pos) == RitualResult.TERMINATE) complete();
+            if (ritual.tick(level, worldPosition) == RitualResult.TERMINATE) complete();
         }
-        if (world.isRemote && burning) {
-            float x = getPos().getX() + 0.5f, y = getPos().getY() + 1, z = getPos().getZ() + 0.5f;
+        if (level.isClientSide && burning) {
+            float x = getBlockPos().getX() + 0.5f, y = getBlockPos().getY() + 1, z = getBlockPos().getZ() + 0.5f;
             float r = ritual == null ? 1.0f : ritual.getRed();
             float g = ritual == null ? 0.5f : ritual.getGreen();
             float b = ritual == null ? 0.25f : ritual.getBlue();
@@ -204,25 +204,25 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
                 .randomOffset(0.25, 0.125).randomVelocity(0.00625f, 0.01875f)
                 .addVelocity(0, 0.00625f, 0)
                 .setColor(r, g, b, r, g * 0.5f, b * 1.5f)
-                .spawn(world, x, y, z);
-            if (world.rand.nextInt(5) == 0) Particles.create(Registry.SMOKE_PARTICLE)
+                .spawn(level, x, y, z);
+            if (level.random.nextInt(5) == 0) Particles.create(Registry.SMOKE_PARTICLE)
                 .setAlpha(0.125f, 0).setScale(0.375f, 0.125f).setLifetime(80)
                 .randomOffset(0.25, 0.125).randomVelocity(0.025f, 0.025f)
                 .addVelocity(0, 0.1f, 0)
                 .setColor(0.5f, 0.5f, 0.5f, 0.25f, 0.25f, 0.25f)
-                .spawn(world, x, y + 0.125, z);
-            if (world.rand.nextInt(40) == 0) Particles.create(Registry.SPARKLE_PARTICLE)
+                .spawn(level, x, y + 0.125, z);
+            if (level.random.nextInt(40) == 0) Particles.create(Registry.SPARKLE_PARTICLE)
                 .setAlpha(1, 0).setScale(0.0625f, 0).setLifetime(40)
                 .randomOffset(0.0625, 0).randomVelocity(0.125f, 0)
                 .addVelocity(0, 0.125f, 0)
                 .setColor(r, g * 1.5f, b * 2, r, g, b)
                 .enableGravity().setSpin(0.4f)
-                .spawn(world, x, y, z);
+                .spawn(level, x, y, z);
         }
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 4, pos.getZ() + 1);
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), worldPosition.getX() + 1, worldPosition.getY() + 4, worldPosition.getZ() + 1);
     }
 }

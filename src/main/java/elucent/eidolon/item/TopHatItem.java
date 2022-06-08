@@ -2,19 +2,18 @@ package elucent.eidolon.item;
 
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.item.model.TopHatModel;
-import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.*;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,28 +24,28 @@ public class TopHatItem extends ArmorItem {
 
     public static class Material implements IArmorMaterial {
         @Override
-        public int getDurability(EquipmentSlotType slot) {
+        public int getDurabilityForSlot(EquipmentSlot slot) {
             return MAX_DAMAGE_ARRAY[slot.getIndex()] * 7;
         }
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType slot) {
+        public int getDefenseForSlot(EquipmentSlot slot) {
             return 1;
         }
 
         @Override
-        public int getEnchantability() {
+        public int getEnchantmentValue() {
             return 12;
         }
 
         @Override
-        public SoundEvent getSoundEvent() {
-            return ArmorMaterial.LEATHER.getSoundEvent();
+        public SoundEvent getEquipSound() {
+            return ArmorMaterial.LEATHER.getEquipSound();
         }
 
         @Override
-        public Ingredient getRepairMaterial() {
-            return Ingredient.fromStacks(new ItemStack(Items.BLACK_WOOL));
+        public Ingredient getRepairIngredient() {
+            return Ingredient.of(new ItemStack(Items.BLACK_WOOL));
         }
 
         @Override
@@ -76,29 +75,29 @@ public class TopHatItem extends ArmorItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Level worldIn, List<TextComponent> tooltip, TooltipFlag flagIn) {
         if (this.loreTag != null) {
-            tooltip.add(new StringTextComponent(""));
-            tooltip.add(new StringTextComponent("" + TextFormatting.DARK_PURPLE + TextFormatting.ITALIC + I18n.format(this.loreTag)));
+            tooltip.add(new TextComponent(""));
+            tooltip.add(new TextComponent("" + ChatFormatting.DARK_PURPLE + ChatFormatting.ITALIC + I18n.get(this.loreTag)));
         }
     }
 
     public TopHatItem(Properties builderIn) {
-        super(Material.INSTANCE, EquipmentSlotType.HEAD, builderIn);
+        super(Material.INSTANCE, EquipmentSlot.HEAD, builderIn);
     }
 
     TopHatModel model = null;
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public TopHatModel getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlotType slot, BipedModel defaultModel) {
+    public TopHatModel getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
         if (model == null) model = new TopHatModel();
         return model;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return Eidolon.MODID + ":textures/entity/hat.png";
     }
 }

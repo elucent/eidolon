@@ -1,77 +1,77 @@
 package elucent.eidolon.entity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.UUID;
 
 public abstract class SpellProjectileEntity extends Entity {
     UUID casterId = null;
 
-    public SpellProjectileEntity(EntityType<?> entityTypeIn, World worldIn) {
+    public SpellProjectileEntity(EntityType<?> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
     public Entity shoot(double x, double y, double z, double vx, double vy, double vz, UUID caster) {
-        setPosition(x, y, z);
-        setMotion(vx, vy, vz);
+        setPos(x, y, z);
+        setDeltaMovement(vx, vy, vz);
         casterId = caster;
-        velocityChanged = true;
+        hurtMarked = true;
         return this;
     }
 
     @Override
     public void tick() {
-        Vector3d motion = getMotion();
-        setMotion(motion.x * 0.96, (motion.y > 0 ? motion.y * 0.96 : motion.y) - 0.03f, motion.z * 0.96);
+        Vec3 motion = getDeltaMovement();
+        setDeltaMovement(motion.x * 0.96, (motion.y > 0 ? motion.y * 0.96 : motion.y) - 0.03f, motion.z * 0.96);
 
         super.tick();
 
-        if (!world.isRemote) {
-            RayTraceResult ray = ProjectileHelper.func_234618_a_(this, (e) -> !e.isSpectator() && e.canBeCollidedWith() && !e.getUniqueID().equals(casterId));
-            if (ray.getType() == RayTraceResult.Type.ENTITY) {
-                onImpact(ray, ((EntityRayTraceResult)ray).getEntity());
+        if (!level.isClientSide) {
+            HitResult ray = ProjectileUtil.getHitResult(this, (e) -> !e.isSpectator() && e.isPickable() && !e.getUUID().equals(casterId));
+            if (ray.getType() == HitResult.Type.ENTITY) {
+                onImpact(ray, ((EntityHitResult)ray).getEntity());
             }
-            else if (ray.getType() == RayTraceResult.Type.BLOCK) {
+            else if (ray.getType() == HitResult.Type.BLOCK) {
                 onImpact(ray);
             }
         }
 
-        Vector3d pos = getPositionVec();
-        prevPosX = pos.x;
-        prevPosY = pos.y;
-        prevPosZ = pos.z;
-        setPosition(pos.x + motion.x, pos.y + motion.y, pos.z + motion.z);
+        Vec3 pos = position();
+        xo = pos.x;
+        yo = pos.y;
+        zo = pos.z;
+        setPos(pos.x + motion.x, pos.y + motion.y, pos.z + motion.z);
     }
 
-    protected abstract void onImpact(RayTraceResult ray, Entity target);
-    protected abstract void onImpact(RayTraceResult ray);
+    protected abstract void onImpact(HitResult ray, Entity target);
+    protected abstract void onImpact(HitResult ray);
 
     @Override
-    protected void registerData() {
+    protected void defineSynchedData() {
         //
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
-        casterId = compound.contains("caster") ? compound.getUniqueId("caster") : null;
+    protected void readAdditionalSaveData(CompoundTag compound) {
+        casterId = compound.contains("caster") ? compound.getUUID("caster") : null;
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
-        if (casterId != null) compound.putUniqueId("caster", casterId);
+    protected void addAdditionalSaveData(CompoundTag compound) {
+        if (casterId != null) compound.putUUID("caster", casterId);
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

@@ -2,7 +2,7 @@ package elucent.eidolon.spell;
 
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.deity.Deities;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;

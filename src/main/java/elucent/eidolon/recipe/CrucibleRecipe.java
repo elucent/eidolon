@@ -1,11 +1,11 @@
 package elucent.eidolon.recipe;
 
 import elucent.eidolon.tile.CrucibleTileEntity.CrucibleStep;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
+import net.minecraft.tags.Tag;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +69,7 @@ public class CrucibleRecipe {
 
     static boolean matches(Object match, ItemStack sacrifice) {
         if (match instanceof ItemStack) {
-            if (ItemStack.areItemStacksEqual((ItemStack)match, sacrifice)) return true;
+            if (ItemStack.matches((ItemStack)match, sacrifice)) return true;
         }
         else if (match instanceof Item) {
             if ((Item)match == sacrifice.getItem()) return true;
@@ -77,8 +77,8 @@ public class CrucibleRecipe {
         else if (match instanceof Block) {
             if (((Block)match).asItem() == sacrifice.getItem()) return true;
         }
-        else if (match instanceof ITag) {
-            if (((ITag<Item>)match).contains(sacrifice.getItem())) return true;
+        else if (match instanceof Tag) {
+            if (((Tag<Item>)match).contains(sacrifice.getItem())) return true;
         }
         return false;
     }

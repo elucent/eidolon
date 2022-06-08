@@ -1,15 +1,14 @@
 package elucent.eidolon.item;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,6 +16,8 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.List;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class ReversalPickItem extends PickaxeItem {
     public ReversalPickItem(Properties builderIn) {
@@ -33,19 +34,19 @@ public class ReversalPickItem extends PickaxeItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Level worldIn, List<TextComponent> tooltip, TooltipFlag flagIn) {
         if (this.loreTag != null) {
-            tooltip.add(new StringTextComponent(""));
-            tooltip.add(new StringTextComponent("" + TextFormatting.DARK_PURPLE + TextFormatting.ITALIC + I18n.format(this.loreTag)));
+            tooltip.add(new TextComponent(""));
+            tooltip.add(new TextComponent("" + ChatFormatting.DARK_PURPLE + ChatFormatting.ITALIC + I18n.get(this.loreTag)));
         }
     }
 
     @SubscribeEvent
     public static void onStartBreak(PlayerEvent.BreakSpeed event) {
-        if (event.getPlayer().getHeldItemMainhand().getItem() instanceof ReversalPickItem) {
-            float hardness = event.getState().getBlockHardness(event.getEntity().world, event.getPos());
+        if (event.getPlayer().getMainHandItem().getItem() instanceof ReversalPickItem) {
+            float hardness = event.getState().getDestroySpeed(event.getEntity().level, event.getPos());
             float adjHardness = 1 / (hardness / 1.5f + event.getState().getHarvestLevel());
-            float newSpeed = MathHelper.sqrt(event.getOriginalSpeed() * 0.25f) * MathHelper.sqrt(hardness / adjHardness);
+            float newSpeed = Mth.sqrt(event.getOriginalSpeed() * 0.25f) * Mth.sqrt(hardness / adjHardness);
             event.setNewSpeed(newSpeed * newSpeed);
         }
     }

@@ -1,6 +1,6 @@
 package elucent.eidolon.recipe.recipeobj;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.List;

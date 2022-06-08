@@ -3,20 +3,20 @@ package elucent.eidolon.gui;
 import elucent.eidolon.Registry;
 import elucent.eidolon.recipe.WorktableRecipe;
 import elucent.eidolon.recipe.WorktableRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.world.Container;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,14 +25,14 @@ import java.util.Optional;
 public class WorktableContainer extends Container {
     CraftingInventory core = new CraftingInventory(this, 3, 3), extras = new CraftingInventory(this, 2, 2);
     CraftResultInventory result = new CraftResultInventory();
-    PlayerEntity player;
+    Player player;
     IWorldPosCallable callable;
 
-    public WorktableContainer(int id, PlayerInventory inventory) {
-        this(id, inventory, IWorldPosCallable.DUMMY);
+    public WorktableContainer(int id, Inventory inventory) {
+        this(id, inventory, IWorldPosCallable.NULL);
     }
 
-    public WorktableContainer(int id, PlayerInventory inventory, IWorldPosCallable callable) {
+    public WorktableContainer(int id, Inventory inventory, IWorldPosCallable callable) {
         super(Registry.WORKTABLE_CONTAINER.get(), id);
         this.player = inventory.player;
         this.callable = callable;
@@ -59,84 +59,84 @@ public class WorktableContainer extends Container {
         }
     }
 
-    protected void updateCraftingResult(int id, World world, PlayerEntity player, CraftingInventory inventory, CraftResultInventory inventoryResult) {
-        if (!world.isRemote) {
-            ServerPlayerEntity serverplayerentity = (ServerPlayerEntity)player;
+    protected void updateCraftingResult(int id, Level world, Player player, CraftingInventory inventory, CraftResultInventory inventoryResult) {
+        if (!world.isClientSide) {
+            ServerPlayer serverplayerentity = (ServerPlayer)player;
             ItemStack itemstack = ItemStack.EMPTY;
             WorktableRecipe recipe = WorktableRegistry.find(world, core, extras);
             if (recipe != null) {
-                itemstack = recipe.getRecipeOutput();
+                itemstack = recipe.getResultItem();
             }
             else {
-                Optional<ICraftingRecipe> optional = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, inventory, world);
+                Optional<ICraftingRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, inventory, world);
                 if (optional.isPresent()) {
                     ICraftingRecipe icraftingrecipe = optional.get();
-                    if (inventoryResult.canUseRecipe(world, serverplayerentity, icraftingrecipe)) {
-                        itemstack = icraftingrecipe.getCraftingResult(inventory);
+                    if (inventoryResult.setRecipeUsed(world, serverplayerentity, icraftingrecipe)) {
+                        itemstack = icraftingrecipe.assemble(inventory);
                     }
                 }
             }
 
-            inventoryResult.setInventorySlotContents(0, itemstack);
-            serverplayerentity.connection.sendPacket(new SSetSlotPacket(id, 0, itemstack));
+            inventoryResult.setItem(0, itemstack);
+            serverplayerentity.connection.send(new SSetSlotPacket(id, 0, itemstack));
         }
     }
 
     @Override
-    public void onCraftMatrixChanged(IInventory inventoryIn) {
-        callable.consume((p_217069_1_, p_217069_2_) -> {
-            updateCraftingResult(this.windowId, p_217069_1_, player, core, result);
+    public void slotsChanged(Container inventoryIn) {
+        callable.execute((p_217069_1_, p_217069_2_) -> {
+            updateCraftingResult(this.containerId, p_217069_1_, player, core, result);
         });
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity playerIn) {
-        super.onContainerClosed(playerIn);
-        callable.consume((p_217068_2_, p_217068_3_) -> {
+    public void removed(Player playerIn) {
+        super.removed(playerIn);
+        callable.execute((p_217068_2_, p_217068_3_) -> {
             this.clearContainer(playerIn, p_217068_2_, this.core);
             this.clearContainer(playerIn, p_217068_2_, this.extras);
         });
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
-        return isWithinUsableDistance(this.callable, playerIn, Registry.WORKTABLE.get());
+    public boolean stillValid(Player playerIn) {
+        return stillValid(this.callable, playerIn, Registry.WORKTABLE.get());
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index == 0) {
-                callable.consume((p_217067_2_, p_217067_3_) -> {
-                    itemstack1.getItem().onCreated(itemstack1, p_217067_2_, playerIn);
+                callable.execute((p_217067_2_, p_217067_3_) -> {
+                    itemstack1.getItem().onCraftedBy(itemstack1, p_217067_2_, playerIn);
                 });
-                if (!this.mergeItemStack(itemstack1, 14, 50, true)) {
+                if (!this.moveItemStackTo(itemstack1, 14, 50, true)) {
                     return ItemStack.EMPTY;
                 }
 
-                slot.onSlotChange(itemstack1, itemstack);
+                slot.onQuickCraft(itemstack1, itemstack);
             } else if (index >= 14 && index < 50) {
-                if (!this.mergeItemStack(itemstack1, 1, 14, false)) {
+                if (!this.moveItemStackTo(itemstack1, 1, 14, false)) {
                     if (index < 41) {
-                        if (!this.mergeItemStack(itemstack1, 41, 50, false)) {
+                        if (!this.moveItemStackTo(itemstack1, 41, 50, false)) {
                             return ItemStack.EMPTY;
                         }
-                    } else if (!this.mergeItemStack(itemstack1, 14, 41, false)) {
+                    } else if (!this.moveItemStackTo(itemstack1, 14, 41, false)) {
                         return ItemStack.EMPTY;
                     }
                 }
-            } else if (!this.mergeItemStack(itemstack1, 14, 50, false)) {
+            } else if (!this.moveItemStackTo(itemstack1, 14, 50, false)) {
                 return ItemStack.EMPTY;
             }
 
             if (itemstack1.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             if (itemstack1.getCount() == itemstack.getCount()) {
@@ -145,7 +145,7 @@ public class WorktableContainer extends Container {
 
             ItemStack itemstack2 = slot.onTake(playerIn, itemstack1);
             if (index == 0) {
-                playerIn.dropItem(itemstack2, false);
+                playerIn.drop(itemstack2, false);
             }
         }
 
@@ -158,8 +158,8 @@ public class WorktableContainer extends Container {
     }
 
     @Override
-    public boolean canMergeSlot(ItemStack stack, Slot slotIn) {
-        return slotIn.inventory != result && super.canMergeSlot(stack, slotIn);
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slotIn) {
+        return slotIn.container != result && super.canTakeItemForPickAll(stack, slotIn);
     }
 
     public int getOutputSlot() {

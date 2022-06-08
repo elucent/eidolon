@@ -3,62 +3,62 @@ package elucent.eidolon.item.model;// Made with Blockbench 3.7.4
 // Paste this class into your mod and generate all required imports
 
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.entity.model.BipedModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
 
-public abstract class ArmorModel extends BipedModel {
-	EquipmentSlotType slot;
+public abstract class ArmorModel extends HumanoidModel {
+	EquipmentSlot slot;
 
 	public ModelRenderer copyWithoutBoxes(ModelRenderer box) {
 		ModelRenderer newbox = new ModelRenderer(this);
-		newbox.setRotationPoint(box.rotationPointX, box.rotationPointY, box.rotationPointZ);
-		setRotationAngle(newbox, box.rotateAngleX, box.rotateAngleY, box.rotateAngleZ);
+		newbox.setPos(box.x, box.y, box.z);
+		setRotationAngle(newbox, box.xRot, box.yRot, box.zRot);
 		newbox.mirror = box.mirror;
-		newbox.showModel = box.showModel;
+		newbox.visible = box.visible;
 		return newbox;
 	}
 
-	public ArmorModel(EquipmentSlotType slot, int texWidth, int texHeight) {
+	public ArmorModel(EquipmentSlot slot, int texWidth, int texHeight) {
 		super(0, 0, texWidth, texHeight);
 		this.slot = slot;
 
-		bipedHead = copyWithoutBoxes(bipedHead);
-		bipedBody = copyWithoutBoxes(bipedBody);
-		bipedLeftArm = copyWithoutBoxes(bipedLeftArm);
-		bipedLeftLeg = copyWithoutBoxes(bipedLeftLeg);
-		bipedRightArm = copyWithoutBoxes(bipedRightArm);
-		bipedRightLeg = copyWithoutBoxes(bipedRightLeg);
+		head = copyWithoutBoxes(head);
+		body = copyWithoutBoxes(body);
+		leftArm = copyWithoutBoxes(leftArm);
+		leftLeg = copyWithoutBoxes(leftLeg);
+		rightArm = copyWithoutBoxes(rightArm);
+		rightLeg = copyWithoutBoxes(rightLeg);
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
-		bipedHeadwear.showModel = false;
-		bipedBody.showModel = bipedLeftArm.showModel = bipedRightArm.showModel =
-			bipedHead.showModel = bipedLeftLeg.showModel = bipedRightLeg.showModel = false;
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+		hat.visible = false;
+		body.visible = leftArm.visible = rightArm.visible =
+			head.visible = leftLeg.visible = rightLeg.visible = false;
 
-		if (slot == EquipmentSlotType.CHEST) {
-			bipedBody.showModel = true;
-			bipedLeftArm.showModel = true;
-			bipedRightArm.showModel = true;
+		if (slot == EquipmentSlot.CHEST) {
+			body.visible = true;
+			leftArm.visible = true;
+			rightArm.visible = true;
 		}
 
-		if (slot == EquipmentSlotType.HEAD) {
-			bipedHead.showModel = true;
+		if (slot == EquipmentSlot.HEAD) {
+			head.visible = true;
 		}
 
-		if (slot == EquipmentSlotType.FEET) {
-			bipedLeftLeg.showModel = true;
-			bipedRightLeg.showModel = true;
+		if (slot == EquipmentSlot.FEET) {
+			leftLeg.visible = true;
+			rightLeg.visible = true;
 		}
-		super.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+		super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.rotateAngleX = x;
-		modelRenderer.rotateAngleY = y;
-		modelRenderer.rotateAngleZ = z;
+		modelRenderer.xRot = x;
+		modelRenderer.yRot = y;
+		modelRenderer.zRot = z;
 	}
 }

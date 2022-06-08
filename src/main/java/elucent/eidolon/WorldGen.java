@@ -6,7 +6,7 @@ import elucent.eidolon.world.CatacombPieces;
 import elucent.eidolon.world.CatacombStructure;
 import elucent.eidolon.world.LabStructure;
 import elucent.eidolon.world.StrayTowerStructure;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.DimensionSettings;
@@ -21,7 +21,7 @@ import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -41,7 +41,7 @@ public class WorldGen {
 
 
     static IStructurePieceType register(IStructurePieceType type, String name) {
-        net.minecraft.util.registry.Registry.register(net.minecraft.util.registry.Registry.STRUCTURE_PIECE, new ResourceLocation(Eidolon.MODID, name), type);
+        net.minecraft.core.Registry.register(net.minecraft.core.Registry.STRUCTURE_PIECE, new ResourceLocation(Eidolon.MODID, name), type);
         return type;
     }
 
@@ -56,12 +56,12 @@ public class WorldGen {
     }
 
     static <C extends IFeatureConfig> RegistryObject<Structure<C>> addStructure(String name, Structure<C> structure, GenerationStage.Decoration stage, StructureSeparationSettings settings) {
-        Structure.NAME_STRUCTURE_BIMAP.put(Eidolon.MODID + ":" + name, structure);
-        Structure.STRUCTURE_DECORATION_STAGE_MAP.put(structure, stage);
+        Structure.STRUCTURES_REGISTRY.put(Eidolon.MODID + ":" + name, structure);
+        Structure.STEP.put(structure, stage);
         STRUCTURE_LIST.add(structure);
         STRUCTURE_SETTINGS.put(new ResourceLocation(Eidolon.MODID, name), settings);
         if (stage != GenerationStage.Decoration.UNDERGROUND_STRUCTURES) {
-            Structure.field_236384_t_ = ImmutableList.<Structure<?>>builder().addAll(Structure.field_236384_t_).add(structure).build();
+            Structure.NOISE_AFFECTING_FEATURES = ImmutableList.<Structure<?>>builder().addAll(Structure.NOISE_AFFECTING_FEATURES).add(structure).build();
         }
 
         return STRUCTURES.register(name, () -> structure);
@@ -91,19 +91,19 @@ public class WorldGen {
     }
 
     public static void init() {
-        LEAD_ORE_GEN = register(Feature.ORE.withConfiguration(new OreFeatureConfig(IN_STONE,
-            Registry.LEAD_ORE.get().getDefaultState(), Config.LEAD_VEIN_SIZE.get()))
-            .square()
+        LEAD_ORE_GEN = register(Feature.ORE.configured(new OreFeatureConfig(IN_STONE,
+            Registry.LEAD_ORE.get().defaultBlockState(), Config.LEAD_VEIN_SIZE.get()))
+            .squared()
             .count(Config.LEAD_VEIN_COUNT.get()) // per chunk
             .range(Config.LEAD_MAX_Y.get() // maximum Y
             ), "lead_ore");
         if (Config.LEAD_ENABLED.get()) ORES.add(LEAD_ORE_GEN);
 
         LAB_PIECE = register(LabStructure.Piece::new, "lab");
-        LAB_FEATURE = register(LAB_STRUCTURE.get().withConfiguration(NoFeatureConfig.INSTANCE), "lab");
+        LAB_FEATURE = register(LAB_STRUCTURE.get().configured(NoFeatureConfig.INSTANCE), "lab");
 
         STRAY_TOWER_PIECE = register(StrayTowerStructure.Piece::new, "stray_tower");
-        STRAY_TOWER_FEATURE = register(STRAY_TOWER_STRUCTURE.get().withConfiguration(NoFeatureConfig.INSTANCE), "stray_tower");
+        STRAY_TOWER_FEATURE = register(STRAY_TOWER_STRUCTURE.get().configured(NoFeatureConfig.INSTANCE), "stray_tower");
 
         CatacombPieces.CORRIDOR_CENTER = register(CatacombPieces.CorridorCenter::new, CatacombPieces.CORRIDOR_CENTER_ID.getPath());
         CatacombPieces.CORRIDOR_DOOR = register(CatacombPieces.CorridorDoor::new, CatacombPieces.CORRIDOR_DOOR_ID.getPath());
@@ -117,29 +117,29 @@ public class WorldGen {
         CatacombPieces.GRAVEYARD = register(CatacombPieces.Graveyard::new, CatacombPieces.GRAVEYARD_ID.getPath());
         CatacombPieces.TURNAROUND = register(CatacombPieces.Turnaround::new, CatacombPieces.TURNAROUND_ID.getPath());
         CatacombPieces.LAB = register(CatacombPieces.Lab::new, CatacombPieces.LAB_ID.getPath());
-        CATACOMB_FEATURE = register(CATACOMB_STRUCTURE.get().withConfiguration(NoFeatureConfig.INSTANCE), "catacomb");
+        CATACOMB_FEATURE = register(CATACOMB_STRUCTURE.get().configured(NoFeatureConfig.INSTANCE), "catacomb");
 
         for (Structure<?> s : STRUCTURE_LIST) {
-            DimensionStructuresSettings.field_236191_b_ = // Default structures
+            DimensionStructuresSettings.DEFAULTS = // Default structures
                 ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
-                    .putAll(DimensionStructuresSettings.field_236191_b_)
+                    .putAll(DimensionStructuresSettings.DEFAULTS)
                     .put(s, STRUCTURE_SETTINGS.get(s.getRegistryName()))
                     .build();
 
-            DimensionSettings.DEFAULT_SETTINGS.getStructures().field_236193_d_.put(s, STRUCTURE_SETTINGS.get(s.getRegistryName()));
+            DimensionSettings.BUILTIN_OVERWORLD.structureSettings().structureConfig.put(s, STRUCTURE_SETTINGS.get(s.getRegistryName()));
         }
     }
 
     @SubscribeEvent
     public void onBiomeLoad(BiomeLoadingEvent event) {
         for (ConfiguredFeature<?, ?> feature : ORES) {
-            event.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, feature);
+            event.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, feature);
         }
         if (Config.LAB_ENABLED.get())
-            event.getGeneration().withStructure(LAB_FEATURE);
+            event.getGeneration().addStructureStart(LAB_FEATURE);
         if (Config.CATACOMB_ENABLED.get())
-            event.getGeneration().withStructure(CATACOMB_FEATURE);
+            event.getGeneration().addStructureStart(CATACOMB_FEATURE);
         if (event.getCategory() == Biome.Category.ICY && Config.STRAY_TOWER_ENABLED.get())
-            event.getGeneration().withStructure(STRAY_TOWER_FEATURE);
+            event.getGeneration().addStructureStart(STRAY_TOWER_FEATURE);
     }
 }

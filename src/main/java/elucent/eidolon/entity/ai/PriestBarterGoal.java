@@ -2,7 +2,7 @@ package elucent.eidolon.entity.ai;
 
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -13,9 +13,9 @@ public class PriestBarterGoal extends GenericBarterGoal<VillagerEntity> {
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         if (entity.getVillagerData().getProfession() != VillagerProfession.CLERIC) return false;
-        return super.shouldExecute();
+        return super.canUse();
     }
 
     @Override

@@ -2,13 +2,13 @@ package elucent.eidolon.ritual;
 
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.play.server.SUpdateTimePacket;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.storage.ServerWorldInfo;
 
 public class DaylightRitual extends Ritual {
@@ -19,12 +19,12 @@ public class DaylightRitual extends Ritual {
     }
 
     @Override
-    public RitualResult tick(World world, BlockPos pos) {
+    public RitualResult tick(Level world, BlockPos pos) {
         if (world.getDayTime() % 24000 < 1000 || world.getDayTime() % 24000 >= 12000) {
-            if (!world.isRemote) {
-                ((ServerWorldInfo) world.getWorldInfo()).setDayTime(world.getDayTime() + 100);
-                for (ServerPlayerEntity player : ((ServerWorld) world).getPlayers()) {
-                    player.connection.sendPacket(new SUpdateTimePacket(world.getGameTime(), world.getDayTime(), world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)));
+            if (!world.isClientSide) {
+                ((ServerWorldInfo) world.getLevelData()).setDayTime(world.getDayTime() + 100);
+                for (ServerPlayer player : ((ServerLevel) world).players()) {
+                    player.connection.send(new SUpdateTimePacket(world.getGameTime(), world.getDayTime(), world.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)));
                 }
             }
             return RitualResult.PASS;

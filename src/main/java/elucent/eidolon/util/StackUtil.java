@@ -1,20 +1,20 @@
 package elucent.eidolon.util;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class StackUtil {
     public static Ingredient ingredientFromObject(Object object) {
-        if (object instanceof Item) return Ingredient.fromItems((Item)object);
-        else if (object instanceof Block) return Ingredient.fromStacks(new ItemStack((Block)object));
-        else if (object instanceof ItemStack) return Ingredient.fromStacks((ItemStack)object);
-        else if (object instanceof ITag) return Ingredient.fromTag((ITag)object);
+        if (object instanceof Item) return Ingredient.of((Item)object);
+        else if (object instanceof Block) return Ingredient.of(new ItemStack((Block)object));
+        else if (object instanceof ItemStack) return Ingredient.of((ItemStack)object);
+        else if (object instanceof Tag) return Ingredient.of((Tag)object);
         else return Ingredient.EMPTY;
     }
 
@@ -26,8 +26,8 @@ public class StackUtil {
         if (object instanceof Item) return new ItemStack((Item)object);
         else if (object instanceof Block) return new ItemStack((Block)object);
         else if (object instanceof ItemStack) return ((ItemStack)object).copy();
-        else if (object instanceof ITag) {
-            Object first = ((ITag)object).getAllElements().get(0);
+        else if (object instanceof Tag) {
+            Object first = ((Tag)object).getValues().get(0);
             return stackFromObject(first);
         }
         else return ItemStack.EMPTY;

@@ -1,6 +1,6 @@
 package elucent.eidolon.item;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class UnholySymbolItem extends ItemBase {
     public UnholySymbolItem(Properties builderIn) {

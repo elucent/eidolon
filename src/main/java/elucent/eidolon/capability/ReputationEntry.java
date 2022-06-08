@@ -1,7 +1,7 @@
 package elucent.eidolon.capability;
 
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class ReputationEntry {
     double reputation;

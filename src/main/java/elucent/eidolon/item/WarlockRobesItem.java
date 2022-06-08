@@ -4,17 +4,17 @@ import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.item.model.WarlockArmorModel;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,12 +23,12 @@ public class WarlockRobesItem extends ArmorItem {
 
     public static class Material implements IArmorMaterial {
         @Override
-        public int getDurability(EquipmentSlotType slot) {
+        public int getDurabilityForSlot(EquipmentSlot slot) {
             return MAX_DAMAGE_ARRAY[slot.getIndex()] * 21;
         }
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType slot) {
+        public int getDefenseForSlot(EquipmentSlot slot) {
             switch (slot) {
                 case CHEST:
                     return 7;
@@ -42,18 +42,18 @@ public class WarlockRobesItem extends ArmorItem {
         }
 
         @Override
-        public int getEnchantability() {
+        public int getEnchantmentValue() {
             return 25;
         }
 
         @Override
-        public SoundEvent getSoundEvent() {
-            return ArmorMaterial.LEATHER.getSoundEvent();
+        public SoundEvent getEquipSound() {
+            return ArmorMaterial.LEATHER.getEquipSound();
         }
 
         @Override
-        public Ingredient getRepairMaterial() {
-            return Ingredient.fromStacks(new ItemStack(Registry.WICKED_WEAVE.get()));
+        public Ingredient getRepairIngredient() {
+            return Ingredient.of(new ItemStack(Registry.WICKED_WEAVE.get()));
         }
 
         @Override
@@ -74,7 +74,7 @@ public class WarlockRobesItem extends ArmorItem {
         public static final Material INSTANCE = new Material();
     }
 
-    public WarlockRobesItem(EquipmentSlotType slot, Properties builderIn) {
+    public WarlockRobesItem(EquipmentSlot slot, Properties builderIn) {
         super(Material.INSTANCE, slot, builderIn);
     }
 
@@ -82,20 +82,20 @@ public class WarlockRobesItem extends ArmorItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public WarlockArmorModel getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlotType slot, BipedModel defaultModel) {
+    public WarlockArmorModel getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
         if (model == null) model = new WarlockArmorModel(slot);
-        float pticks = Minecraft.getInstance().getRenderPartialTicks();
-        float f = MathHelper.interpolateAngle(pticks, entity.prevRenderYawOffset, entity.renderYawOffset);
-        float f1 = MathHelper.interpolateAngle(pticks, entity.prevRotationYawHead, entity.rotationYawHead);
+        float pticks = Minecraft.getInstance().getFrameTime();
+        float f = Mth.rotLerp(pticks, entity.yBodyRotO, entity.yBodyRot);
+        float f1 = Mth.rotLerp(pticks, entity.yHeadRotO, entity.yHeadRot);
         float netHeadYaw = f1 - f;
-        float netHeadPitch = MathHelper.lerp(pticks, entity.prevRotationPitch, entity.rotationPitch);
-        model.setRotationAngles(entity, entity.limbSwing, entity.limbSwingAmount, entity.ticksExisted + pticks, netHeadYaw, netHeadPitch);
+        float netHeadPitch = Mth.lerp(pticks, entity.xRotO, entity.xRot);
+        model.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount + pticks, netHeadYaw, netHeadPitch);
         return model;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return Eidolon.MODID + ":textures/entity/warlock_robes.png";
     }
 }

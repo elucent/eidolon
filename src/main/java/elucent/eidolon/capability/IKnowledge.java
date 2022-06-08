@@ -1,7 +1,7 @@
 package elucent.eidolon.capability;
 
 import elucent.eidolon.spell.Sign;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Set;
 

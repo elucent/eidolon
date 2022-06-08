@@ -2,20 +2,20 @@ package elucent.eidolon.tile;
 
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.network.TESyncPacket;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.Connection;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.network.PacketDistributor;
 
-public class TileEntityBase extends TileEntity {
-    public TileEntityBase(TileEntityType<?> tileEntityTypeIn) {
+public class TileEntityBase extends BlockEntity {
+    public TileEntityBase(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -23,31 +23,31 @@ public class TileEntityBase extends TileEntity {
         invalidateCaps();
     }
 
-    public ActionResultType onActivated(BlockState state, BlockPos pos, PlayerEntity player, Hand hand) {
-        return ActionResultType.PASS;
+    public InteractionResult onActivated(BlockState state, BlockPos pos, Player player, InteractionHand hand) {
+        return InteractionResult.PASS;
     }
 
     public void sync() {
-        markDirty();
-        if (world.isRemote)
-            Networking.INSTANCE.sendToServer(new TESyncPacket(pos, write(new CompoundNBT())));
+        setChanged();
+        if (level.isClientSide)
+            Networking.INSTANCE.sendToServer(new TESyncPacket(worldPosition, save(new CompoundTag())));
         else
-            Networking.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), new TESyncPacket(pos, write(new CompoundNBT())));
+            Networking.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new TESyncPacket(worldPosition, save(new CompoundTag())));
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 3, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 3, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         super.onDataPacket(net, pkt);
-        handleUpdateTag(world.getBlockState(pkt.getPos()), pkt.getNbtCompound());
+        handleUpdateTag(level.getBlockState(pkt.getPos()), pkt.getTag());
     }
 }

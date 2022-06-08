@@ -1,7 +1,7 @@
 package elucent.eidolon.capability;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,36 +18,36 @@ public interface IReputation {
     void pray(UUID player, long time);
     boolean canPray(UUID player, long time);
 
-    default double getReputation(PlayerEntity player, ResourceLocation deity) {
-        return getReputation(player.getUniqueID(), deity);
+    default double getReputation(Player player, ResourceLocation deity) {
+        return getReputation(player.getUUID(), deity);
     }
 
-    default void addReputation(PlayerEntity player, ResourceLocation deity, double amount) {
-        addReputation(player.getUniqueID(), deity, amount);
+    default void addReputation(Player player, ResourceLocation deity, double amount) {
+        addReputation(player.getUUID(), deity, amount);
     }
 
-    default void subtractReputation(PlayerEntity player, ResourceLocation deity, double amount) {
-        subtractReputation(player.getUniqueID(), deity, amount);
+    default void subtractReputation(Player player, ResourceLocation deity, double amount) {
+        subtractReputation(player.getUUID(), deity, amount);
     }
 
-    default void setReputation(PlayerEntity player, ResourceLocation deity, double amount) {
-        setReputation(player.getUniqueID(), deity, amount);
+    default void setReputation(Player player, ResourceLocation deity, double amount) {
+        setReputation(player.getUUID(), deity, amount);
     }
 
-    default void lock(PlayerEntity player, ResourceLocation deity, ResourceLocation key) {
-        lock(player.getUniqueID(), deity, key);
+    default void lock(Player player, ResourceLocation deity, ResourceLocation key) {
+        lock(player.getUUID(), deity, key);
     }
 
-    default boolean unlock(PlayerEntity player, ResourceLocation deity, ResourceLocation key) {
-        return unlock(player.getUniqueID(), deity, key);
+    default boolean unlock(Player player, ResourceLocation deity, ResourceLocation key) {
+        return unlock(player.getUUID(), deity, key);
     }
 
-    default void pray(PlayerEntity player, long time) {
-        pray(player.getUniqueID(), time);
+    default void pray(Player player, long time) {
+        pray(player.getUUID(), time);
     }
 
-    default boolean canPray(PlayerEntity player, long time) {
-        return player.isCreative() || canPray(player.getUniqueID(), time);
+    default boolean canPray(Player player, long time) {
+        return player.isCreative() || canPray(player.getUUID(), time);
     }
 
     Map<UUID, Long> getPrayerTimes();

@@ -1,9 +1,9 @@
 package elucent.eidolon.codex;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import elucent.eidolon.Eidolon;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -20,7 +20,7 @@ public class SmeltingPage extends Page {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderIngredients(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
+    public void renderIngredients(CodexGui gui, PoseStack mStack, int x, int y, int mouseX, int mouseY) {
         drawItem(gui, mStack, input, x + 56, y + 34, mouseX, mouseY);
         drawItem(gui, mStack, result,x + 56, y + 107, mouseX, mouseY);
     }

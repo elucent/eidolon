@@ -6,15 +6,15 @@ import elucent.eidolon.codex.Page;
 import elucent.eidolon.codex.WorktablePage;
 import elucent.eidolon.gui.jei.RecipeWrappers;
 import elucent.eidolon.util.StackUtil;
-import net.minecraft.block.Blocks;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
@@ -56,13 +56,13 @@ public class WorktableRegistry {
         return wrappers;
     }
 
-    public static WorktableRecipe find(World world, ResourceLocation loc) {
-        IRecipe<?> recipe = world.getRecipeManager().getRecipe(loc).get();
+    public static WorktableRecipe find(Level world, ResourceLocation loc) {
+        Recipe<?> recipe = world.getRecipeManager().byKey(loc).get();
         return recipe instanceof WorktableRecipe ? ((WorktableRecipe) recipe) : null;
     }
 
-    public static WorktableRecipe find(World world, IInventory core, IInventory outer) {
-        for (ICraftingRecipe recipe : world.getRecipeManager().getRecipesForType(IRecipeType.CRAFTING))
+    public static WorktableRecipe find(Level world, Container core, Container outer) {
+        for (ICraftingRecipe recipe : world.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING))
             if (recipe instanceof WorktableRecipe && ((WorktableRecipe) recipe).matches(core, outer))
                 return (WorktableRecipe) recipe;
         return null;

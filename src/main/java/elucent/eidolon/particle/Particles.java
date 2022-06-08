@@ -1,8 +1,8 @@
 package elucent.eidolon.particle;
 
-import net.minecraft.particles.ParticleType;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Random;
 
@@ -143,7 +143,7 @@ public class Particles {
             return this;
         }
 
-        public ParticleBuilder spawn(World world, double x, double y, double z) {
+        public ParticleBuilder spawn(Level world, double x, double y, double z) {
             double yaw = random.nextFloat() * Math.PI * 2, pitch = random.nextFloat() * Math.PI - Math.PI / 2,
                 xSpeed = random.nextFloat() * maxXSpeed, ySpeed = random.nextFloat() * maxYSpeed, zSpeed = random.nextFloat() * maxZSpeed;
             this.vx += Math.sin(yaw) * Math.cos(pitch) * xSpeed;
@@ -159,7 +159,7 @@ public class Particles {
             return this;
         }
 
-        public ParticleBuilder repeat(World world, double x, double y, double z, int n) {
+        public ParticleBuilder repeat(Level world, double x, double y, double z, int n) {
             for (int i = 0; i < n; i ++) spawn(world, x, y, z);
             return this;
         }

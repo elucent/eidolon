@@ -1,17 +1,17 @@
 package elucent.eidolon.codex;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.Tesselator;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.ritual.Ritual;
 import elucent.eidolon.util.RenderUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
@@ -41,7 +41,7 @@ public class RitualPage extends Page {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void render(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
+    public void render(CodexGui gui, PoseStack mStack, int x, int y, int mouseX, int mouseY) {
         float angleStep = Math.min(30, 180 / inputs.length);
         double rootAngle = 90 - (inputs.length - 1) * angleStep / 2;
         for (int i = 0; i < inputs.length; i ++) {
@@ -56,17 +56,17 @@ public class RitualPage extends Page {
         RenderSystem.shadeModel(GL11.GL_SMOOTH);
         RenderSystem.alphaFunc(GL11.GL_GEQUAL, 1f / 256f);
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        Tessellator tess = Tessellator.getInstance();
+        Tesselator tess = Tesselator.getInstance();
         RenderSystem.disableTexture();
         RenderSystem.depthMask(false);
-        RenderUtil.dragon(mStack, IRenderTypeBuffer.getImpl(tess.getBuffer()), x + 64, y + 48, 20, 20, ritual.getRed(), ritual.getGreen(), ritual.getBlue());
-        tess.draw();
+        RenderUtil.dragon(mStack, MultiBufferSource.immediate(tess.getBuilder()), x + 64, y + 48, 20, 20, ritual.getRed(), ritual.getGreen(), ritual.getBlue());
+        tess.end();
         RenderSystem.enableTexture();
-        Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        Minecraft.getInstance().getTextureManager().bind(TextureAtlas.LOCATION_BLOCKS);
         for (int j = 0; j < 2; j++) {
-            RenderUtil.litQuad(mStack, IRenderTypeBuffer.getImpl(tess.getBuffer()), x + 52, y + 36, 24, 24,
-                ritual.getRed(), ritual.getGreen(), ritual.getBlue(), Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(ritual.getSymbol()));
-            tess.draw();
+            RenderUtil.litQuad(mStack, MultiBufferSource.immediate(tess.getBuilder()), x + 52, y + 36, 24, 24,
+                ritual.getRed(), ritual.getGreen(), ritual.getBlue(), Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ritual.getSymbol()));
+            tess.end();
         }
         RenderSystem.defaultAlphaFunc();
         RenderSystem.disableBlend();
@@ -77,7 +77,7 @@ public class RitualPage extends Page {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderIngredients(CodexGui gui, MatrixStack mStack, int x, int y, int mouseX, int mouseY) {
+    public void renderIngredients(CodexGui gui, PoseStack mStack, int x, int y, int mouseX, int mouseY) {
         float angleStep = Math.min(30, 180 / inputs.length);
         double rootAngle = 90 - (inputs.length - 1) * angleStep / 2;
         for (int i = 0; i < inputs.length; i ++) {

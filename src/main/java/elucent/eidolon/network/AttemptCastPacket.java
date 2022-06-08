@@ -5,13 +5,13 @@ import elucent.eidolon.capability.KnowledgeProvider;
 import elucent.eidolon.entity.ChantCasterEntity;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,9 @@ public class AttemptCastPacket {
     List<Sign> signs = new ArrayList<>();
     UUID uuid;
 
-    public AttemptCastPacket(PlayerEntity player, List<Sign> signs) {
+    public AttemptCastPacket(Player player, List<Sign> signs) {
         this.signs.addAll(signs);
-        this.uuid = player.getUniqueID();
+        this.uuid = player.getUUID();
     }
 
     public AttemptCastPacket(UUID uuid, List<Sign> signs) {
@@ -32,34 +32,34 @@ public class AttemptCastPacket {
         this.uuid = uuid;
     }
 
-    public static void encode(AttemptCastPacket object, PacketBuffer buffer) {
+    public static void encode(AttemptCastPacket object, FriendlyByteBuf buffer) {
         buffer.writeInt(object.signs.size());
-        for (int i = 0; i < object.signs.size(); i ++) buffer.writeString(object.signs.get(i).getRegistryName().toString(), 255);
-        buffer.writeUniqueId(object.uuid);
+        for (int i = 0; i < object.signs.size(); i ++) buffer.writeUtf(object.signs.get(i).getRegistryName().toString(), 255);
+        buffer.writeUUID(object.uuid);
     }
 
-    public static AttemptCastPacket decode(PacketBuffer buffer) {
+    public static AttemptCastPacket decode(FriendlyByteBuf buffer) {
         int n = buffer.readInt();
         List<Sign> signs = new ArrayList<>();
-        for (int i = 0; i < n; i ++) signs.add(Signs.find(new ResourceLocation(buffer.readString(255))));
-        return new AttemptCastPacket(buffer.readUniqueId(), signs);
+        for (int i = 0; i < n; i ++) signs.add(Signs.find(new ResourceLocation(buffer.readUtf(255))));
+        return new AttemptCastPacket(buffer.readUUID(), signs);
     }
 
     public static void consume(AttemptCastPacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             assert ctx.get().getDirection() == NetworkDirection.PLAY_TO_SERVER;
 
-            World world = ctx.get().getSender().world;
+            Level world = ctx.get().getSender().level;
             if (world != null) {
-                PlayerEntity player = world.getPlayerByUuid(packet.uuid);
+                Player player = world.getPlayerByUUID(packet.uuid);
                 if (player != null) {
                     List<Sign> signs = packet.signs;
                     IKnowledge knowledge = player.getCapability(KnowledgeProvider.CAPABILITY, null).resolve().get();
                     for (Sign sign : signs) if (!knowledge.knowsSign(sign)) return;
-                    Vector3d placement = player.getPositionVec().add(0, player.getHeight() * 2 / 3, 0).add(player.getLookVec());
+                    Vec3 placement = player.position().add(0, player.getBbHeight() * 2 / 3, 0).add(player.getLookAngle());
                     ChantCasterEntity entity = new ChantCasterEntity(world, player, signs);
-                    entity.setPosition(placement.x, placement.y, placement.z);
-                    world.addEntity(entity);
+                    entity.setPos(placement.x, placement.y, placement.z);
+                    world.addFreshEntity(entity);
                 }
             }
         });

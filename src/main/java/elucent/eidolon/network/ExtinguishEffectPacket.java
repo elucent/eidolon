@@ -3,13 +3,13 @@ package elucent.eidolon.network;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.particle.Particles;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -20,11 +20,11 @@ public class ExtinguishEffectPacket {
         this.pos = pos;
     }
 
-    public static void encode(ExtinguishEffectPacket object, PacketBuffer buffer) {
+    public static void encode(ExtinguishEffectPacket object, FriendlyByteBuf buffer) {
         buffer.writeBlockPos(object.pos);
     }
 
-    public static ExtinguishEffectPacket decode(PacketBuffer buffer) {
+    public static ExtinguishEffectPacket decode(FriendlyByteBuf buffer) {
         return new ExtinguishEffectPacket(buffer.readBlockPos());
     }
 
@@ -32,11 +32,11 @@ public class ExtinguishEffectPacket {
         ctx.get().enqueueWork(() -> {
             assert ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT;
 
-            World world = Eidolon.proxy.getWorld();
+            Level world = Eidolon.proxy.getWorld();
             if (world != null) {
                 BlockPos pos = packet.pos;
                 double x = pos.getX() + 0.5, y = pos.getY() + 1, z = pos.getZ() + 0.5;
-                world.playSound(Eidolon.proxy.getPlayer(), x, y, z, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                world.playSound(Eidolon.proxy.getPlayer(), x, y, z, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0f, 1.0f);
 
                 Particles.create(Registry.SMOKE_PARTICLE)
                     .setAlpha(0.125f, 0).setScale(0.3125f, 0.125f).setLifetime(80)

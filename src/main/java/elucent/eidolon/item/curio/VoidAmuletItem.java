@@ -3,13 +3,13 @@ package elucent.eidolon.item.curio;
 import elucent.eidolon.Registry;
 import elucent.eidolon.entity.SpellProjectileEntity;
 import elucent.eidolon.item.ItemBase;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.entity.projectile.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -34,11 +34,11 @@ public class VoidAmuletItem extends ItemBase {
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT unused) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
         return new EidolonCurio(stack) {
             @Override
             public void curioTick(String type, int index, LivingEntity entity) {
-                if (!entity.world.isRemote) {
+                if (!entity.level.isClientSide) {
                     if (getCooldown(stack) > 0) setCooldown(stack, getCooldown(stack) - 1);
                 }
             }
@@ -52,7 +52,7 @@ public class VoidAmuletItem extends ItemBase {
 
     @SubscribeEvent
     public static void onDamage(LivingAttackEvent event) {
-        if (event.getEntityLiving() instanceof PlayerEntity) {
+        if (event.getEntityLiving() instanceof Player) {
             CuriosApi.getCuriosHelper().getEquippedCurios(event.getEntityLiving()).resolve().ifPresent((slots) -> {
                 boolean hasVoid = false;
                 int i;
@@ -66,15 +66,15 @@ public class VoidAmuletItem extends ItemBase {
                 }
                 ItemStack stack = slots.getStackInSlot(i);
                 if (hasVoid &&
-                    (event.getSource().getImmediateSource() instanceof FireballEntity
-                        || event.getSource().getImmediateSource() instanceof LlamaSpitEntity
-                        || event.getSource().getImmediateSource() instanceof SmallFireballEntity
-                        || event.getSource().getImmediateSource() instanceof ShulkerBulletEntity
-                        || event.getSource().getImmediateSource() instanceof PotionEntity
-                        || event.getSource().getImmediateSource() instanceof SpellProjectileEntity)) {
+                    (event.getSource().getDirectEntity() instanceof FireballEntity
+                        || event.getSource().getDirectEntity() instanceof LlamaSpitEntity
+                        || event.getSource().getDirectEntity() instanceof SmallFireballEntity
+                        || event.getSource().getDirectEntity() instanceof ShulkerBulletEntity
+                        || event.getSource().getDirectEntity() instanceof PotionEntity
+                        || event.getSource().getDirectEntity() instanceof SpellProjectileEntity)) {
                     event.setCanceled(true);
-                    if (!event.getEntity().getEntityWorld().isRemote) {
-                        event.getEntity().getEntityWorld().playSound(null, event.getEntity().getPosition(), SoundEvents.ENTITY_WITHER_HURT, SoundCategory.PLAYERS, 1.0f, 0.75f);
+                    if (!event.getEntity().getCommandSenderWorld().isClientSide) {
+                        event.getEntity().getCommandSenderWorld().playSound(null, event.getEntity().blockPosition(), SoundEvents.WITHER_HURT, SoundSource.PLAYERS, 1.0f, 0.75f);
                         setCooldown(stack, 200);
                     }
                 }

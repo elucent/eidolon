@@ -1,7 +1,7 @@
 package elucent.eidolon.capability;
 
 import elucent.eidolon.Eidolon;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class Facts {
     public static final ResourceLocation

@@ -1,18 +1,18 @@
 package elucent.eidolon.entity.ai;
 
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.Random;
 
 public class GoToPositionGoal extends Goal {
     Random random = new Random();
     BlockPos dest;
-    CreatureEntity creature;
+    PathfinderMob creature;
     double speed;
     boolean running;
-    public GoToPositionGoal(CreatureEntity creature, BlockPos pos, double speedIn) {
+    public GoToPositionGoal(PathfinderMob creature, BlockPos pos, double speedIn) {
         this.creature = creature;
         this.dest = pos;
         this.speed = speedIn;
@@ -22,13 +22,13 @@ public class GoToPositionGoal extends Goal {
     @Override
     public void tick() {
         if (running) {
-            creature.getNavigator().tryMoveToXYZ(dest.getX(), dest.getY(), dest.getZ(), speed);
-            if (creature.getDistanceSq(dest.getX(), dest.getY(), dest.getZ()) < 8 * 8) running = false;
+            creature.getNavigation().moveTo(dest.getX(), dest.getY(), dest.getZ(), speed);
+            if (creature.distanceToSqr(dest.getX(), dest.getY(), dest.getZ()) < 8 * 8) running = false;
         }
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         return running;
     }
 }

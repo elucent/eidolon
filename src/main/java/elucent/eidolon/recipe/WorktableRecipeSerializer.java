@@ -6,18 +6,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import elucent.eidolon.recipe.recipeobj.RecipeObject;
 import elucent.eidolon.recipe.recipeobj.RecipeObjectType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
-public class WorktableRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<WorktableRecipe> {
+public class WorktableRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<WorktableRecipe> {
     @Override
-    public WorktableRecipe read(ResourceLocation recipeId, JsonObject json) {
+    public WorktableRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
         JsonObject core = json.get("core").getAsJsonObject();
         Object[] coreList = new Object[9];
         for (int i = 0; i < coreList.length; i++) {
@@ -38,7 +38,7 @@ public class WorktableRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
                 exList[0], exList[1], exList[2], exList[3]
         );
 
-        ItemStack result = Ingredient.deserializeItemList(json.get("result").getAsJsonObject()).getStacks().iterator().next();
+        ItemStack result = Ingredient.valueFromJson(json.get("result").getAsJsonObject()).getItems().iterator().next();
         return new WorktableRecipe(recipeCore, recipeExtras, result).setRegistryName(recipeId);
     }
 
@@ -46,16 +46,16 @@ public class WorktableRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
 
     @Nullable
     @Override
-    public WorktableRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-        JsonObject json = gson.fromJson(buffer.readString(), JsonElement.class).getAsJsonObject();
-        return read(recipeId, json);
+    public WorktableRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        JsonObject json = gson.fromJson(buffer.readUtf(), JsonElement.class).getAsJsonObject();
+        return fromJson(recipeId, json);
     }
 
     @Override
-    public void write(PacketBuffer buffer, WorktableRecipe recipe) {
+    public void toNetwork(FriendlyByteBuf buffer, WorktableRecipe recipe) {
         JsonObject json = new JsonObject();
         write(json, recipe);
-        buffer.writeString(json.toString());
+        buffer.writeUtf(json.toString());
     }
 
     public void write(JsonObject json, WorktableRecipe recipe) {
@@ -71,7 +71,7 @@ public class WorktableRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
         }
         json.add("extras", ex);
 
-        JsonElement result = Ingredient.fromStacks(recipe.result).serialize();
+        JsonElement result = Ingredient.of(recipe.result).toJson();
         json.add("result", result);
     }
 

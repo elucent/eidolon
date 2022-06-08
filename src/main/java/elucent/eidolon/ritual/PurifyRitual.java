@@ -2,20 +2,20 @@ package elucent.eidolon.ritual;
 
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.entity.monster.HoglinEntity;
 import net.minecraft.entity.monster.ZoglinEntity;
 import net.minecraft.entity.monster.ZombieVillagerEntity;
-import net.minecraft.entity.monster.ZombifiedPiglinEntity;
+import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.entity.monster.piglin.PiglinEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.List;
 
@@ -27,27 +27,27 @@ public class PurifyRitual extends Ritual {
     }
 
     @Override
-    public RitualResult start(World world, BlockPos pos) {
-        List<CreatureEntity> purifiable = world.getEntitiesWithinAABB(CreatureEntity.class, Ritual.getDefaultBounds(pos), (entity) -> entity instanceof ZombieVillagerEntity || entity instanceof ZombifiedPiglinEntity || entity instanceof ZoglinEntity);
+    public RitualResult start(Level world, BlockPos pos) {
+        List<PathfinderMob> purifiable = world.getEntitiesOfClass(PathfinderMob.class, Ritual.getDefaultBounds(pos), (entity) -> entity instanceof ZombieVillagerEntity || entity instanceof ZombifiedPiglin || entity instanceof ZoglinEntity);
 
-        if (purifiable.size() > 0 && !world.isRemote) world.playSound(null, pos, SoundEvents.ENTITY_ZOMBIE_VILLAGER_CURE, SoundCategory.PLAYERS, 1.0f, 1.0f);
-        if (!world.isRemote) for (CreatureEntity entity : purifiable) {
+        if (purifiable.size() > 0 && !world.isClientSide) world.playSound(null, pos, SoundEvents.ZOMBIE_VILLAGER_CURE, SoundSource.PLAYERS, 1.0f, 1.0f);
+        if (!world.isClientSide) for (PathfinderMob entity : purifiable) {
             if (entity instanceof ZombieVillagerEntity) {
-                ((ZombieVillagerEntity) entity).cureZombie((ServerWorld)world);
+                ((ZombieVillagerEntity) entity).finishConversion((ServerLevel)world);
             }
-            if (entity instanceof ZombifiedPiglinEntity) {
+            if (entity instanceof ZombifiedPiglin) {
                 entity.remove();
                 PiglinEntity piglin = new PiglinEntity(EntityType.PIGLIN, world);
-                piglin.copyLocationAndAnglesFrom(entity);
-                piglin.onInitialSpawn((ServerWorld)world, world.getDifficultyForLocation(pos), SpawnReason.MOB_SUMMONED, null, null);
-                world.addEntity(piglin);
+                piglin.copyPosition(entity);
+                piglin.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(pos), MobSpawnType.MOB_SUMMONED, null, null);
+                world.addFreshEntity(piglin);
             }
             if (entity instanceof ZoglinEntity) {
                 entity.remove();
                 HoglinEntity hoglin = new HoglinEntity(EntityType.HOGLIN, world);
-                hoglin.copyLocationAndAnglesFrom(entity);
-                hoglin.onInitialSpawn((ServerWorld)world, world.getDifficultyForLocation(pos), SpawnReason.MOB_SUMMONED, null, null);
-                world.addEntity(hoglin);
+                hoglin.copyPosition(entity);
+                hoglin.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(pos), MobSpawnType.MOB_SUMMONED, null, null);
+                world.addFreshEntity(hoglin);
             }
         }
         return RitualResult.TERMINATE;

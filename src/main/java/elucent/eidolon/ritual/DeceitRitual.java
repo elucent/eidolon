@@ -2,11 +2,11 @@ package elucent.eidolon.ritual;
 
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.util.ColorUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
@@ -18,11 +18,11 @@ public class DeceitRitual extends Ritual {
     }
 
     @Override
-    public RitualResult tick(World world, BlockPos pos) {
+    public RitualResult tick(Level world, BlockPos pos) {
         if (world.getGameTime() % 20 == 0) {
-            List<VillagerEntity> villagers = world.getEntitiesWithinAABB(VillagerEntity.class, new AxisAlignedBB(pos).grow(48, 16, 48));
+            List<VillagerEntity> villagers = world.getEntitiesOfClass(VillagerEntity.class, new AABB(pos).inflate(48, 16, 48));
             for (VillagerEntity v : villagers) {
-                if (world.rand.nextInt(120) == 0) v.getGossip().tick();
+                if (world.random.nextInt(120) == 0) v.getGossips().decay();
             }
         }
         return RitualResult.PASS;

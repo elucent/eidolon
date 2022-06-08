@@ -1,7 +1,7 @@
 package elucent.eidolon.deity;
 
 import elucent.eidolon.Eidolon;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class DeityLocks {
     public static final ResourceLocation

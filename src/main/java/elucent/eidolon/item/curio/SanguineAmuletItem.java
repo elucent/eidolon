@@ -4,14 +4,14 @@ import elucent.eidolon.Registry;
 import elucent.eidolon.item.ItemBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.entity.item.EnderPearlEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
@@ -42,33 +42,33 @@ public class SanguineAmuletItem extends ItemBase {
     }
 
     static void addCharge(ItemStack stack, int diff) {
-        int newCharge = MathHelper.clamp(getCharge(stack) + diff, 0, 40);
+        int newCharge = Mth.clamp(getCharge(stack) + diff, 0, 40);
         stack.getOrCreateTag().putInt("charge", newCharge);
     }
 
     static void setCharge(ItemStack stack, int charge) {
-        int newCharge = MathHelper.clamp(charge, 0, 40);
+        int newCharge = Mth.clamp(charge, 0, 40);
         stack.getOrCreateTag().putInt("charge", newCharge);
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT unused) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
         return new EidolonCurio(stack) {
             @Override
             public void curioTick(String type, int index, LivingEntity entity) {
-                if (!entity.world.isRemote) {
-                    if (entity.ticksExisted % 80 == 0 &&
+                if (!entity.level.isClientSide) {
+                    if (entity.tickCount % 80 == 0 &&
                         entity.getHealth() == entity.getMaxHealth() &&
-                        entity instanceof PlayerEntity && ((PlayerEntity) entity).getFoodStats().getFoodLevel() >= 18 &&
+                        entity instanceof Player && ((Player) entity).getFoodData().getFoodLevel() >= 18 &&
                         getCharge(stack) < 40) {
-                        PlayerEntity player = (PlayerEntity) entity;
-                        float f = player.getFoodStats().getSaturationLevel() > 0 ?
-                            Math.min(4 * player.getFoodStats().getSaturationLevel(), 16.0F) : 4.0f;
-                        player.addExhaustion(f);
+                        Player player = (Player) entity;
+                        float f = player.getFoodData().getSaturationLevel() > 0 ?
+                            Math.min(4 * player.getFoodData().getSaturationLevel(), 16.0F) : 4.0f;
+                        player.causeFoodExhaustion(f);
                         addCharge(stack, 1);
                         EnderPearlEntity e;
                     }
-                    if (entity.ticksExisted % 10 == 0 &&
+                    if (entity.tickCount % 10 == 0 &&
                         getCharge(stack) > 0 && entity.getHealth() < entity.getMaxHealth()) {
                         int taken = (int) Math.min(1, entity.getMaxHealth() - entity.getHealth());
                         addCharge(stack, -taken);
@@ -83,13 +83,13 @@ public class SanguineAmuletItem extends ItemBase {
             }
 
             @Nonnull
-            public CompoundNBT writeSyncData() {
-                CompoundNBT nbt = new CompoundNBT();
+            public CompoundTag writeSyncData() {
+                CompoundTag nbt = new CompoundTag();
                 nbt.putInt("charge", getCharge(stack));
                 return nbt;
             }
 
-            public void readSyncData(CompoundNBT compound) {
+            public void readSyncData(CompoundTag compound) {
                 setCharge(stack, compound.getInt("charge"));
             }
 
@@ -105,9 +105,9 @@ public class SanguineAmuletItem extends ItemBase {
     public static void addTooltip(ItemTooltipEvent event) {
         if (event.getItemStack().getItem() == Registry.SANGUINE_AMULET.get()) {
             int charge = getCharge(event.getItemStack());
-            if (charge > 0) event.getToolTip().add(new StringTextComponent(" "));
+            if (charge > 0) event.getToolTip().add(new TextComponent(" "));
             for (int i = 0; i < charge; i += 20) {
-                event.getToolTip().add(new StringTextComponent(" "));
+                event.getToolTip().add(new TextComponent(" "));
             }
         }
     }
@@ -118,15 +118,15 @@ public class SanguineAmuletItem extends ItemBase {
         ItemStack stack = event.getStack();
         if (stack.getItem() == Registry.SANGUINE_AMULET.get()) {
             Minecraft mc = Minecraft.getInstance();
-            mc.getTextureManager().bindTexture(new ResourceLocation("minecraft", "textures/gui/icons.png"));
+            mc.getTextureManager().bind(new ResourceLocation("minecraft", "textures/gui/icons.png"));
             int charge = getCharge(event.getStack());
             int rows = (charge + 19) / 20;
             for (int i = 0; i < charge; i += 20) {
-                for (int j = 0; j < MathHelper.clamp(charge - i, 0, 20); j += 2) {
+                for (int j = 0; j < Mth.clamp(charge - i, 0, 20); j += 2) {
                     if (charge - (i + j) == 1) {
-                        AbstractGui.blit(event.getMatrixStack(), event.getX() - 1 + j / 2 * 8, event.getY() + (event.getLines().size() - rows) * (event.getFontRenderer().FONT_HEIGHT + 1) + (i / 20) * 9 + 2, 61, 0, 9, 9, 256, 256);
+                        AbstractGui.blit(event.getMatrixStack(), event.getX() - 1 + j / 2 * 8, event.getY() + (event.getLines().size() - rows) * (event.getFontRenderer().lineHeight + 1) + (i / 20) * 9 + 2, 61, 0, 9, 9, 256, 256);
                     } else
-                        AbstractGui.blit(event.getMatrixStack(), event.getX() - 1 + j / 2 * 8, event.getY() + (event.getLines().size() - rows) * (event.getFontRenderer().FONT_HEIGHT + 1) + (i / 20) * 9 + 2, 52, 0, 9, 9, 256, 256);
+                        AbstractGui.blit(event.getMatrixStack(), event.getX() - 1 + j / 2 * 8, event.getY() + (event.getLines().size() - rows) * (event.getFontRenderer().lineHeight + 1) + (i / 20) * 9 + 2, 52, 0, 9, 9, 256, 256);
                 }
             }
         }

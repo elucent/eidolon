@@ -7,11 +7,11 @@ import elucent.eidolon.codex.Page;
 import elucent.eidolon.gui.jei.RecipeWrappers;
 import elucent.eidolon.tile.CrucibleTileEntity.CrucibleStep;
 import elucent.eidolon.util.StackUtil;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 
 import java.util.*;
@@ -31,7 +31,7 @@ public class CrucibleRegistry {
         ItemStack last = ItemStack.EMPTY;
         while (iter.hasNext()) {
             ItemStack i = iter.next();
-            if (!ItemStack.areItemsEqual(i, last) || !ItemStack.areItemStackTagsEqual(i, last) || last.getCount() + i.getCount() > last.getMaxStackSize()) {
+            if (!ItemStack.isSame(i, last) || !ItemStack.tagMatches(i, last) || last.getCount() + i.getCount() > last.getMaxStackSize()) {
                 last = i;
             }
             else {

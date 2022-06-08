@@ -3,11 +3,11 @@ package elucent.eidolon.ritual;
 import elucent.eidolon.Registry;
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.network.RitualConsumePacket;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +20,9 @@ public class HealthRequirement implements IRequirement {
     }
 
     @Override
-    public RequirementInfo isMet(Ritual ritual, World world, BlockPos pos) {
-        List<CreatureEntity> entities = world.getEntitiesWithinAABB(CreatureEntity.class, Ritual.getDefaultBounds(pos), (entity) -> !entity.isEntityUndead());
-        List<PlayerEntity> players = world.getEntitiesWithinAABB(PlayerEntity.class, Ritual.getDefaultBounds(pos));
+    public RequirementInfo isMet(Ritual ritual, Level world, BlockPos pos) {
+        List<PathfinderMob> entities = world.getEntitiesOfClass(PathfinderMob.class, Ritual.getDefaultBounds(pos), (entity) -> !entity.isInvertedHealAndHarm());
+        List<Player> players = world.getEntitiesOfClass(Player.class, Ritual.getDefaultBounds(pos));
         List<LivingEntity> targets = new ArrayList<>();
         targets.addAll(entities);
         targets.addAll(players);
@@ -34,9 +34,9 @@ public class HealthRequirement implements IRequirement {
         return RequirementInfo.FALSE;
     }
 
-    public void whenMet(Ritual ritual, World world, BlockPos pos, RequirementInfo info) {
-        List<CreatureEntity> entities = world.getEntitiesWithinAABB(CreatureEntity.class, Ritual.getDefaultBounds(pos), (entity) -> !entity.isEntityUndead());
-        List<PlayerEntity> players = world.getEntitiesWithinAABB(PlayerEntity.class, Ritual.getDefaultBounds(pos));
+    public void whenMet(Ritual ritual, Level world, BlockPos pos, RequirementInfo info) {
+        List<PathfinderMob> entities = world.getEntitiesOfClass(PathfinderMob.class, Ritual.getDefaultBounds(pos), (entity) -> !entity.isInvertedHealAndHarm());
+        List<Player> players = world.getEntitiesOfClass(Player.class, Ritual.getDefaultBounds(pos));
         List<LivingEntity> targets = new ArrayList<>();
         targets.addAll(entities);
         targets.addAll(players);
@@ -44,11 +44,11 @@ public class HealthRequirement implements IRequirement {
         for (int i = 0; i < targets.size(); i ++) {
             float targetHealth = targets.get(i).getHealth();
             if (this.health - acc < targetHealth)
-                targets.get(i).attackEntityFrom(Registry.RITUAL_DAMAGE, this.health - acc);
-            else targets.get(i).attackEntityFrom(Registry.RITUAL_DAMAGE, targetHealth);
+                targets.get(i).hurt(Registry.RITUAL_DAMAGE, this.health - acc);
+            else targets.get(i).hurt(Registry.RITUAL_DAMAGE, targetHealth);
 
             acc += targetHealth;
-            if (!world.isRemote) Networking.sendToTracking(world, pos, new RitualConsumePacket(targets.get(i).getPosition(), pos, ritual.getRed(), ritual.getGreen(), ritual.getBlue()));
+            if (!world.isClientSide) Networking.sendToTracking(world, pos, new RitualConsumePacket(targets.get(i).blockPosition(), pos, ritual.getRed(), ritual.getGreen(), ritual.getBlue()));
             if (acc >= this.health) return;
         }
     }

@@ -1,14 +1,14 @@
 package elucent.eidolon.capability;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class KnowledgeProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundNBT> {
+public class KnowledgeProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {
     @CapabilityInject(IKnowledge.class)
     public static Capability<IKnowledge> CAPABILITY = null;
 
@@ -20,12 +20,12 @@ public class KnowledgeProvider implements ICapabilityProvider, ICapabilitySerial
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        return (CompoundNBT)CAPABILITY.getStorage().writeNBT(CAPABILITY, instance, null);
+    public CompoundTag serializeNBT() {
+        return (CompoundTag)CAPABILITY.getStorage().writeNBT(CAPABILITY, instance, null);
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         CAPABILITY.getStorage().readNBT(CAPABILITY, instance, null, nbt);
     }
 }

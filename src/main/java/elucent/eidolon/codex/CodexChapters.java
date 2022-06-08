@@ -12,9 +12,9 @@ import elucent.eidolon.codex.SignIndexPage.SignEntry;
 import elucent.eidolon.ritual.RitualRegistry;
 import elucent.eidolon.spell.Signs;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 
@@ -211,7 +211,7 @@ public class CodexChapters {
             new TitledRitualPage("eidolon.codex.page.purify_ritual", RitualRegistry.PURIFY_RITUAL, new ItemStack(Items.GLISTERING_MELON_SLICE),
                 new RitualIngredient(new ItemStack(Registry.ENCHANTED_ASH.get()), false),
                 new RitualIngredient(new ItemStack(Registry.ENCHANTED_ASH.get()), false),
-                new RitualIngredient(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.HEALING), false),
+                new RitualIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING), false),
                 new RitualIngredient(new ItemStack(Registry.SOUL_SHARD.get()), false),
                 new RitualIngredient(new ItemStack(Registry.SOUL_SHARD.get()), false)),
             new TextPage("eidolon.codex.page.purify_ritual")
@@ -219,7 +219,7 @@ public class CodexChapters {
 
         SANGUINE_RITUAL = new Chapter(
             "eidolon.codex.chapter.sanguine_ritual",
-            new TitledRitualPage("eidolon.codex.page.sanguine_ritual.0", RitualRegistry.SANGUINE_SWORD, PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.HARMING),
+            new TitledRitualPage("eidolon.codex.page.sanguine_ritual.0", RitualRegistry.SANGUINE_SWORD, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HARMING),
                 new RitualIngredient(new ItemStack(Registry.SHADOW_GEM.get()), false),
                 new RitualIngredient(new ItemStack(Registry.SOUL_SHARD.get()), false),
                 new RitualIngredient(new ItemStack(Registry.SOUL_SHARD.get()), false),
@@ -228,7 +228,7 @@ public class CodexChapters {
                 new RitualIngredient(new ItemStack(Items.NETHER_WART), false),
                 new RitualIngredient(new ItemStack(Items.NETHER_WART), false)),
             new TextPage("eidolon.codex.page.sanguine_ritual.0"),
-            new TitledRitualPage("eidolon.codex.page.sanguine_ritual.1", RitualRegistry.SANGUINE_AMULET, PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.HARMING),
+            new TitledRitualPage("eidolon.codex.page.sanguine_ritual.1", RitualRegistry.SANGUINE_AMULET, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HARMING),
                 new RitualIngredient(new ItemStack(Items.REDSTONE), false),
                 new RitualIngredient(new ItemStack(Items.REDSTONE), false),
                 new RitualIngredient(new ItemStack(Items.DIAMOND), false),

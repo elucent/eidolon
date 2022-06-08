@@ -5,15 +5,15 @@ import com.google.common.collect.Multimap;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.item.ItemBase;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -35,16 +35,16 @@ public class ResoluteBeltItem extends ItemBase {
 
     @SubscribeEvent
     public static void onHurt(LivingHurtEvent event) {
-        if (event.getSource().getTrueSource() instanceof LivingEntity && CuriosApi.getCuriosHelper().findEquippedCurio(Registry.RESOLUTE_BELT.get(), event.getEntityLiving()).isPresent()) {
-            LivingEntity entity = (LivingEntity)event.getSource().getTrueSource();
-            Vector3d diff = event.getEntityLiving().getPositionVec().subtract(entity.getPositionVec()).mul(1, 0, 1).normalize();
-            entity.applyKnockback(0.8f, diff.x, diff.z);
-            if (!entity.world.isRemote) entity.world.playSound(null, entity.getPosition(), SoundEvents.ENTITY_IRON_GOLEM_HURT, SoundCategory.PLAYERS, 1.0f, 1.9f + 0.2f * random.nextFloat());
+        if (event.getSource().getEntity() instanceof LivingEntity && CuriosApi.getCuriosHelper().findEquippedCurio(Registry.RESOLUTE_BELT.get(), event.getEntityLiving()).isPresent()) {
+            LivingEntity entity = (LivingEntity)event.getSource().getEntity();
+            Vec3 diff = event.getEntityLiving().position().subtract(entity.position()).multiply(1, 0, 1).normalize();
+            entity.knockback(0.8f, diff.x, diff.z);
+            if (!entity.level.isClientSide) entity.level.playSound(null, entity.blockPosition(), SoundEvents.IRON_GOLEM_HURT, SoundSource.PLAYERS, 1.0f, 1.9f + 0.2f * random.nextFloat());
         }
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT unused) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
         return new EidolonCurio(stack) {
             @Override
             public Multimap<Attribute, AttributeModifier> getAttributeModifiers(String identifier) {

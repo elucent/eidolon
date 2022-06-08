@@ -1,10 +1,10 @@
 package elucent.eidolon.recipe.recipeobj;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
 
 public class RecipeItem extends RecipeObject<Item> {
     public RecipeItem(Item obj) {
@@ -13,7 +13,7 @@ public class RecipeItem extends RecipeObject<Item> {
 
     @Override
     public Ingredient getIngredient() {
-        return Ingredient.fromItems(obj);
+        return Ingredient.of(obj);
     }
 
     @Override
@@ -28,19 +28,19 @@ public class RecipeItem extends RecipeObject<Item> {
 
     @Override
     public Item fromJson(JsonObject json) {
-        return Ingredient.deserializeItemList(json).getStacks().toArray(new ItemStack[0])[0].getItem();
+        return Ingredient.valueFromJson(json).getItems().toArray(new ItemStack[0])[0].getItem();
     }
 
     @Override
-    public CompoundNBT toNBT() {
-        CompoundNBT nbt = new CompoundNBT();
-        new ItemStack(obj).write(nbt);
+    public CompoundTag toNBT() {
+        CompoundTag nbt = new CompoundTag();
+        new ItemStack(obj).save(nbt);
         return nbt;
     }
 
     @Override
-    public Item fromNBT(CompoundNBT nbt) {
-        return ItemStack.read(nbt).getItem();
+    public Item fromNBT(CompoundTag nbt) {
+        return ItemStack.of(nbt).getItem();
     }
 
     @Override
