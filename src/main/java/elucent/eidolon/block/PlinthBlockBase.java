@@ -2,20 +2,22 @@ package elucent.eidolon.block;
 
 import elucent.eidolon.Registry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.block.IWaterLoggable;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.ticks.ScheduledTick;
 
-public class PlinthBlockBase extends BlockBase implements IWaterLoggable {
+public class PlinthBlockBase extends BlockBase implements SimpleWaterloggedBlock {
     public static final BooleanProperty TOP = BooleanProperty.create("top");
     public static final BooleanProperty BOTTOM = BooleanProperty.create("bottom");
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -54,13 +56,13 @@ public class PlinthBlockBase extends BlockBase implements IWaterLoggable {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, Level world, BlockPos pos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos pos, BlockPos facingPos) {
         if (state.getValue(WATERLOGGED)) {
-            world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+            world.getFluidTicks().schedule(ScheduledTick.probe(Fluids.WATER, pos));
         }
 
-        if (facing == Direction.UP) state = state.setValue(TOP, canConnectTo(world, pos.above(), Direction.UP));
-        if (facing == Direction.DOWN) state = state.setValue(BOTTOM, canConnectTo(world, pos.below(), Direction.DOWN));
+        if (facing == Direction.UP) state = state.setValue(TOP, canConnectTo((Level) world, pos.above(), Direction.UP));
+        if (facing == Direction.DOWN) state = state.setValue(BOTTOM, canConnectTo((Level) world, pos.below(), Direction.DOWN));
 
         return state;
     }

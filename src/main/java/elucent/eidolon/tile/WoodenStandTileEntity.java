@@ -4,34 +4,31 @@ import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.block.WoodenStandBlock;
 import elucent.eidolon.gui.WoodenBrewingStandContainer;
+import mezz.jei.common.plugins.vanilla.ingredients.item.ItemStackHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.block.BrewingStandBlock;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.potion.PotionBrewing;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.LockableTileEntity;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.level.block.BrewingStandBlock;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.util.IIntArray;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class WoodenStandTileEntity extends LockableTileEntity implements ISidedInventory, ITickableTileEntity {
+public class WoodenStandTileEntity extends BaseContainerBlockEntity implements WorldlyContainer {
     private static final int[] SLOTS_FOR_UP = new int[]{3};
     private static final int[] SLOTS_FOR_DOWN = new int[]{0, 1, 2, 3};
     private static final int[] OUTPUT_SLOTS = new int[]{0, 1, 2};
@@ -39,7 +36,8 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
     private int brewTime, heat;
     private boolean[] filledSlots;
     private Item ingredientID;
-    public final IIntArray dataAccess = new IIntArray() {
+    public final ContainerData dataAccess = new ContainerData() {
+        @Override
         public int get(int index) {
             switch(index) {
                 case 0:
@@ -51,6 +49,7 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
             }
         }
 
+        @Override
         public void set(int index, int value) {
             switch(index) {
                 case 0:
@@ -61,6 +60,7 @@ public class WoodenStandTileEntity extends LockableTileEntity implements ISidedI
             }
         }
 
+        @Override
         public int getCount() {
             return 2;
         }

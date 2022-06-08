@@ -5,25 +5,27 @@ import elucent.eidolon.Registry;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.stats.Stats;
-import net.minecraft.util.Mth;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,36 +33,40 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 
-public class SoulEnchanterContainer extends Container {
-    private final Container tableInventory = new Inventory(2) {
+public class SoulEnchanterContainer extends AbstractContainerMenu {
+    private final Container tableInventory = new SimpleContainer(2) {
+        @Override
         public void setChanged() {
             super.setChanged();
             SoulEnchanterContainer.this.slotsChanged(this);
         }
     };
 
-    private final IWorldPosCallable worldPosCallable;
+    private final ContainerLevelAccess worldPosCallable;
     private final Random rand = new Random();
-    private final IntReferenceHolder xpSeed = IntReferenceHolder.standalone();
+    private final DataSlot xpSeed = DataSlot.standalone();
     public final int[] enchantClue = new int[]{-1, -1, -1};
     public final int[] worldClue = new int[]{-1, -1, -1};
 
     public SoulEnchanterContainer(int id, Inventory playerInventory) {
-        this(id, playerInventory, IWorldPosCallable.NULL);
+        this(id, playerInventory, ContainerLevelAccess.NULL);
     }
 
-    public SoulEnchanterContainer(int id, Inventory playerInventory, IWorldPosCallable worldPosCallable) {
+    public SoulEnchanterContainer(int id, Inventory playerInventory, ContainerLevelAccess worldPosCallable) {
         super(Registry.SOUL_ENCHANTER_CONTAINER.get(), id);
         this.worldPosCallable = worldPosCallable;
         this.addSlot(new Slot(this.tableInventory, 0, 15, 47) {
+            @Override
             public boolean mayPlace(ItemStack stack) {
                 return true;
             }
+            @Override
             public int getMaxStackSize() {
                 return 1;
             }
         });
         this.addSlot(new Slot(this.tableInventory, 1, 35, 47) {
+            @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.getItem() == Registry.SOUL_SHARD.get();
             }
@@ -77,12 +83,12 @@ public class SoulEnchanterContainer extends Container {
         }
 
         this.addDataSlot(this.xpSeed).set(playerInventory.player.getEnchantmentSeed());
-        this.addDataSlot(IntReferenceHolder.shared(this.enchantClue, 0));
-        this.addDataSlot(IntReferenceHolder.shared(this.enchantClue, 1));
-        this.addDataSlot(IntReferenceHolder.shared(this.enchantClue, 2));
-        this.addDataSlot(IntReferenceHolder.shared(this.worldClue, 0));
-        this.addDataSlot(IntReferenceHolder.shared(this.worldClue, 1));
-        this.addDataSlot(IntReferenceHolder.shared(this.worldClue, 2));
+        this.addDataSlot(DataSlot.shared(this.enchantClue, 0));
+        this.addDataSlot(DataSlot.shared(this.enchantClue, 1));
+        this.addDataSlot(DataSlot.shared(this.enchantClue, 2));
+        this.addDataSlot(DataSlot.shared(this.worldClue, 0));
+        this.addDataSlot(DataSlot.shared(this.worldClue, 1));
+        this.addDataSlot(DataSlot.shared(this.worldClue, 2));
     }
 
     private float getPower(Level world, BlockPos pos) {
@@ -123,9 +129,9 @@ public class SoulEnchanterContainer extends Container {
                     }
 
                     for(int j1 = 0; j1 < 3; ++j1) {
-                        List<EnchantmentData> list = getEnchantmentList(itemstack, j1);
+                        List<EnchantmentInstance> list = getEnchantmentList(itemstack, j1);
                         if (list != null && !list.isEmpty()) {
-                            EnchantmentData enchantmentdata = list.get(rand.nextInt(list.size()));
+                            EnchantmentInstance enchantmentdata = list.get(rand.nextInt(list.size()));
                             enchantClue[j1] = net.minecraft.core.Registry.ENCHANTMENT.getId(enchantmentdata.enchantment);
                             worldClue[j1] = enchantmentdata.level;
                         }
@@ -150,14 +156,14 @@ public class SoulEnchanterContainer extends Container {
         ItemStack itemstack = this.tableInventory.getItem(0);
         ItemStack itemstack1 = this.tableInventory.getItem(1);
         int i = id + 1;
-        if ((itemstack1.isEmpty() || itemstack1.getCount() < 1) && !playerIn.abilities.instabuild) {
+        if ((itemstack1.isEmpty() || itemstack1.getCount() < 1) && !playerIn.getAbilities().instabuild) {
             return false;
-        } else if (itemstack.isEmpty() || playerIn.experienceLevel < this.worldClue[id] && !playerIn.abilities.instabuild) {
+        } else if (itemstack.isEmpty() || playerIn.experienceLevel < this.worldClue[id] && !playerIn.getAbilities().instabuild) {
             return false;
         } else {
             this.worldPosCallable.execute((p_217003_6_, p_217003_7_) -> {
                 ItemStack itemstack2 = itemstack;
-                List<EnchantmentData> list = this.getEnchantmentList(itemstack, id);
+                List<EnchantmentInstance> list = this.getEnchantmentList(itemstack, id);
                 if (!list.isEmpty()) {
                     playerIn.onEnchantmentPerformed(itemstack, worldClue[id]);
                     boolean flag = itemstack.getItem() == Items.BOOK;
@@ -174,14 +180,14 @@ public class SoulEnchanterContainer extends Container {
                     Map<Enchantment, Integer> enchants = EnchantmentHelper.getEnchantments(itemstack2);
                     if (enchants.size() > 0) {
                         for (int j = 0; j < list.size(); ++ j) {
-                            EnchantmentData data = list.get(j);
+                            EnchantmentInstance data = list.get(j);
                             if (enchants.containsKey(data.enchantment)) enchants.replace(data.enchantment, data.level);
                             else enchants.put(data.enchantment, data.level);
                         }
                         EnchantmentHelper.setEnchantments(enchants, itemstack2);
                     }
                     else for(int j = 0; j < list.size(); ++j) {
-                        EnchantmentData data = list.get(j);
+                        EnchantmentInstance data = list.get(j);
                         if (flag) {
                             EnchantedBookItem.addEnchantment(itemstack2, data);
                         } else {
@@ -189,7 +195,7 @@ public class SoulEnchanterContainer extends Container {
                         }
                     }
 
-                    if (!playerIn.abilities.instabuild) {
+                    if (!playerIn.getAbilities().instabuild) {
                         itemstack1.shrink(1);
                         if (itemstack1.isEmpty()) {
                             this.tableInventory.setItem(1, ItemStack.EMPTY);
@@ -230,7 +236,7 @@ public class SoulEnchanterContainer extends Container {
         }
     }
 
-    private List<EnchantmentData> getEnchantmentList(ItemStack stack, int enchantSlot) {
+    private List<EnchantmentInstance> getEnchantmentList(ItemStack stack, int enchantSlot) {
         this.rand.setSeed((long)(this.xpSeed.get() + enchantSlot));
         ItemStack test = stack.copy();
         EnchantmentHelper.setEnchantments(new HashMap<>(), test);
@@ -256,14 +262,14 @@ public class SoulEnchanterContainer extends Container {
             }
         }
 
-        List<EnchantmentData> enchants = new ArrayList<>();
+        List<EnchantmentInstance> enchants = new ArrayList<>();
         if (valid.isEmpty()) return enchants;
         // System.out.println("" + enchantSlot + ": " + valid.stream().reduce("", (a, b) -> "" + a + ", " + b, (a, b) -> "" + a + ", " + b));
         for (int i = 0; i < enchantSlot; i ++) rand.nextInt(valid.size());
         Enchantment enchant = valid.get(this.rand.nextInt(valid.size()));
         int level = getEnchantmentLevel(enchant, stack);
-        if (level > 0) enchants.add(new EnchantmentData(enchant, level + 1));
-        else enchants.add(new EnchantmentData(enchant, 1));
+        if (level > 0) enchants.add(new EnchantmentInstance(enchant, level + 1));
+        else enchants.add(new EnchantmentInstance(enchant, 1));
 
         return enchants;
     }
@@ -282,16 +288,18 @@ public class SoulEnchanterContainer extends Container {
     /**
      * Called when the container is closed.
      */
+    @Override
     public void removed(Player playerIn) {
         super.removed(playerIn);
         this.worldPosCallable.execute((world, pos) -> {
-            this.clearContainer(playerIn, playerIn.level, this.tableInventory);
+            this.clearContainer(playerIn, this.tableInventory);
         });
     }
 
     /**
      * Determines whether supplied player can use this container
      */
+    @Override
     public boolean stillValid(Player playerIn) {
         return stillValid(this.worldPosCallable, playerIn, Registry.SOUL_ENCHANTER.get());
     }
@@ -300,6 +308,7 @@ public class SoulEnchanterContainer extends Container {
      * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
      * inventory and the other inventory(s).
      */
+    @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);

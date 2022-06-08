@@ -4,17 +4,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.block.IWaterLoggable;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.ticks.ScheduledTick;
 
-public class HorizontalWaterloggableBlock extends HorizontalBlockBase implements IWaterLoggable {
+public class HorizontalWaterloggableBlock extends HorizontalBlockBase implements SimpleWaterloggedBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public HorizontalWaterloggableBlock(Properties properties) {
@@ -32,9 +33,9 @@ public class HorizontalWaterloggableBlock extends HorizontalBlockBase implements
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, Level world, BlockPos pos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos pos, BlockPos facingPos) {
         if (state.getValue(WATERLOGGED)) {
-            world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+            world.getFluidTicks().schedule(ScheduledTick.probe(Fluids.WATER, pos));
         }
         return state;
     }

@@ -3,21 +3,22 @@ package elucent.eidolon.gui;
 import elucent.eidolon.recipe.WorktableRecipe;
 import elucent.eidolon.recipe.WorktableRegistry;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Container;
-import net.minecraft.inventory.IRecipeHolder;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.RecipeHolder;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraftforge.event.ForgeEventFactory;
 
 public class WorktableResultSlot extends Slot {
-    private final CraftingInventory core, extras;
+    private final CraftingContainer core, extras;
     private final Player player;
     private int amountCrafted;
 
-    public WorktableResultSlot(Player player, CraftingInventory core, CraftingInventory extras, Container inventory, int index, int x, int y) {
+    public WorktableResultSlot(Player player, CraftingContainer core, CraftingContainer extras, Container inventory, int index, int x, int y) {
         super(inventory, index, x, y);
         this.player = player;
         this.core = core;
@@ -44,6 +45,7 @@ public class WorktableResultSlot extends Slot {
         this.checkTakeAchievements(stack);
     }
 
+    @Override
     protected void onSwapCraft(int numItemsCrafted) {
         this.amountCrafted += numItemsCrafted;
     }
@@ -52,11 +54,11 @@ public class WorktableResultSlot extends Slot {
     protected void checkTakeAchievements(ItemStack stack) {
         if (this.amountCrafted > 0) {
             stack.onCraftedBy(this.player.level, this.player, this.amountCrafted);
-            net.minecraftforge.fml.hooks.BasicEventHooks.firePlayerCraftingEvent(this.player, stack, core);
+            ForgeEventFactory.firePlayerCraftingEvent(this.player, stack, core);
         }
 
-        if (this.container instanceof IRecipeHolder) {
-            ((IRecipeHolder)this.container).awardUsedRecipes(this.player);
+        if (this.container instanceof RecipeHolder) {
+            ((RecipeHolder)this.container).awardUsedRecipes(this.player);
         }
 
         player.playSound(SoundEvents.SMITHING_TABLE_USE, 1.0f, 1.0f);
@@ -65,7 +67,7 @@ public class WorktableResultSlot extends Slot {
     }
 
     @Override
-    public ItemStack onTake(Player thePlayer, ItemStack stack) {
+    public void onTake(Player thePlayer, ItemStack stack) {
         this.checkTakeAchievements(stack);
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(thePlayer);
         WorktableRecipe recipe = WorktableRegistry.find(thePlayer.level, core, extras);
@@ -97,12 +99,10 @@ public class WorktableResultSlot extends Slot {
                 } else if (ItemStack.isSame(item, remaining) && ItemStack.tagMatches(item, remaining)) {
                     // remaining.grow(item.getCount());
                     inv.setItem(index, remaining);
-                } else if (!this.player.inventory.add(remaining)) {
+                } else if (!this.player.getInventory().add(remaining)) {
                     this.player.drop(remaining, false);
                 }
             }
         }
-
-        return stack;
     }
 }

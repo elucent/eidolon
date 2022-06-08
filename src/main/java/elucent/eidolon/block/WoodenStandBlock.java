@@ -4,20 +4,20 @@ import elucent.eidolon.gui.WoodenBrewingStandContainer;
 import elucent.eidolon.tile.WoodenStandTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.block.BrewingStandBlock;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.stats.Stats;
+import net.minecraft.world.level.block.BrewingStandBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -28,8 +28,6 @@ import net.minecraftforge.network.NetworkHooks;
 
 import java.util.Random;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class WoodenStandBlock extends BrewingStandBlock {
     protected static final VoxelShape SHAPE = Shapes.or(Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D), Block.box(7.0D, 0.0D, 7.0D, 9.0D, 14.0D, 9.0D));
 
@@ -38,7 +36,7 @@ public class WoodenStandBlock extends BrewingStandBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockGetter worldIn) {
+    public BlockEntity newBlockEntity(BlockPos p_152698_, BlockState p_152699_) {
         return new WoodenStandTileEntity();
     }
 
@@ -54,7 +52,7 @@ public class WoodenStandBlock extends BrewingStandBlock {
         } else {
             BlockEntity tileentity = worldIn.getBlockEntity(pos);
             if (tileentity instanceof WoodenStandTileEntity) {
-                NetworkHooks.openGui((ServerPlayer)player, new SimpleNamedContainerProvider((id, inventory, p) -> {
+                NetworkHooks.openGui((ServerPlayer)player, new SimpleMenuProvider((id, inventory, p) -> {
                     return new WoodenBrewingStandContainer(id, inventory, ((WoodenStandTileEntity)tileentity), ((WoodenStandTileEntity)tileentity).dataAccess);
                 }, ((WoodenStandTileEntity)tileentity).getDisplayName()), pos);
                 player.awardStat(Stats.INTERACT_WITH_BREWINGSTAND);
@@ -85,7 +83,7 @@ public class WoodenStandBlock extends BrewingStandBlock {
         if (!state.is(newState.getBlock())) {
             BlockEntity tileentity = worldIn.getBlockEntity(pos);
             if (tileentity instanceof WoodenStandTileEntity) {
-                InventoryHelper.dropContents(worldIn, pos, (WoodenStandTileEntity)tileentity);
+                Containers.dropContents(worldIn, pos, (WoodenStandTileEntity)tileentity);
             }
 
             super.onRemove(state, worldIn, pos, newState, isMoving);

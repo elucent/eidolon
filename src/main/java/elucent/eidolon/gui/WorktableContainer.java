@@ -3,36 +3,40 @@ package elucent.eidolon.gui;
 import elucent.eidolon.Registry;
 import elucent.eidolon.recipe.WorktableRecipe;
 import elucent.eidolon.recipe.WorktableRegistry;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.world.Container;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.network.play.server.SSetSlotPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Optional;
 
-public class WorktableContainer extends Container {
-    CraftingInventory core = new CraftingInventory(this, 3, 3), extras = new CraftingInventory(this, 2, 2);
-    CraftResultInventory result = new CraftResultInventory();
+public class WorktableContainer extends AbstractContainerMenu {
+    CraftingContainer core = new CraftingContainer(this, 3, 3),
+            extras = new CraftingContainer(this, 2, 2);
+    ResultContainer result = new ResultContainer();
     Player player;
-    IWorldPosCallable callable;
+    ContainerLevelAccess callable;
 
     public WorktableContainer(int id, Inventory inventory) {
-        this(id, inventory, IWorldPosCallable.NULL);
+        this(id, inventory, ContainerLevelAccess.NULL);
     }
 
-    public WorktableContainer(int id, Inventory inventory, IWorldPosCallable callable) {
+    public WorktableContainer(int id, Inventory inventory, ContainerLevelAccess callable) {
         super(Registry.WORKTABLE_CONTAINER.get(), id);
         this.player = inventory.player;
         this.callable = callable;

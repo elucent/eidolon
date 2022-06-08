@@ -1,16 +1,12 @@
 package elucent.eidolon.capability;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class KnowledgeProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {
-    @CapabilityInject(IKnowledge.class)
-    public static Capability<IKnowledge> CAPABILITY = null;
+    public static Capability<IKnowledge> CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 
     IKnowledge instance = new KnowledgeImpl();
 

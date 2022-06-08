@@ -2,34 +2,34 @@ package elucent.eidolon.gui;
 
 import elucent.eidolon.Registry;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.IntArray;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.ForgeEventFactory;
 
-public class WoodenBrewingStandContainer extends Container {
+public class WoodenBrewingStandContainer extends AbstractContainerMenu {
     private final Container tileBrewingStand;
-    private final IIntArray intArray;
+    private final ContainerData intArray;
     private final Slot slot;
 
     public WoodenBrewingStandContainer(int id, Inventory playerInventory) {
-        this(id, playerInventory, new Inventory(4), new IntArray(2));
+        this(id, playerInventory, new SimpleContainer(4), new SimpleContainerData(2));
     }
 
-    public WoodenBrewingStandContainer(int id, Inventory playerInventory, Container inventory, IIntArray p_i50096_4_) {
+    public WoodenBrewingStandContainer(int id, Inventory playerInventory, Container inventory, ContainerData p_i50096_4_) {
         super(Registry.WOODEN_STAND_CONTAINER.get(), id);
         checkContainerSize(inventory, 4);
         checkContainerDataCount(p_i50096_4_, 2);
@@ -121,12 +121,14 @@ public class WoodenBrewingStandContainer extends Container {
             super(iInventoryIn, index, xPosition, yPosition);
         }
 
+        @Override
         public boolean mayPlace(ItemStack stack) {
             return BrewingRecipeRegistry.isValidIngredient(stack)
-                && !Tags.Items.DUSTS_REDSTONE.contains(stack.getItem())
-                && !Tags.Items.DUSTS_GLOWSTONE.contains(stack.getItem());
+                && stack.is(Tags.Items.DUSTS_REDSTONE)
+                && stack.is(Tags.Items.DUSTS_GLOWSTONE);
         }
 
+        @Override
         public int getMaxStackSize() {
             return 64;
         }
@@ -137,15 +139,18 @@ public class WoodenBrewingStandContainer extends Container {
             super(p_i47598_1_, p_i47598_2_, p_i47598_3_, p_i47598_4_);
         }
 
+        @Override
         public boolean mayPlace(ItemStack stack) {
             return canHoldPotion(stack);
         }
 
+        @Override
         public int getMaxStackSize() {
             return 1;
         }
 
-        public ItemStack onTake(Player thePlayer, ItemStack stack) {
+        @Override
+        public void onTake(Player thePlayer, ItemStack stack) {
             Potion potion = PotionUtils.getPotion(stack);
             if (thePlayer instanceof ServerPlayer) {
                 ForgeEventFactory.onPlayerBrewedPotion(thePlayer, stack);
@@ -153,7 +158,6 @@ public class WoodenBrewingStandContainer extends Container {
             }
 
             super.onTake(thePlayer, stack);
-            return stack;
         }
 
         public static boolean canHoldPotion(ItemStack stack) {
