@@ -2,9 +2,9 @@ package elucent.eidolon.particle;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleType;
 
 public class FlameParticleType extends ParticleType<GenericParticleData> {
@@ -17,10 +17,10 @@ public class FlameParticleType extends ParticleType<GenericParticleData> {
         return GenericParticleData.codecFor(this);
     }
 
-    public static class Factory implements IParticleFactory<GenericParticleData> {
-        private final IAnimatedSprite sprite;
+    public static class Factory implements ParticleProvider<GenericParticleData> {
+        private final SpriteSet sprite;
 
-        public Factory(IAnimatedSprite sprite) {
+        public Factory(SpriteSet sprite) {
             this.sprite = sprite;
         }
 

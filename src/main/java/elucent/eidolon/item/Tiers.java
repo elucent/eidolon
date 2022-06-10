@@ -1,12 +1,12 @@
 package elucent.eidolon.item;
 
 import elucent.eidolon.Registry;
-import net.minecraft.item.IItemTier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class Tiers {
-    public static class PewterTier implements IItemTier {
+    public static class PewterTier implements Tier {
         @Override
         public int getUses() {
             return 325;
@@ -40,7 +40,7 @@ public class Tiers {
         public static PewterTier INSTANCE = new PewterTier();
     }
 
-    public static class MagicToolTier implements IItemTier {
+    public static class MagicToolTier implements Tier {
         @Override
         public int getUses() {
             return 1170;
@@ -74,7 +74,7 @@ public class Tiers {
         public static MagicToolTier INSTANCE = new MagicToolTier();
     }
 
-    public static class SanguineTier implements IItemTier {
+    public static class SanguineTier implements Tier {
         @Override
         public int getUses() {
             return 507;

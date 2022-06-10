@@ -1,14 +1,14 @@
 package elucent.eidolon.network;
 
 import elucent.eidolon.Eidolon;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.particles.BlockParticleData;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -43,7 +43,7 @@ public class ChilledEffectPacket {
                 world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.0f, 1.0f);
                 for (int i = 0; i < 5; i ++) {
                     world.addParticle(
-                        new BlockParticleData(ParticleTypes.BLOCK, Blocks.ICE.defaultBlockState()),
+                        new BlockParticleOption(ParticleTypes.BLOCK, Blocks.ICE.defaultBlockState()),
                         packet.x, packet.y, packet.z,
                         0.05f * world.random.nextGaussian(), 0.05f * world.random.nextGaussian(), 0.05f * world.random.nextGaussian()
                     );

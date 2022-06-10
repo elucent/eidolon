@@ -1,27 +1,24 @@
 package elucent.eidolon.recipe;
 
-import com.google.gson.JsonObject;
 import elucent.eidolon.recipe.recipeobj.RecipeObject;
 import elucent.eidolon.recipe.recipeobj.RecipeObjectType;
 import net.minecraft.core.NonNullList;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class WorktableRecipe extends ForgeRegistryEntry<WorktableRecipe> implements ICraftingRecipe, FinishedRecipe {
+public class WorktableRecipe extends ForgeRegistryEntry<WorktableRecipe> implements CraftingRecipe {
     RecipeCore core;
     RecipeExtras extras;
     ItemStack result;
@@ -116,12 +113,12 @@ public class WorktableRecipe extends ForgeRegistryEntry<WorktableRecipe> impleme
     }
 
     @Override
-    public boolean matches(CraftingInventory inv, Level worldIn) {
+    public boolean matches(CraftingContainer inv, Level worldIn) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         return result.copy();
     }
 
@@ -136,30 +133,8 @@ public class WorktableRecipe extends ForgeRegistryEntry<WorktableRecipe> impleme
     }
 
     @Override
-    public void serializeRecipeData(JsonObject json) {
-        RecipeHandler.WORKTABLE_SERIALIZER.write(json, this);
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return getId();
-    }
-
-    @Override
     public RecipeSerializer<?> getSerializer() {
         return RecipeHandler.WORKTABLE_SERIALIZER;
-    }
-
-    @Nullable
-    @Override
-    public JsonObject serializeAdvancement() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public ResourceLocation getAdvancementId() {
-        return null;
     }
 
     @Override

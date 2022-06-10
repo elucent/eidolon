@@ -1,15 +1,16 @@
 package elucent.eidolon.codex;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.spell.KnowledgeUtil;
 import elucent.eidolon.spell.Sign;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -81,7 +82,7 @@ public class IndexPage extends Page {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void render(CodexGui gui, PoseStack mStack, int x, int y, int mouseX, int mouseY) {
-        Minecraft.getInstance().getTextureManager().bind(BACKGROUND);
+        RenderSystem.setShaderTexture(0, BACKGROUND);
         for (int i = 0; i < entries.length; i ++) {
             gui.blit(mStack, x + 1, y + 7 + i * 20, 128, entries[i].isUnlocked() ? 0 : 96, 122, 18);
         }

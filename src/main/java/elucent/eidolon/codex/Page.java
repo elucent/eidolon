@@ -1,5 +1,6 @@
 package elucent.eidolon.codex;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import elucent.eidolon.util.ColorUtil;
 import net.minecraft.client.Minecraft;
@@ -65,7 +66,7 @@ public abstract class Page {
 
     @OnlyIn(Dist.CLIENT)
     public void fullRender(CodexGui gui, PoseStack mStack, int x, int y, int mouseX, int mouseY) {
-        Minecraft.getInstance().getTextureManager().bind(bg);
+        RenderSystem.setShaderTexture(0, bg);
         renderBackground(gui, mStack, x, y, mouseX, mouseY);
         render(gui, mStack, x, y, mouseX, mouseY);
         renderIngredients(gui, mStack, x, y, mouseX, mouseY);
@@ -73,7 +74,7 @@ public abstract class Page {
 
     @OnlyIn(Dist.CLIENT)
     public void renderBackground(CodexGui gui, PoseStack mStack, int x, int y, int mouseX, int mouseY) {
-        Minecraft.getInstance().getTextureManager().bind(bg);
+        RenderSystem.setShaderTexture(0, bg);
         gui.blit(mStack, x, y, 0, 0, 128, 160);
     }
 

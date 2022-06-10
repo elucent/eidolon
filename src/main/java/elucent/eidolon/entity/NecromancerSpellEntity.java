@@ -5,19 +5,19 @@ import elucent.eidolon.network.MagicBurstEffectPacket;
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.particle.Particles;
 import elucent.eidolon.util.ColorUtil;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.util.IndirectEntityDamageSource;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
 
 public class NecromancerSpellEntity extends SpellProjectileEntity {
     public static final EntityDataAccessor<Integer> DELAY = SynchedEntityData.<Integer>defineId(NecromancerSpellEntity.class, EntityDataSerializers.INT);

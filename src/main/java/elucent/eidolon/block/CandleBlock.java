@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -34,17 +36,18 @@ public class CandleBlock extends BlockBase {
     }
 
     @Override
-    public boolean canSurvive(BlockState state, BlockGetter worldIn, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
         BlockPos blockpos = pos.relative(Direction.DOWN);
         BlockState blockstate = worldIn.getBlockState(blockpos);
         return blockstate.isFaceSturdy(worldIn, blockpos, Direction.UP);
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, Level worldIn, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
         return facing == Direction.DOWN && !this.canSurvive(state, worldIn, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, facing, facingState, worldIn, currentPos, facingPos);
     }
 
+    @Override
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, Level worldIn, BlockPos pos, Random rand) {
         double d0 = (double) pos.getX() + 0.5D;

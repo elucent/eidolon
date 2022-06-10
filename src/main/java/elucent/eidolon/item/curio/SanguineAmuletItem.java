@@ -1,17 +1,17 @@
 package elucent.eidolon.item.curio;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import elucent.eidolon.Registry;
 import elucent.eidolon.item.ItemBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.entity.item.EnderPearlEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
@@ -66,7 +66,7 @@ public class SanguineAmuletItem extends ItemBase {
                             Math.min(4 * player.getFoodData().getSaturationLevel(), 16.0F) : 4.0f;
                         player.causeFoodExhaustion(f);
                         addCharge(stack, 1);
-                        EnderPearlEntity e;
+                        // EnderPearlEntity e;
                     }
                     if (entity.tickCount % 10 == 0 &&
                         getCharge(stack) > 0 && entity.getHealth() < entity.getMaxHealth()) {
@@ -82,6 +82,7 @@ public class SanguineAmuletItem extends ItemBase {
                 return true;
             }
 
+            @Override
             @Nonnull
             public CompoundTag writeSyncData() {
                 CompoundTag nbt = new CompoundTag();
@@ -89,6 +90,7 @@ public class SanguineAmuletItem extends ItemBase {
                 return nbt;
             }
 
+            @Override
             public void readSyncData(CompoundTag compound) {
                 setCharge(stack, compound.getInt("charge"));
             }
@@ -114,19 +116,20 @@ public class SanguineAmuletItem extends ItemBase {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public static void renderTooltip(RenderTooltipEvent.PostText event) {
-        ItemStack stack = event.getStack();
+    public static void renderTooltip(RenderTooltipEvent.Color event) {
+        ItemStack stack = event.getItemStack();
         if (stack.getItem() == Registry.SANGUINE_AMULET.get()) {
             Minecraft mc = Minecraft.getInstance();
-            mc.getTextureManager().bind(new ResourceLocation("minecraft", "textures/gui/icons.png"));
-            int charge = getCharge(event.getStack());
+            RenderSystem.setShaderTexture(0, new ResourceLocation("minecraft", "textures/gui/icons.png"));
+            int charge = getCharge(event.getItemStack());
             int rows = (charge + 19) / 20;
             for (int i = 0; i < charge; i += 20) {
                 for (int j = 0; j < Mth.clamp(charge - i, 0, 20); j += 2) {
                     if (charge - (i + j) == 1) {
-                        AbstractGui.blit(event.getMatrixStack(), event.getX() - 1 + j / 2 * 8, event.getY() + (event.getLines().size() - rows) * (event.getFontRenderer().lineHeight + 1) + (i / 20) * 9 + 2, 61, 0, 9, 9, 256, 256);
-                    } else
-                        AbstractGui.blit(event.getMatrixStack(), event.getX() - 1 + j / 2 * 8, event.getY() + (event.getLines().size() - rows) * (event.getFontRenderer().lineHeight + 1) + (i / 20) * 9 + 2, 52, 0, 9, 9, 256, 256);
+                        GuiComponent.blit(event.getPoseStack(), event.getX() - 1 + j / 2 * 8, event.getY() + (event.getComponents().size() - rows) * (event.getFont().lineHeight + 1) + (i / 20) * 9 + 2, 61, 0, 9, 9, 256, 256);
+                    } else {
+                        GuiComponent.blit(event.getPoseStack(), event.getX() - 1 + j / 2 * 8, event.getY() + (event.getComponents().size() - rows) * (event.getFont().lineHeight + 1) + (i / 20) * 9 + 2, 52, 0, 9, 9, 256, 256);
+                    }
                 }
             }
         }

@@ -2,10 +2,10 @@ package elucent.eidolon.recipe.recipeobj;
 
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 public class RecipeBlock extends RecipeObject<Block> {
     public RecipeBlock(Block obj) {
@@ -24,7 +24,7 @@ public class RecipeBlock extends RecipeObject<Block> {
 
     @Override
     public JsonObject toJson() {
-        return new Ingredient.SingleItemList(new ItemStack(obj)).serialize();
+        return new Ingredient.ItemValue(new ItemStack(obj)).serialize();
     }
 
     @Override

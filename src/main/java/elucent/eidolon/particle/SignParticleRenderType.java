@@ -1,6 +1,7 @@
 package elucent.eidolon.particle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -16,16 +17,16 @@ public class SignParticleRenderType extends SpriteParticleRenderType {
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-        RenderSystem.alphaFunc(GL11.GL_GEQUAL, 0.00390625f);
+        // RenderSystem.alphaFunc(GL11.GL_GEQUAL, 0.00390625f);
 
-        textureManager.bind(TextureAtlas.LOCATION_BLOCKS);
-        bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormat.PARTICLE);
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
     }
 
     private static void endRenderCommon() {
         Minecraft.getInstance().textureManager.getTexture(TextureAtlas.LOCATION_BLOCKS).restoreLastBlurMipmap();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.defaultAlphaFunc();
+        // RenderSystem.enableAlphaTest();
+        // RenderSystem.defaultAlphaFunc();
         RenderSystem.depthMask(true);
     }
 

@@ -24,4 +24,9 @@ public class EidolonCurio implements ICurio, ICapabilityProvider {
     public <ICurio> LazyOptional<ICurio> getCapability(Capability<ICurio> cap, Direction side) {
         return getCapability(cap);
     }
+
+    @Override
+    public ItemStack getStack() {
+        return stack;
+    }
 }

@@ -1,26 +1,22 @@
 package elucent.eidolon.entity;
 
-import net.minecraft.entity.CreatureAttribute;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.item.BoatEntity;
-import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.level.Level;
 
 public class ZombieBruteEntity extends Monster {
     public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, Level worldIn) {
@@ -29,8 +25,8 @@ public class ZombieBruteEntity extends Monster {
     }
 
     @Override
-    public CreatureAttribute getMobType() {
-        return CreatureAttribute.UNDEAD;
+    public MobType getMobType() {
+        return MobType.UNDEAD;
     }
 
     @Override
@@ -38,8 +34,9 @@ public class ZombieBruteEntity extends Monster {
         return true;
     }
 
+    @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new RandomSwimmingGoal(this));
+        this.goalSelector.addGoal(0, new RandomSwimmingGoal(this, 1, 10));
         this.applyEntityAI();
     }
 
@@ -57,9 +54,9 @@ public class ZombieBruteEntity extends Monster {
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, false));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, false));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
     }
 
@@ -72,7 +69,7 @@ public class ZombieBruteEntity extends Monster {
     public void aiStep() {
         if (this.level.isDay() && !this.level.isClientSide) {
             float f = this.getBrightness();
-            BlockPos blockpos = this.getVehicle() instanceof BoatEntity ? (new BlockPos(this.getX(), (double) Math.round(this.getY()), this.getZ())).above() : new BlockPos(this.getX(), (double) Math.round(this.getY()), this.getZ());
+            BlockPos blockpos = this.getVehicle() instanceof Boat ? (new BlockPos(this.getX(), (double) Math.round(this.getY()), this.getZ())).above() : new BlockPos(this.getX(), (double) Math.round(this.getY()), this.getZ());
             if (f > 0.5F && this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && this.level.canSeeSky(blockpos)) {
                 this.setSecondsOnFire(8);
             }

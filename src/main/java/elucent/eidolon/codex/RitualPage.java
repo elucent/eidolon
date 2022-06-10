@@ -1,8 +1,8 @@
 package elucent.eidolon.codex;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.ritual.Ritual;
@@ -14,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
 
 public class RitualPage extends Page {
     public static final ResourceLocation BACKGROUND = new ResourceLocation(Eidolon.MODID, "textures/gui/codex_ritual_page.png");
@@ -53,8 +52,8 @@ public class RitualPage extends Page {
         }
 
         RenderSystem.enableBlend();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.alphaFunc(GL11.GL_GEQUAL, 1f / 256f);
+        // todo RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        // todo RenderSystem.alphaFunc(GL11.GL_GEQUAL, 1f / 256f);
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
         Tesselator tess = Tesselator.getInstance();
         RenderSystem.disableTexture();
@@ -62,15 +61,15 @@ public class RitualPage extends Page {
         RenderUtil.dragon(mStack, MultiBufferSource.immediate(tess.getBuilder()), x + 64, y + 48, 20, 20, ritual.getRed(), ritual.getGreen(), ritual.getBlue());
         tess.end();
         RenderSystem.enableTexture();
-        Minecraft.getInstance().getTextureManager().bind(TextureAtlas.LOCATION_BLOCKS);
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
         for (int j = 0; j < 2; j++) {
             RenderUtil.litQuad(mStack, MultiBufferSource.immediate(tess.getBuilder()), x + 52, y + 36, 24, 24,
                 ritual.getRed(), ritual.getGreen(), ritual.getBlue(), Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ritual.getSymbol()));
             tess.end();
         }
-        RenderSystem.defaultAlphaFunc();
+        // todo RenderSystem.defaultAlphaFunc();
         RenderSystem.disableBlend();
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        // todo RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.depthMask(true);
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }

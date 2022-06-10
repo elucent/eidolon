@@ -1,17 +1,13 @@
 package elucent.eidolon.codex;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import elucent.eidolon.util.ColorUtil;
 import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.Mth;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 
 public class Category {
     ItemStack icon;
@@ -40,14 +36,14 @@ public class Category {
             g = ColorUtil.getGreen(color),
             b = ColorUtil.getBlue(color);
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        bufferbuilder.begin(7, DefaultVertexFormat.POSITION_TEX_COLOR);
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         bufferbuilder.vertex(matrix, (float)x, (float)maxY, 0).uv(minU, maxV).color(r, g, b, 255).endVertex();
         bufferbuilder.vertex(matrix, (float)maxX, (float)maxY, 0).uv(maxU, maxV).color(r, g, b, 255).endVertex();
         bufferbuilder.vertex(matrix, (float)maxX, (float)y, 0).uv(maxU, minV).color(r, g, b, 255).endVertex();
         bufferbuilder.vertex(matrix, (float)x, (float)y, 0).uv(minU, minV).color(r, g, b, 255).endVertex();
         bufferbuilder.end();
-        RenderSystem.enableAlphaTest();
-        WorldVertexBufferUploader.end(bufferbuilder);
+        // todo RenderSystem.enableAlphaTest();
+        BufferUploader.end(bufferbuilder);
     }
 
     public boolean click(CodexGui gui, int x, int y, boolean right, int mouseX, int mouseY) {
@@ -82,7 +78,7 @@ public class Category {
             x += hoveramount * 12;
         }
 
-        Minecraft.getInstance().getTextureManager().bind(CodexGui.CODEX_BACKGROUND);
+        RenderSystem.setShaderTexture(0, CodexGui.CODEX_BACKGROUND);
         colorBlit(mStack, x, y, 208, right ? 208 : 227, 48, 19, 512, 512, color);
         Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(icon, x + (right ? 23 : 9), y + 1);
     }

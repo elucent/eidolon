@@ -7,42 +7,36 @@ import elucent.eidolon.ritual.Ritual;
 import elucent.eidolon.ritual.Ritual.RitualResult;
 import elucent.eidolon.ritual.Ritual.SetupResult;
 import elucent.eidolon.ritual.RitualRegistry;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 
-public class BrazierTileEntity extends TileEntityBase implements ITickableTileEntity {
-    ItemStack stack = ItemStack.EMPTY;
+public class BrazierTileEntity extends TileEntityBase implements TickBlockEntity {
+    public ItemStack stack = ItemStack.EMPTY;
     boolean burning = false;
     int findingCounter = 0;
     int stepCounter = 0;
-    Ritual ritual = null;
+    public Ritual ritual = null;
     int step = 0;
     boolean ritualDone = false;
 
-    public BrazierTileEntity() {
-        this(Registry.BRAZIER_TILE_ENTITY);
-    }
-
-    public BrazierTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public BrazierTileEntity(BlockPos pos, BlockState state) {
+        super(Registry.BRAZIER_TILE_ENTITY.get(), pos, state);
     }
 
     @Override
     public void onDestroyed(BlockState state, BlockPos pos) {
         super.onDestroyed(state, pos);
-        if (!stack.isEmpty()) InventoryHelper.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
+        if (!stack.isEmpty()) Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
     }
 
     @Override
@@ -79,8 +73,8 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
     }
 
     @Override
-    public void load(BlockState state, CompoundTag tag) {
-        super.load(state, tag);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         stack = ItemStack.of(tag.getCompound("stack"));
         burning = tag.getBoolean("burning");
         ritual = tag.contains("ritual") ? RitualRegistry.find(new ResourceLocation(tag.getString("ritual"))) : null;
@@ -89,14 +83,13 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        tag = super.save(tag);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         tag.put("stack", stack.save(new CompoundTag()));
         tag.putBoolean("burning", burning);
         if (ritual != null) tag.putString("ritual", ritual.getRegistryName().toString());
         tag.putInt("step", step);
         tag.putBoolean("ritualDone", ritualDone);
-        return tag;
     }
 
     protected void complete() {

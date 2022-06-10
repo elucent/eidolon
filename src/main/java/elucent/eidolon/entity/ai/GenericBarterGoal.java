@@ -60,7 +60,7 @@ public class GenericBarterGoal<E extends PathfinderMob> extends Goal {
             if (nearest.distanceToSqr(entity) < 2.25) {
                 progress = 100;
                 entity.setItemInHand(InteractionHand.MAIN_HAND, nearest.getItem());
-                nearest.remove();
+                nearest.discard();
                 entity.level.playSound(null, entity.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.HOSTILE, 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             }
             entity.getNavigation().moveTo(nearest.getX(), nearest.getY(), nearest.getZ(), 1.0f);

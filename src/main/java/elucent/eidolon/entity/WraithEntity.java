@@ -2,27 +2,27 @@ package elucent.eidolon.entity;
 
 import elucent.eidolon.Registry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.item.BoatEntity;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.Vec3;
 
 public class WraithEntity extends Monster {
     public WraithEntity(EntityType<WraithEntity> type, Level worldIn) {
@@ -31,8 +31,8 @@ public class WraithEntity extends Monster {
     }
 
     @Override
-    public CreatureAttribute getMobType() {
-        return CreatureAttribute.UNDEAD;
+    public MobType getMobType() {
+        return MobType.UNDEAD;
     }
 
     @Override
@@ -50,8 +50,9 @@ public class WraithEntity extends Monster {
         return flag;
     }
 
+    @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new RandomSwimmingGoal(this));
+        this.goalSelector.addGoal(0, new RandomSwimmingGoal(this, 1, 10));
         this.applyEntityAI();
     }
 
@@ -66,7 +67,7 @@ public class WraithEntity extends Monster {
 
     protected void applyEntityAI() {
         this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.5D, false));
-        this.goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
@@ -80,7 +81,7 @@ public class WraithEntity extends Monster {
     public void aiStep() {
         if (this.level.isDay() && !this.level.isClientSide) {
             float f = this.getBrightness();
-            BlockPos blockpos = this.getVehicle() instanceof BoatEntity ? (new BlockPos(this.getX(), (double) Math.round(this.getY()), this.getZ())).above() : new BlockPos(this.getX(), (double) Math.round(this.getY()), this.getZ());
+            BlockPos blockpos = this.getVehicle() instanceof Boat ? (new BlockPos(this.getX(), (double) Math.round(this.getY()), this.getZ())).above() : new BlockPos(this.getX(), (double) Math.round(this.getY()), this.getZ());
             if (f > 0.5F && this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && this.level.canSeeSky(blockpos)) {
                 this.setSecondsOnFire(8);
             }

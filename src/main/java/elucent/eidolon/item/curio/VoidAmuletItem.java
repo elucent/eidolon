@@ -5,11 +5,11 @@ import elucent.eidolon.entity.SpellProjectileEntity;
 import elucent.eidolon.item.ItemBase;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.entity.projectile.*;
+import net.minecraft.world.entity.projectile.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -66,11 +66,11 @@ public class VoidAmuletItem extends ItemBase {
                 }
                 ItemStack stack = slots.getStackInSlot(i);
                 if (hasVoid &&
-                    (event.getSource().getDirectEntity() instanceof FireballEntity
-                        || event.getSource().getDirectEntity() instanceof LlamaSpitEntity
-                        || event.getSource().getDirectEntity() instanceof SmallFireballEntity
-                        || event.getSource().getDirectEntity() instanceof ShulkerBulletEntity
-                        || event.getSource().getDirectEntity() instanceof PotionEntity
+                    (event.getSource().getDirectEntity() instanceof Fireball
+                        || event.getSource().getDirectEntity() instanceof LlamaSpit
+                        || event.getSource().getDirectEntity() instanceof SmallFireball
+                        || event.getSource().getDirectEntity() instanceof ShulkerBullet
+                        || event.getSource().getDirectEntity() instanceof ThrownPotion
                         || event.getSource().getDirectEntity() instanceof SpellProjectileEntity)) {
                     event.setCanceled(true);
                     if (!event.getEntity().getCommandSenderWorld().isClientSide) {

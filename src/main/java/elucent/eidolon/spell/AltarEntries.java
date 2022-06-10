@@ -1,9 +1,9 @@
 package elucent.eidolon.spell;
 
 import elucent.eidolon.Registry;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.block.SkullBlock;
+import net.minecraft.world.level.block.SkullBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.HashMap;

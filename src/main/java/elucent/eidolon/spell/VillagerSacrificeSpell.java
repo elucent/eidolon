@@ -11,14 +11,14 @@ import elucent.eidolon.tile.EffigyTileEntity;
 import elucent.eidolon.tile.GobletTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.phys.AABB;
 
 import java.util.Comparator;
@@ -46,7 +46,7 @@ public class VillagerSacrificeSpell extends StaticSpell {
         AltarInfo info = AltarInfo.getAltarInfo(world, effigy.getBlockPos());
         if (info.getAltar() != Registry.STONE_ALTAR.get() || info.getIcon() != Registry.UNHOLY_EFFIGY.get()) return false;
         Entity test = goblet.getEntityType().create(world);
-        return (test instanceof AbstractVillagerEntity || test instanceof Player) && effigy.ready();
+        return (test instanceof AbstractVillager || test instanceof Player) && effigy.ready();
     }
 
     @Override

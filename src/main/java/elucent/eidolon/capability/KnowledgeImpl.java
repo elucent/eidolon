@@ -1,6 +1,11 @@
 package elucent.eidolon.capability;
 
 import elucent.eidolon.spell.Sign;
+import elucent.eidolon.spell.Signs;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashSet;
@@ -38,5 +43,43 @@ public class KnowledgeImpl implements IKnowledge {
     @Override
     public Set<ResourceLocation> getKnownFacts() {
         return facts;
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        ListTag signs = new ListTag();
+        for (Sign s : getKnownSigns()) {
+            signs.add(StringTag.valueOf(s.getRegistryName().toString()));
+        }
+        ListTag facts = new ListTag();
+        for (ResourceLocation s : getKnownFacts()) {
+            facts.add(StringTag.valueOf(s.toString()));
+        }
+        CompoundTag wrapper = new CompoundTag();
+        wrapper.put("signs", signs);
+        wrapper.put("facts", facts);
+        return wrapper;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        getKnownSigns().clear();
+        getKnownFacts().clear();
+
+        if (nbt.contains("signs")) {
+            ListTag signs = nbt.getList("signs", Tag.TAG_STRING);
+            for (int i = 0; i < signs.size(); i++) {
+                ResourceLocation loc = new ResourceLocation(signs.getString(i));
+                Sign s = Signs.find(loc);
+                if (s != null) addSign(s);
+            }
+        }
+
+        if (nbt.contains("facts")) {
+            ListTag facts = nbt.getList("facts", Tag.TAG_STRING);
+            for (int i = 0; i < facts.size(); i++) {
+                addFact(new ResourceLocation(facts.getString(i)));
+            }
+        }
     }
 }

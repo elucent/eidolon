@@ -3,11 +3,11 @@ package elucent.eidolon.ritual;
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.network.RitualConsumePacket;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class ItemRequirement implements IRequirement {
         this.match = Item.byBlock(block);
     }
 
-    public ItemRequirement(Tag<Item> item) {
+    public ItemRequirement(TagKey<Item> item) {
         this.match = item;
     }
 
@@ -41,10 +41,10 @@ public class ItemRequirement implements IRequirement {
             if (match instanceof ItemStack && ItemStack.matches((ItemStack)match, stack)) {
                 return new RequirementInfo(true, ((BlockEntity)tiles.get(i)).getBlockPos());
             }
-            else if (match instanceof Item && stack.getItem() == (Item)match) {
+            else if (match instanceof Item && stack.getItem() == match) {
                 return new RequirementInfo(true, ((BlockEntity)tiles.get(i)).getBlockPos());
             }
-            else if (match instanceof Tag && ((Tag<Item>)match).contains(stack.getItem())) {
+            else if (match instanceof TagKey && stack.is((TagKey<Item>) match)) {
                 return new RequirementInfo(true, ((BlockEntity)tiles.get(i)).getBlockPos());
             }
         }
@@ -52,6 +52,7 @@ public class ItemRequirement implements IRequirement {
         return RequirementInfo.FALSE;
     }
 
+    @Override
     public void whenMet(Ritual ritual, Level world, BlockPos pos, RequirementInfo info) {
         ((IRitualItemProvider)world.getBlockEntity(info.getPos())).take();
         if (!world.isClientSide) {

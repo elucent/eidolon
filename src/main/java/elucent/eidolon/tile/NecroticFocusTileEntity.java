@@ -4,28 +4,23 @@ import elucent.eidolon.Registry;
 import elucent.eidolon.ritual.IRitualItemFocus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.inventory.InventoryHelper;
 
 public class NecroticFocusTileEntity extends TileEntityBase implements IRitualItemFocus {
-    ItemStack stack = ItemStack.EMPTY;
+    public ItemStack stack = ItemStack.EMPTY;
 
-    public NecroticFocusTileEntity() {
-        this(Registry.NECROTIC_FOCUS_TILE_ENTITY);
-    }
-
-    public NecroticFocusTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public NecroticFocusTileEntity(BlockPos pos, BlockState state) {
+        super(Registry.NECROTIC_FOCUS_TILE_ENTITY.get(), pos, state);
     }
 
     @Override
     public void onDestroyed(BlockState state, BlockPos pos) {
-        if (!stack.isEmpty()) InventoryHelper.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
+        if (!stack.isEmpty()) Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
     }
 
     @Override
@@ -50,16 +45,15 @@ public class NecroticFocusTileEntity extends TileEntityBase implements IRitualIt
     }
 
     @Override
-    public void load(BlockState state, CompoundTag tag) {
-        super.load(state, tag);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         stack = ItemStack.of(tag.getCompound("stack"));
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        tag = super.save(tag);
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         tag.put("stack", stack.save(new CompoundTag()));
-        return tag;
     }
 
     @Override

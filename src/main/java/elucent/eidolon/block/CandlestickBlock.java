@@ -3,19 +3,21 @@ package elucent.eidolon.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,7 +54,7 @@ public class CandlestickBlock extends BlockBase {
     }
 
     @Override
-    public boolean canSurvive(BlockState state, BlockGetter worldIn, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
         Direction direction = state.getValue(FACING);
         BlockPos blockpos = pos.relative(direction.getOpposite());
         BlockState blockstate = worldIn.getBlockState(blockpos);
@@ -60,7 +62,7 @@ public class CandlestickBlock extends BlockBase {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, Level worldIn, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
         Direction direction = state.getValue(FACING);
         if (direction == Direction.UP) return facing == Direction.DOWN && !this.canSurvive(state, worldIn, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, facing, facingState, worldIn, currentPos, facingPos);
         else return facing.getOpposite() == state.getValue(FACING) && !state.canSurvive(worldIn, currentPos) ? Blocks.AIR.defaultBlockState() : state;
@@ -86,6 +88,7 @@ public class CandlestickBlock extends BlockBase {
         return null;
     }
 
+    @Override
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, Level worldIn, BlockPos pos, Random rand) {
         Direction direction = state.getValue(FACING);

@@ -1,36 +1,38 @@
 package elucent.eidolon.gui;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import elucent.eidolon.Eidolon;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.EnchantmentNames;
+import net.minecraft.client.model.BookModel;
+import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderHelper;
-import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.client.renderer.entity.model.BookModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.EnchantmentNameParts;
-import com.mojang.math.Matrix4f;
-import net.minecraft.util.text.*;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 import java.util.List;
 import java.util.Random;
 
-public class SoulEnchanterScreen extends ContainerScreen<SoulEnchanterContainer> {
+public class SoulEnchanterScreen extends AbstractContainerScreen<SoulEnchanterContainer> {
     private static final ResourceLocation ENCHANTMENT_TABLE_GUI_TEXTURE = new ResourceLocation(Eidolon.MODID,"textures/gui/soul_enchanter.png");
     private static final ResourceLocation ENCHANTMENT_TABLE_BOOK_TEXTURE = new ResourceLocation(Eidolon.MODID,"textures/entity/enchanter_book.png");
-    private static final BookModel MODEL_BOOK = new BookModel();
+    private static final BookModel MODEL_BOOK = new BookModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.BOOK));
     private final Random random = new Random();
     public int ticks;
     public float flip;
@@ -41,15 +43,17 @@ public class SoulEnchanterScreen extends ContainerScreen<SoulEnchanterContainer>
     public float oOpen;
     private ItemStack last = ItemStack.EMPTY;
 
-    public SoulEnchanterScreen(SoulEnchanterContainer container, Inventory playerInventory, TextComponent textComponent) {
+    public SoulEnchanterScreen(SoulEnchanterContainer container, Inventory playerInventory, Component textComponent) {
         super(container, playerInventory, textComponent);
     }
 
-    public void tick() {
-        super.tick();
+    @Override
+    protected void containerTick() {
+        super.containerTick();
         this.tickBook();
     }
 
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
@@ -66,25 +70,26 @@ public class SoulEnchanterScreen extends ContainerScreen<SoulEnchanterContainer>
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
-        RenderHelper.setupForFlatItems();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(ENCHANTMENT_TABLE_GUI_TEXTURE);
+        Lighting.setupForFlatItems();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, ENCHANTMENT_TABLE_GUI_TEXTURE);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
-        RenderSystem.matrixMode(5889);
-        RenderSystem.pushMatrix();
-        RenderSystem.loadIdentity();
+
+        matrixStack.pushPose();
+        matrixStack.setIdentity();
         int k = (int)this.minecraft.getWindow().getGuiScale();
         RenderSystem.viewport((this.width - 320) / 2 * k, (this.height - 240) / 2 * k, 320 * k, 240 * k);
-        RenderSystem.translatef(-0.34F, 0.23F, 0.0F);
-        RenderSystem.multMatrix(Matrix4f.perspective(90.0D, 1.3333334F, 9.0F, 80.0F));
-        RenderSystem.matrixMode(5888);
+        matrixStack.translate(-0.34F, 0.23F, 0.0F);
+        matrixStack.mulPoseMatrix(Matrix4f.perspective(90.0D, 1.3333334F, 9.0F, 80.0F));
+
         matrixStack.pushPose();
-        PoseStack.Entry matrixstack$entry = matrixStack.last();
-        matrixstack$entry.pose().setIdentity();
-        matrixstack$entry.normal().setIdentity();
+        var last = matrixStack.last();
+        last.pose().setIdentity();
+        last.normal().setIdentity();
         matrixStack.translate(0.0D, (double)3.3F, 1984.0D);
         float f = 5.0F;
         matrixStack.scale(5.0F, 5.0F, 5.0F);
@@ -115,36 +120,36 @@ public class SoulEnchanterScreen extends ContainerScreen<SoulEnchanterContainer>
             f4 = 1.0F;
         }
 
-        RenderSystem.enableRescaleNormal();
+        // todo RenderSystem.enableRescaleNormal();
         MODEL_BOOK.setupAnim(0.0F, f3, f4, f1);
-        MultiBufferSource.Impl irendertypebuffer$impl = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        var irendertypebuffer$impl = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
         VertexConsumer ivertexbuilder = irendertypebuffer$impl.getBuffer(MODEL_BOOK.renderType(ENCHANTMENT_TABLE_BOOK_TEXTURE));
         MODEL_BOOK.renderToBuffer(matrixStack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         irendertypebuffer$impl.endBatch();
         matrixStack.popPose();
-        RenderSystem.matrixMode(5889);
+        //RenderSystem.matrixMode(5889);
         RenderSystem.viewport(0, 0, this.minecraft.getWindow().getWidth(), this.minecraft.getWindow().getHeight());
-        RenderSystem.popMatrix();
-        RenderSystem.matrixMode(5888);
-        RenderHelper.setupFor3DItems();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        EnchantmentNameParts.getInstance().initSeed((long)this.menu.getXPSeed());
+        matrixStack.popPose();
+        //.matrixMode(5888);
+        Lighting.setupFor3DItems();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        EnchantmentNames.getInstance().initSeed((long)this.menu.getXPSeed());
         int l = this.menu.getSoulShardAmount();
 
         for(int i1 = 0; i1 < 3; ++i1) {
             int j1 = i + 60;
             int k1 = j1 + 20;
             this.setBlitOffset(0);
-            this.minecraft.getTextureManager().bind(ENCHANTMENT_TABLE_GUI_TEXTURE);
+            RenderSystem.setShaderTexture(0, ENCHANTMENT_TABLE_GUI_TEXTURE);
             int l1 = menu.worldClue[i1];
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             int i2 = 86;
-            ITextProperties itextproperties = EnchantmentNameParts.getInstance().getRandomName(this.font, i2);
+            var itextproperties = EnchantmentNames.getInstance().getRandomName(this.font, i2);
             int j2 = 6839882;
             if (l1 < 1) {
                 this.blit(matrixStack, j1, j + 14 + 19 * i1, 0, 185, 108, 19);
             } else {
-                if (((l == 0 || this.minecraft.player.experienceLevel < l1) && !this.minecraft.player.abilities.instabuild) || this.menu.enchantClue[i1] == -1) { // Forge: render buttons as disabled when enchantable but enchantability not met on lower levels
+                if (((l == 0 || this.minecraft.player.experienceLevel < l1) && !this.minecraft.player.getAbilities().instabuild) || this.menu.enchantClue[i1] == -1) { // Forge: render buttons as disabled when enchantable but enchantability not met on lower levels
                     this.blit(matrixStack, j1, j + 14 + 19 * i1, 0, 185, 108, 19);
                     this.blit(matrixStack, j1 + 1, j + 15 + 19 * i1, 16 * (menu.worldClue[i1] - 1), 239, 16, 16);
                     this.font.drawWordWrap(itextproperties, k1, j + 16 + 19 * i1, i2, (j2 & 16711422) >> 1);
@@ -167,12 +172,13 @@ public class SoulEnchanterScreen extends ContainerScreen<SoulEnchanterContainer>
         }
     }
 
+    @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         partialTicks = this.minecraft.getFrameTime();
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
-        boolean flag = this.minecraft.player.abilities.instabuild;
+        boolean flag = this.minecraft.player.getAbilities().instabuild;
         int i = this.menu.getSoulShardAmount();
 
         for(int j = 0; j < 3; ++j) {
@@ -180,7 +186,7 @@ public class SoulEnchanterScreen extends ContainerScreen<SoulEnchanterContainer>
             int l = (this.menu).worldClue[j];
             int i1 = j + 1;
             if (this.isHovering(60, 14 + 19 * j, 108, 17, (double)mouseX, (double)mouseY) && l > 0) {
-                List<TextComponent> list = Lists.newArrayList();
+                List<Component> list = Lists.newArrayList();
                 list.add(enchantment == null ? new TextComponent("") : enchantment.getFullname(l));
                 if(enchantment == null) {
                     list.add(new TextComponent(""));
@@ -190,10 +196,10 @@ public class SoulEnchanterScreen extends ContainerScreen<SoulEnchanterContainer>
                     if (this.minecraft.player.experienceLevel < l) {
                         list.add((new TranslatableComponent("container.enchant.level.requirement", l)).withStyle(ChatFormatting.RED));
                     } else {
-                        IFormattableTextComponent iformattabletextcomponent = new TranslatableComponent("container.eidolon.enchant.shard.one", 1);
+                        var iformattabletextcomponent = new TranslatableComponent("container.eidolon.enchant.shard.one", 1);
 
                         list.add(iformattabletextcomponent.withStyle(minecraft.player.experienceLevel >= l ? ChatFormatting.GRAY : ChatFormatting.RED));
-                        IFormattableTextComponent iformattabletextcomponent1;
+                        TranslatableComponent iformattabletextcomponent1;
                         if (l == 1) {
                             iformattabletextcomponent1 = new TranslatableComponent("container.enchant.level.one");
                         } else {

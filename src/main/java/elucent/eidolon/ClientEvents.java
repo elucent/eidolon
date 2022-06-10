@@ -1,6 +1,5 @@
 package elucent.eidolon;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import elucent.eidolon.util.RenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,10 +14,10 @@ import java.util.Map;
 
 public class ClientEvents {
     @OnlyIn(Dist.CLIENT)
-    static MultiBufferSource.Impl DELAYED_RENDER = null;
+    static MultiBufferSource.BufferSource DELAYED_RENDER = null;
 
     @OnlyIn(Dist.CLIENT)
-    public static MultiBufferSource.Impl getDelayedRender() {
+    public static MultiBufferSource.BufferSource getDelayedRender() {
         if (DELAYED_RENDER == null) {
             Map<RenderType, BufferBuilder> buffers = new HashMap<>();
             for (RenderType type : new RenderType[]{
@@ -41,17 +40,18 @@ public class ClientEvents {
     @SubscribeEvent
     public void onRenderLast(RenderLevelLastEvent event) {
         if (ClientConfig.BETTER_LAYERING.get()) {
-            RenderSystem.pushMatrix(); // this feels...cheaty
-            RenderSystem.multMatrix(event.getMatrixStack().last().pose());
+            var poseStack = event.getPoseStack();
+
+            poseStack.pushPose();
             getDelayedRender().endBatch(RenderUtil.DELAYED_PARTICLE);
             getDelayedRender().endBatch(RenderUtil.GLOWING_PARTICLE);
             getDelayedRender().endBatch(RenderUtil.GLOWING_BLOCK_PARTICLE);
-            RenderSystem.popMatrix();
+            poseStack.popPose();
 
             getDelayedRender().endBatch(RenderUtil.GLOWING_SPRITE);
             getDelayedRender().endBatch(RenderUtil.GLOWING);
         }
-        clientTicks += event.getPartialTicks();
+        clientTicks += event.getPartialTick();
     }
 
     @OnlyIn(Dist.CLIENT)

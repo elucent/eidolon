@@ -27,7 +27,7 @@ public class KnowledgeUpdatePacket {
     public KnowledgeUpdatePacket(Player entity, boolean playSound) {
         this.uuid = entity.getUUID();
         entity.getCapability(KnowledgeProvider.CAPABILITY, null).ifPresent((k) -> {
-            this.tag = (CompoundTag)KnowledgeProvider.CAPABILITY.getStorage().writeNBT(KnowledgeProvider.CAPABILITY, k, null);
+            this.tag = k.serializeNBT();
         });
         this.playSound = playSound;
     }
@@ -50,7 +50,7 @@ public class KnowledgeUpdatePacket {
             Player player = world.getPlayerByUUID(packet.uuid);
             if (player != null) {
                 player.getCapability(KnowledgeProvider.CAPABILITY, null).ifPresent((k) -> {
-                    KnowledgeProvider.CAPABILITY.getStorage().readNBT(KnowledgeProvider.CAPABILITY, k, null, packet.tag);
+                    k.deserializeNBT(packet.tag);
                     if (packet.playSound) player.playSound(SoundEvents.PLAYER_LEVELUP, 1.0f, 0.5f);
                 });
             }

@@ -37,7 +37,7 @@ public class WoodenStandBlock extends BrewingStandBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos p_152698_, BlockState p_152699_) {
-        return new WoodenStandTileEntity();
+        return new WoodenStandTileEntity(p_152698_, p_152699_);
     }
 
     @Override

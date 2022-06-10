@@ -8,7 +8,6 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
 
-import net.minecraft.core.particles.ParticleOptions.IDeserializer;
 
 public class GenericParticleData implements ParticleOptions {
     float r1 = 1, g1 = 1, b1 = 1, a1 = 1, r2 = 1, g2 = 1, b2 = 1, a2 = 0;
@@ -72,7 +71,7 @@ public class GenericParticleData implements ParticleOptions {
         return getClass().getSimpleName() + ":internal";
     }
 
-    public static final IDeserializer<GenericParticleData> DESERIALIZER = new IDeserializer<GenericParticleData>() {
+    public static final Deserializer<GenericParticleData> DESERIALIZER = new Deserializer<GenericParticleData>() {
         @Override
         public GenericParticleData fromCommand(ParticleType<GenericParticleData> type, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');

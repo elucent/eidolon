@@ -12,7 +12,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceLocation;
 
-import net.minecraft.core.particles.ParticleOptions.IDeserializer;
 
 public class SignParticleData implements ParticleOptions {
     Sign sign;
@@ -45,7 +44,7 @@ public class SignParticleData implements ParticleOptions {
         return getClass().getSimpleName() + ":internal";
     }
 
-    public static final IDeserializer<SignParticleData> DESERIALIZER = new IDeserializer<SignParticleData>() {
+    public static final Deserializer<SignParticleData> DESERIALIZER = new Deserializer<SignParticleData>() {
         @Override
         public SignParticleData fromCommand(ParticleType<SignParticleData> type, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');

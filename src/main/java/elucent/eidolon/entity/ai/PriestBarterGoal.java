@@ -1,14 +1,14 @@
 package elucent.eidolon.entity.ai;
 
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.merchant.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class PriestBarterGoal extends GenericBarterGoal<VillagerEntity> {
-    public PriestBarterGoal(VillagerEntity entity, Predicate<ItemStack> valid, Function<ItemStack, ItemStack> result) {
+public class PriestBarterGoal extends GenericBarterGoal<Villager> {
+    public PriestBarterGoal(Villager entity, Predicate<ItemStack> valid, Function<ItemStack, ItemStack> result) {
         super(entity, valid, result);
     }
 

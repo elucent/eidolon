@@ -5,7 +5,7 @@ import elucent.eidolon.Eidolon;
 import elucent.eidolon.recipe.CrucibleRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;

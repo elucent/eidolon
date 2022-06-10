@@ -1,8 +1,9 @@
 package elucent.eidolon.codex;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -28,7 +29,7 @@ public class TitledIndexPage extends IndexPage {
         int titleWidth = Minecraft.getInstance().font.width(title);
         drawText(gui, mStack, title, x + 64 - titleWidth / 2, y + 15 - Minecraft.getInstance().font.lineHeight);
 
-        Minecraft.getInstance().getTextureManager().bind(BACKGROUND);
+        RenderSystem.setShaderTexture(0, BACKGROUND);
         super.render(gui, mStack, x, y + 16, mouseX, mouseY);
     }
 }

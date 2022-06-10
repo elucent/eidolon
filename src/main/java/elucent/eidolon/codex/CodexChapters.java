@@ -14,9 +14,9 @@ import elucent.eidolon.spell.Signs;
 import elucent.eidolon.util.ColorUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,13 +5,13 @@ import elucent.eidolon.ClientConfig;
 import elucent.eidolon.ClientEvents;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.util.RenderUtil;
+import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.Mth;
 
-public class SignParticle extends SpriteTexturedParticle {
+public class SignParticle extends TextureSheetParticle {
     Sign sign;
     public SignParticle(ClientLevel world, Sign sign, double x, double y, double z, double vx, double vy, double vz) {
         super(world, x, y, z, vx, vy, vz);
@@ -46,12 +46,12 @@ public class SignParticle extends SpriteTexturedParticle {
     }
 
     @Override
-    public void render(VertexConsumer b, ActiveRenderInfo info, float pticks) {
+    public void render(VertexConsumer b, Camera info, float pticks) {
         super.render(ClientConfig.BETTER_LAYERING.get() ? ClientEvents.getDelayedRender().getBuffer(RenderUtil.GLOWING_BLOCK_PARTICLE) : b, info, pticks);
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return SignParticleRenderType.INSTANCE;
     }
 }

@@ -1,8 +1,8 @@
 package elucent.eidolon.codex;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import elucent.eidolon.ClientEvents;
 import elucent.eidolon.Eidolon;
@@ -11,18 +11,18 @@ import elucent.eidolon.network.Networking;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.util.RenderUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,10 +65,10 @@ public class CodexGui extends Screen {
 
     protected void renderChant(PoseStack mStack, int x, int y, int mouseX, int mouseY, float pticks) {
         int chantWidth = 32 + 24 * chant.size();
-        int baseX = x + this.xSize / 2 - chantWidth / 2, baseY = y + 180;
+        int baseX = x + xSize / 2 - chantWidth / 2, baseY = y + 180;
 
         RenderSystem.enableBlend();
-        RenderSystem.alphaFunc(GL11.GL_GEQUAL, 1f / 256f);
+        // todo RenderSystem.alphaFunc(GL11.GL_GEQUAL, 1f / 256f);
 
         int bgx = baseX;
         blit(mStack, bgx, baseY, 256, 208, 16, 32, 512, 512);
@@ -89,8 +89,8 @@ public class CodexGui extends Screen {
         if (cancelHover) renderTooltip(mStack, new TranslatableComponent("eidolon.codex.cancel_hover"), mouseX, mouseY);
 
         RenderSystem.enableBlend();
-        RenderSystem.alphaFunc(GL11.GL_GEQUAL, 1f / 256f);
-        Minecraft.getInstance().getTextureManager().bind(TextureAtlas.LOCATION_BLOCKS);
+        // todo RenderSystem.alphaFunc(GL11.GL_GEQUAL, 1f / 256f);
+        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         bgx = baseX + 16;
         Tesselator tess = Tesselator.getInstance();
         for (int i = 0; i < chant.size(); i ++) {
@@ -110,17 +110,17 @@ public class CodexGui extends Screen {
             tess.end();
             bgx += 24;
         }
-        RenderSystem.defaultAlphaFunc();
+        // todo RenderSystem.defaultAlphaFunc();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableBlend();
-        Minecraft.getInstance().getTextureManager().bind(BACKGROUND_LOCATION);
+        RenderSystem.setShaderTexture(0, BACKGROUND_LOCATION);
     }
 
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         renderBackground(matrixStack);
         Minecraft mc = Minecraft.getInstance();
-        mc.getTextureManager().bind(CODEX_BACKGROUND);
+        RenderSystem.setShaderTexture(0, CODEX_BACKGROUND);
 
         this.width = mc.getWindow().getGuiScaledWidth();
         this.height = mc.getWindow().getGuiScaledHeight();
@@ -132,13 +132,13 @@ public class CodexGui extends Screen {
             CodexChapters.categories.get(i).draw(this, matrixStack, guiLeft + (i >= 8 ? 304 : 8), y, i >= 8, mouseX, mouseY);
         }
 
-        mc.getTextureManager().bind(CODEX_BACKGROUND);
+        RenderSystem.setShaderTexture(0, CODEX_BACKGROUND);
         blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
         Page left = currentChapter.get(currentPage), right = currentChapter.get(currentPage + 1);
         if (left != null) left.fullRender(this, matrixStack, guiLeft + 14, guiTop + 24, mouseX, mouseY);
         if (right != null) right.fullRender(this, matrixStack, guiLeft + 170, guiTop + 24, mouseX, mouseY);
 
-        mc.getTextureManager().bind(CODEX_BACKGROUND);
+        RenderSystem.setShaderTexture(0, CODEX_BACKGROUND);
         if (currentPage > 0) { // left arrow
             int x = 10, y = 169;
             int v = 208;
@@ -163,7 +163,7 @@ public class CodexGui extends Screen {
 
     protected boolean interactChant(int x, int y, int mouseX, int mouseY) {
         int chantWidth = 32 + 24 * chant.size();
-        int baseX = x + this.xSize / 2 - chantWidth / 2, baseY = y + 180;
+        int baseX = x + xSize / 2 - chantWidth / 2, baseY = y + 180;
         int bgx = baseX + chantWidth + 8;
         boolean chantHover = mouseX >= bgx && mouseY >= baseY - 4 && mouseX <= bgx + 32 && mouseY <= baseY + 28;
         bgx += 36;

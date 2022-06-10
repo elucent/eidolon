@@ -2,10 +2,10 @@ package elucent.eidolon.recipe;
 
 import elucent.eidolon.tile.CrucibleTileEntity.CrucibleStep;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.item.Item;
-import net.minecraft.tags.Tag;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,8 +77,8 @@ public class CrucibleRecipe {
         else if (match instanceof Block) {
             if (((Block)match).asItem() == sacrifice.getItem()) return true;
         }
-        else if (match instanceof Tag) {
-            if (((Tag<Item>)match).contains(sacrifice.getItem())) return true;
+        else if (match instanceof TagKey) {
+            if (sacrifice.is((TagKey<Item>) match)) return true;
         }
         return false;
     }

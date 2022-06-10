@@ -12,9 +12,9 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.item.MusicDiscItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.RecordItem;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -66,7 +66,7 @@ public class DarkTouchSpell extends StaticSpell {
         if (!world.getCapability(ReputationProvider.CAPABILITY).isPresent()) return false;
         if (world.getCapability(ReputationProvider.CAPABILITY).resolve().get().getReputation(player, Deities.DARK_DEITY.getId()) < 4.0) return false;
 
-        HitResult ray = world.clip(new ClipContext(player.getEyePosition(0), player.getEyePosition(0).add(player.getLookAngle().scale(4)), ClipContext.BlockMode.OUTLINE, ClipContext.FluidMode.NONE, player));
+        HitResult ray = world.clip(new ClipContext(player.getEyePosition(0), player.getEyePosition(0).add(player.getLookAngle().scale(4)), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
         Vec3 v = ray.getType() == HitResult.Type.BLOCK ? ray.getLocation() : player.getEyePosition(0).add(player.getLookAngle().scale(4));
         List<ItemEntity> items = world.getEntitiesOfClass(ItemEntity.class, new AABB(v.x - 1.5, v.y - 1.5, v.z - 1.5, v.x + 1.5, v.y + 1.5, v.z + 1.5));
         if (items.size() != 1) return false;
@@ -77,7 +77,7 @@ public class DarkTouchSpell extends StaticSpell {
     boolean canTouch(ItemStack stack) {
         return stack.getItem() == Registry.PEWTER_INLAY.get()             // is pewter
                || stack.getItem() == Items.BLACK_WOOL
-               || (stack.getItem() instanceof MusicDiscItem && stack.getItem() != Registry.PAROUSIA_DISC.get());
+               || (stack.getItem() instanceof RecordItem && stack.getItem() != Registry.PAROUSIA_DISC.get());
             // || (stack.isDamageable() && stack.getMaxStackSize() == 1); // is tool
     }
 
@@ -86,7 +86,7 @@ public class DarkTouchSpell extends StaticSpell {
             return new ItemStack(Registry.UNHOLY_SYMBOL.get());
         else if (stack.getItem() == Items.BLACK_WOOL)
             return new ItemStack(Registry.TOP_HAT.get());
-        else if (stack.getItem() instanceof MusicDiscItem && stack.getItem() != Registry.PAROUSIA_DISC.get())
+        else if (stack.getItem() instanceof RecordItem && stack.getItem() != Registry.PAROUSIA_DISC.get())
             return new ItemStack(Registry.PAROUSIA_DISC.get());
 //        else {
 //            stack.getOrCreateTag().putBoolean(NECROTIC_KEY, true);
@@ -97,7 +97,7 @@ public class DarkTouchSpell extends StaticSpell {
 
     @Override
     public void cast(Level world, BlockPos pos, Player player) {
-        HitResult ray = world.clip(new ClipContext(player.getEyePosition(0), player.getEyePosition(0).add(player.getLookAngle().scale(4)), ClipContext.BlockMode.OUTLINE, ClipContext.FluidMode.NONE, player));
+        HitResult ray = world.clip(new ClipContext(player.getEyePosition(0), player.getEyePosition(0).add(player.getLookAngle().scale(4)), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
         Vec3 v = ray.getType() == HitResult.Type.BLOCK ? ray.getLocation() : player.getEyePosition(0).add(player.getLookAngle().scale(4));
         List<ItemEntity> items = world.getEntitiesOfClass(ItemEntity.class, new AABB(v.x - 1.5, v.y - 1.5, v.z - 1.5, v.x + 1.5, v.y + 1.5, v.z + 1.5));
         if (items.size() == 1) {

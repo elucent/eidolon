@@ -1,10 +1,11 @@
 package elucent.eidolon.util;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ public class StackUtil {
         if (object instanceof Item) return Ingredient.of((Item)object);
         else if (object instanceof Block) return Ingredient.of(new ItemStack((Block)object));
         else if (object instanceof ItemStack) return Ingredient.of((ItemStack)object);
-        else if (object instanceof Tag) return Ingredient.of((Tag)object);
+        else if (object instanceof TagKey) return Ingredient.of((TagKey) object);
         else return Ingredient.EMPTY;
     }
 
@@ -26,8 +27,8 @@ public class StackUtil {
         if (object instanceof Item) return new ItemStack((Item)object);
         else if (object instanceof Block) return new ItemStack((Block)object);
         else if (object instanceof ItemStack) return ((ItemStack)object).copy();
-        else if (object instanceof Tag) {
-            Object first = ((Tag)object).getValues().get(0);
+        else if (object instanceof TagKey) {
+            Object first = ForgeRegistries.ITEMS.tags().getTag((TagKey<Item>) object).stream().findFirst().get();
             return stackFromObject(first);
         }
         else return ItemStack.EMPTY;

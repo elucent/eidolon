@@ -3,53 +3,30 @@ package elucent.eidolon.world;
 import com.mojang.serialization.Codec;
 import elucent.eidolon.Config;
 import elucent.eidolon.Eidolon;
-import elucent.eidolon.WorldGen;
+import elucent.eidolon.world.worldgen.WorldGen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.util.SharedSeedRandom;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.IStructurePieceType;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
-import net.minecraft.world.gen.feature.template.BlockIgnoreStructureProcessor;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.Random;
 
-import net.minecraft.world.gen.feature.structure.Structure.IStartFactory;
-
-public class StrayTowerStructure extends Structure<NoFeatureConfig> {
-    public StrayTowerStructure(Codec<NoFeatureConfig> codec) {
-        super(codec);
+public class StrayTowerStructure extends StructureFeature<NoneFeatureConfiguration> {
+    public StrayTowerStructure(Codec<NoneFeatureConfiguration> codec) {
+        super(codec, StrayTowerStructure::pieceGeneratorSupplier);
     }
 
-    @Override
-    public GenerationStage.Decoration step() {
-        return GenerationStage.Decoration.UNDERGROUND_STRUCTURES;
-    }
-
-    @Override
-    public IStartFactory<NoFeatureConfig> getStartFactory() {
-        return Start::new;
-    }
-
-    @Override
-    protected boolean isFeatureChunk(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom rand, int chunkX, int chunkZ, Biome biome, ChunkPos pos, NoFeatureConfig config) {
+    protected static boolean isFeatureChunk(long seed, Random rand, int chunkX, int chunkZ) {
         int i = chunkX >> 4;
         int j = chunkZ >> 4;
         rand.setSeed((long) (i ^ j << 4) ^ seed);
@@ -57,68 +34,44 @@ public class StrayTowerStructure extends Structure<NoFeatureConfig> {
         return prob < (1 / Config.STRAY_TOWER_RARITY.get());
     }
 
-    @Override
-    public String getFeatureName() {
-        return new ResourceLocation(Eidolon.MODID, "stray_tower").toString();
-    }
+    private static @NotNull Optional<PieceGenerator<NoneFeatureConfiguration>>
+        pieceGeneratorSupplier(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context) {
 
-    public static class Start extends StructureStart<NoFeatureConfig> {
-        public Start(Structure<NoFeatureConfig> config, int chunkX, int chunkZ, MutableBoundingBox bounds, int refs, long seed) {
-            super(config, chunkX, chunkZ, bounds, refs, seed);
+        var chunkPos = context.chunkPos();
+        var chunkX = chunkPos.x;
+        var chunkZ = chunkPos.z;
+
+        var seed = context.seed();
+        var random = WorldGen.RAND;
+        random.setSeed(seed);
+
+        if (!isFeatureChunk(seed, random, chunkX, chunkZ)) {
+            return Optional.empty();
         }
 
-        public void generatePieces(DynamicRegistries registries, ChunkGenerator generator, TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
-            int i = chunkX * 16 + random.nextInt(16);
-            int j = chunkZ * 16 + random.nextInt(16);
-            Rotation rotation = Rotation.getRandom(random);
+        var generator = context.chunkGenerator();
 
-            pieces.add(new Piece(templateManager, PART, new BlockPos(i, generator.getBaseHeight(i, j, Heightmap.Type.WORLD_SURFACE_WG), j), rotation, random));
-            this.calculateBoundingBox();
-        }
+        int i = chunkX * 16 + random.nextInt(16);
+        int j = chunkZ * 16 + random.nextInt(16);
+        Rotation rotation = Rotation.getRandom(random);
+
+        return Optional.of((piecesBuilder, configurationContext) -> piecesBuilder
+                .addPiece(new Piece(configurationContext.structureManager(),
+                        new BlockPos(i,
+                                generator.getBaseHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor()),
+                                j),
+                        rotation, random)));
     }
 
     private static final ResourceLocation PART = new ResourceLocation(Eidolon.MODID,"stray_tower");
 
-    public static class Piece extends TemplateStructurePiece {
-        private ResourceLocation loc;
-        private Rotation rotation;
-
-        public Piece(IStructurePieceType structurePieceTypeIn, CompoundTag nbt) {
-            super(structurePieceTypeIn, nbt);
-            this.loc = new ResourceLocation(nbt.getString("template"));
-            this.rotation = Rotation.valueOf(nbt.getString("rot"));
+    public static class Piece extends BasicPiece {
+        public Piece(StructurePieceSerializationContext context, CompoundTag nbt) {
+            super(WorldGen.STRAY_TOWER_PIECE.get(), PART, context.structureManager(), nbt);
         }
 
-        public Piece(TemplateManager templateManager, CompoundTag nbt) {
-            this(WorldGen.STRAY_TOWER_PIECE, nbt);
-            Template part = templateManager.getOrCreate(PART);
-            PlacementSettings placement = (new PlacementSettings()).setRotation(this.rotation).setMirror(Mirror.NONE).addProcessor(BlockIgnoreStructureProcessor.STRUCTURE_BLOCK);
-            this.setup(part, this.templatePosition, placement);
-            this.template = templateManager.get(PART);
-        }
-
-        public Piece(TemplateManager templateManager, ResourceLocation template, BlockPos pos, Rotation rot, Random random) {
-            super(WorldGen.STRAY_TOWER_PIECE, 0);
-            this.templatePosition = pos.below(10);
-            this.rotation = rot;
-            this.loc = template;
-
-            Template part = templateManager.getOrCreate(PART);
-            PlacementSettings placement = (new PlacementSettings()).setRotation(this.rotation).setMirror(Mirror.NONE).addProcessor(BlockIgnoreStructureProcessor.STRUCTURE_BLOCK);
-            this.setup(part, this.templatePosition, placement);
-            this.template = templateManager.get(PART);
-        }
-
-        @Override
-        protected void addAdditionalSaveData(CompoundTag tagCompound) {
-            super.addAdditionalSaveData(tagCompound);
-            tagCompound.putString("template", loc.toString());
-            tagCompound.putString("rot", rotation.name());
-        }
-
-        @Override
-        protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand, MutableBoundingBox sbb) {
-            //
+        public Piece(StructureManager templateManager, BlockPos pos, Rotation rot, Random random) {
+            super(WorldGen.STRAY_TOWER_PIECE.get(), PART, templateManager, pos, rot, Mirror.NONE, random);
         }
     }
 }

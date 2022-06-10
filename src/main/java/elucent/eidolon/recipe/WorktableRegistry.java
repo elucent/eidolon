@@ -10,11 +10,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class WorktableRegistry {
     }
 
     public static WorktableRecipe find(Level world, Container core, Container outer) {
-        for (ICraftingRecipe recipe : world.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING))
+        for (CraftingRecipe recipe : world.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING))
             if (recipe instanceof WorktableRecipe && ((WorktableRecipe) recipe).matches(core, outer))
                 return (WorktableRecipe) recipe;
         return null;

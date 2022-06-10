@@ -3,7 +3,7 @@ package elucent.eidolon.codex;
 import com.mojang.blaze3d.vertex.PoseStack;
 import elucent.eidolon.Eidolon;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

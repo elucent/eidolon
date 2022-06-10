@@ -20,27 +20,23 @@ import elucent.eidolon.tile.GobletTileEntity;
 import elucent.eidolon.util.EntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.monster.*;
+import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.MobSpawnInfo;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
@@ -73,12 +69,12 @@ public class Events {
     @SubscribeEvent
     public void onClone(PlayerEvent.Clone event) {
         Capability<IKnowledge> KNOWLEDGE = KnowledgeProvider.CAPABILITY;
-        KNOWLEDGE.getStorage().readNBT(
-            KNOWLEDGE,
-            event.getPlayer().getCapability(KNOWLEDGE, null).resolve().get(),
-            null,
-            KNOWLEDGE.getStorage().writeNBT(KNOWLEDGE, event.getOriginal().getCapability(KNOWLEDGE, null).resolve().get(), null)
-        );
+        event.getOriginal().reviveCaps();
+        event.getOriginal().getCapability(KNOWLEDGE).ifPresent(oldKnowledge -> {
+            event.getPlayer().getCapability(KNOWLEDGE).ifPresent(newKnowledge -> {
+                newKnowledge.deserializeNBT(oldKnowledge.serializeNBT());
+            });
+        });
         if (!event.getPlayer().level.isClientSide) {
             Networking.sendTo(event.getPlayer(), new KnowledgeUpdatePacket(event.getPlayer(), false));
         }
@@ -87,7 +83,7 @@ public class Events {
     @SubscribeEvent
     public void onTarget(LivingSetAttackTargetEvent event) {
         if (EntityUtil.isEnthralledBy(event.getEntityLiving(), event.getTarget()))
-            ((MobEntity)event.getEntityLiving()).setTarget(null);
+            ((Mob)event.getEntityLiving()).setTarget(null);
     }
 
     @SubscribeEvent
@@ -103,7 +99,7 @@ public class Events {
             }
         }
 
-        if (entity instanceof WitchEntity || entity instanceof VillagerEntity) {
+        if (entity instanceof Witch || entity instanceof Villager) {
             if (entity.getMainHandItem().getItem() instanceof CodexItem)
                 event.getDrops().add(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), entity.getMainHandItem().copy()));
         }
@@ -127,11 +123,11 @@ public class Events {
             if (!entity.level.isClientSide && held.getItem() instanceof CleavingAxeItem) {
                 int looting = ForgeHooks.getLootingLevel(entity, source, event.getSource());
                 ItemStack head = ItemStack.EMPTY;
-                if (entity instanceof WitherSkeletonEntity) head = new ItemStack(Items.WITHER_SKELETON_SKULL);
-                else if (entity instanceof SkeletonEntity) head = new ItemStack(Items.SKELETON_SKULL);
-                else if (entity instanceof ZombieEntity) head = new ItemStack(Items.ZOMBIE_HEAD);
-                else if (entity instanceof CreeperEntity) head = new ItemStack(Items.CREEPER_HEAD);
-                else if (entity instanceof EnderDragonEntity) head = new ItemStack(Items.DRAGON_HEAD);
+                if (entity instanceof WitherSkeleton) head = new ItemStack(Items.WITHER_SKELETON_SKULL);
+                else if (entity instanceof Skeleton) head = new ItemStack(Items.SKELETON_SKULL);
+                else if (entity instanceof Zombie) head = new ItemStack(Items.ZOMBIE_HEAD);
+                else if (entity instanceof Creeper) head = new ItemStack(Items.CREEPER_HEAD);
+                else if (entity instanceof EnderDragon) head = new ItemStack(Items.DRAGON_HEAD);
                 else if (entity instanceof Player) {
                     head = new ItemStack(Items.PLAYER_HEAD);
                     GameProfile gameprofile = ((Player)entity).getGameProfile();
@@ -159,11 +155,11 @@ public class Events {
     @SubscribeEvent
     public void registerSpawns(BiomeLoadingEvent ev) {
         ResourceKey<Biome> key = ResourceKey.<Biome>create(ForgeRegistries.Keys.BIOMES, ev.getName());
-        if (BiomeDictionary.hasType(key, BiomeDictionary.Type.OVERWORLD) && ev.getCategory() != Biome.Category.MUSHROOM) {
+        if (BiomeDictionary.hasType(key, BiomeDictionary.Type.OVERWORLD) && ev.getCategory() != Biome.BiomeCategory.MUSHROOM) {
             ev.getSpawns().addSpawn(MobCategory.MONSTER,
-                new MobSpawnInfo.Spawners(Registry.WRAITH.get(), Config.WRAITH_SPAWN_WEIGHT.get(), 1, 2));
+                new MobSpawnSettings.SpawnerData(Registry.WRAITH.get(), Config.WRAITH_SPAWN_WEIGHT.get(), 1, 2));
             ev.getSpawns().addSpawn(MobCategory.MONSTER,
-                new MobSpawnInfo.Spawners(Registry.ZOMBIE_BRUTE.get(), Config.ZOMBIE_BRUTE_SPAWN_WEIGHT.get(), 1, 2));
+                new MobSpawnSettings.SpawnerData(Registry.ZOMBIE_BRUTE.get(), Config.ZOMBIE_BRUTE_SPAWN_WEIGHT.get(), 1, 2));
         }
     }
 
@@ -173,16 +169,16 @@ public class Events {
             if (event.getEntity() instanceof Player) {
                 Networking.sendTo((Player)event.getEntity(), new KnowledgeUpdatePacket((Player)event.getEntity(), false));
             }
-            if (event.getEntity() instanceof WitchEntity) {
-                ((WitchEntity)event.getEntity()).goalSelector.addGoal(1, new WitchBarterGoal(
-                    (WitchEntity)event.getEntity(),
+            if (event.getEntity() instanceof Witch) {
+                ((Witch)event.getEntity()).goalSelector.addGoal(1, new WitchBarterGoal(
+                    (Witch)event.getEntity(),
                     (stack) -> stack.getItem() == Registry.CODEX.get(),
                     (stack) -> CodexItem.withSign(stack, Signs.WICKED_SIGN)
                 ));
             }
-            if (event.getEntity() instanceof VillagerEntity) {
-                ((VillagerEntity)event.getEntity()).goalSelector.addGoal(1, new PriestBarterGoal(
-                    (VillagerEntity)event.getEntity(),
+            if (event.getEntity() instanceof Villager) {
+                ((Villager)event.getEntity()).goalSelector.addGoal(1, new PriestBarterGoal(
+                    (Villager)event.getEntity(),
                     (stack) -> stack.getItem() == Registry.CODEX.get(),
                     (stack) -> CodexItem.withSign(stack, Signs.SACRED_SIGN)
                 ));

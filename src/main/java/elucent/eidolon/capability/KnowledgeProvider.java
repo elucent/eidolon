@@ -12,16 +12,16 @@ public class KnowledgeProvider implements ICapabilityProvider, ICapabilitySerial
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        return cap == CAPABILITY ? LazyOptional.of(() -> (T)instance) : LazyOptional.empty();
+        return CAPABILITY.orEmpty(cap, LazyOptional.of(() -> instance));
     }
 
     @Override
     public CompoundTag serializeNBT() {
-        return (CompoundTag)CAPABILITY.getStorage().writeNBT(CAPABILITY, instance, null);
+        return instance.serializeNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        CAPABILITY.getStorage().readNBT(CAPABILITY, instance, null, nbt);
+        instance.deserializeNBT(nbt);
     }
 }

@@ -8,21 +8,21 @@ import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
 import elucent.eidolon.spell.Spell;
 import elucent.eidolon.spell.Spells;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.network.NetworkHooks;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class ChantCasterEntity extends Entity {
         if (timer > 0) {
             timer --;
             if (timer == 0) {
-                ListTag signData = getEntityData().get(SIGNS).getList("signs", Constants.NBT.TAG_STRING);
+                ListTag signData = getEntityData().get(SIGNS).getList("signs", Tag.TAG_STRING);
                 Optional<UUID> optuuid = getEntityData().get(CASTER_ID);
                 if (!level.isClientSide && optuuid.isPresent()) {
                     List<Sign> signs = new ArrayList<>();
@@ -84,7 +84,7 @@ public class ChantCasterEntity extends Entity {
         }
 
         if (tickCount % 5 == 0) {
-            ListTag signs = getEntityData().get(SIGNS).getList("signs", Constants.NBT.TAG_STRING);
+            ListTag signs = getEntityData().get(SIGNS).getList("signs", Tag.TAG_STRING);
             int index = getEntityData().get(INDEX);
             if (index >= signs.size()) return;
             Sign sign = Signs.find(new ResourceLocation(signs.getString(index)));

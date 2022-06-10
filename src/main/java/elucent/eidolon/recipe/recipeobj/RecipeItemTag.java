@@ -1,16 +1,16 @@
 package elucent.eidolon.recipe.recipeobj;
 
 import com.google.gson.JsonObject;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.crafting.Ingredient;
 
-public class RecipeItemTag extends RecipeObject<Tag.INamedTag<Item>> {
-    public RecipeItemTag(Tag.INamedTag<Item> obj) {
+public class RecipeItemTag extends RecipeObject<TagKey<Item>> {
+    public RecipeItemTag(TagKey<Item> obj) {
         super(obj);
     }
 
@@ -21,36 +21,36 @@ public class RecipeItemTag extends RecipeObject<Tag.INamedTag<Item>> {
 
     @Override
     public boolean matches(ItemStack itemStack) {
-        return this.obj.contains(itemStack.getItem());
+        return itemStack.is(obj);
     }
 
     @Override
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
-        json.addProperty("tag", obj.getName().toString());
+        json.addProperty("tag", obj.location().toString());
         return json;
     }
 
     @Override
-    public Tag.INamedTag<Item> fromJson(JsonObject json) {
+    public TagKey<Item> fromJson(JsonObject json) {
         ResourceLocation name = new ResourceLocation(json.get("tag").getAsString());
-        return (Tag.INamedTag<Item>) ItemTags.getWrappers().stream().filter(tag -> tag.getName().equals(name)).toArray()[0];
+        return ItemTags.create(name);
     }
 
     @Override
     public CompoundTag toNBT() {
         CompoundTag nbt = new CompoundTag();
-        nbt.putString("tag", obj.getName().toString());
+        nbt.putString("tag", obj.location().toString());
         return nbt;
     }
 
     @Override
-    public Tag.INamedTag<Item> fromNBT(CompoundTag nbt) {
-        return (Tag.INamedTag<Item>) ItemTags.getAllTags().getTag(new ResourceLocation(nbt.getString("tag")));
+    public TagKey<Item> fromNBT(CompoundTag nbt) {
+        return ItemTags.create(new ResourceLocation(nbt.getString("tag")));
     }
 
     @Override
-    public RecipeObjectType<Tag.INamedTag<Item>, ? extends RecipeObject<Tag.INamedTag<Item>>> getType() {
+    public RecipeObjectType<TagKey<Item>, ? extends RecipeObject<TagKey<Item>>> getType() {
         return RecipeObjectRegisterHandler.TAG;
     }
 }

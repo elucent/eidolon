@@ -3,6 +3,7 @@ package elucent.eidolon.ritual;
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.network.RitualConsumePacket;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -45,7 +46,7 @@ public class FocusItemRequirement implements IRequirement {
             else if (match instanceof Item && stack.getItem() == (Item)match) {
                 return new RequirementInfo(true, ((BlockEntity)tiles.get(i)).getBlockPos());
             }
-            else if (match instanceof Tag && ((Tag<Item>)match).contains(stack.getItem())) {
+            else if (match instanceof TagKey && stack.is((TagKey<Item>) match)) {
                 return new RequirementInfo(true, ((BlockEntity)tiles.get(i)).getBlockPos());
             }
         }
@@ -53,6 +54,7 @@ public class FocusItemRequirement implements IRequirement {
         return RequirementInfo.FALSE;
     }
 
+    @Override
     public void whenMet(Ritual ritual, Level world, BlockPos pos, RequirementInfo info) {
         ((IRitualItemProvider)world.getBlockEntity(info.getPos())).take();
         if (!world.isClientSide) {

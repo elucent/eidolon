@@ -6,7 +6,7 @@ import elucent.eidolon.util.ColorUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
@@ -23,8 +23,8 @@ public class AllureRitual extends Ritual {
     @Override
     public RitualResult tick(Level world, BlockPos pos) {
         if (world.getGameTime() % 200 == 0) {
-            List<AnimalEntity> animals = world.getEntitiesOfClass(AnimalEntity.class, new AABB(pos).inflate(96, 16, 96));
-            for (AnimalEntity a : animals) {
+            List<Animal> animals = world.getEntitiesOfClass(Animal.class, new AABB(pos).inflate(96, 16, 96));
+            for (var a : animals) {
                 boolean hasGoal = a.goalSelector.getRunningGoals()
                     .filter((goal) -> goal.getGoal() instanceof GoToPositionGoal)
                     .count() > 0;

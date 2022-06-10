@@ -10,16 +10,16 @@ import elucent.eidolon.gui.jei.RecipeWrappers;
 import elucent.eidolon.util.StackUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.tags.Tag;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
 import java.util.*;
@@ -52,7 +52,7 @@ public class RitualRegistry {
         return ritual;
     }
 
-    public static Ritual register(Tag<Item> sacrifice, Ritual ritual) {
+    public static Ritual register(TagKey<Item> sacrifice, Ritual ritual) {
         ResourceLocation name = ritual.getRegistryName();
         assert name != null;
         rituals.put(name, ritual);
@@ -125,8 +125,8 @@ public class RitualRegistry {
         else if (match instanceof Item) {
             if ((Item)match == sacrifice.getItem()) return true;
         }
-        else if (match instanceof Tag) {
-            if (((Tag<Item>)match).contains(sacrifice.getItem())) return true;
+        else if (match instanceof TagKey) {
+            if (sacrifice.is((TagKey<Item>) match)) return true;
         }
         else if (match instanceof MultiItemSacrifice) {
             // check main item first, avoid complicated work

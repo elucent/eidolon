@@ -12,5 +12,6 @@ public class CapabilityRegistry {
     @SubscribeEvent
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
         event.register(IKnowledge.class);
+        event.register(IReputation.class);
     }
 }

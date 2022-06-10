@@ -1,25 +1,27 @@
 package elucent.eidolon.block;
 
+import elucent.eidolon.tile.TickBlockEntity;
 import elucent.eidolon.tile.TileEntityBase;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.level.Explosion;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.world.level.block.state.BlockBehaviour;
-
-public class BlockBase extends Block {
+public class BlockBase extends Block implements EntityBlock {
     VoxelShape shape = null;
     BlockEntityType<? extends BlockEntity> tileEntityType = null;
 
@@ -35,16 +37,6 @@ public class BlockBase extends Block {
     public BlockBase setTile(BlockEntityType<? extends BlockEntity> type) {
         this.tileEntityType = type;
         return this;
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return this.tileEntityType != null;
-    }
-
-    @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-        return tileEntityType.create();
     }
 
     @Override
@@ -92,5 +84,25 @@ public class BlockBase extends Block {
             }
         }
         return super.use(state, world, pos, player, hand, ray);
+    }
+
+    private boolean hasTileEntity(BlockState state) {
+        return tileEntityType != null;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return tileEntityType.create(pPos, pState);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return pBlockEntityType == tileEntityType ? (pLevel1, pPos, pState1, pBlockEntity) -> {
+            if (pBlockEntity instanceof TickBlockEntity) {
+                ((TickBlockEntity) pBlockEntity).tick();
+            }
+        } : null;
     }
 }

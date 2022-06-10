@@ -3,7 +3,7 @@ package elucent.eidolon.recipe.recipeobj;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public abstract class RecipeObject<T> {
     T obj;

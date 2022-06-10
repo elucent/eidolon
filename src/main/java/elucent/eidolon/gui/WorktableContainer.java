@@ -3,21 +3,13 @@ package elucent.eidolon.gui;
 import elucent.eidolon.Registry;
 import elucent.eidolon.recipe.WorktableRecipe;
 import elucent.eidolon.recipe.WorktableRegistry;
-import net.minecraft.inventory.CraftResultInventory;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -63,7 +55,7 @@ public class WorktableContainer extends AbstractContainerMenu {
         }
     }
 
-    protected void updateCraftingResult(int id, Level world, Player player, CraftingInventory inventory, CraftResultInventory inventoryResult) {
+    protected void updateCraftingResult(int id, Level world, Player player, CraftingContainer inventory, ResultContainer inventoryResult) {
         if (!world.isClientSide) {
             ServerPlayer serverplayerentity = (ServerPlayer)player;
             ItemStack itemstack = ItemStack.EMPTY;
@@ -72,9 +64,9 @@ public class WorktableContainer extends AbstractContainerMenu {
                 itemstack = recipe.getResultItem();
             }
             else {
-                Optional<ICraftingRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, inventory, world);
+                Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, inventory, world);
                 if (optional.isPresent()) {
-                    ICraftingRecipe icraftingrecipe = optional.get();
+                    CraftingRecipe icraftingrecipe = optional.get();
                     if (inventoryResult.setRecipeUsed(world, serverplayerentity, icraftingrecipe)) {
                         itemstack = icraftingrecipe.assemble(inventory);
                     }
@@ -82,7 +74,7 @@ public class WorktableContainer extends AbstractContainerMenu {
             }
 
             inventoryResult.setItem(0, itemstack);
-            serverplayerentity.connection.send(new SSetSlotPacket(id, 0, itemstack));
+            //serverplayerentity.connection.send(new SSetSlotPacket(id, 0, itemstack));
         }
     }
 
@@ -97,8 +89,8 @@ public class WorktableContainer extends AbstractContainerMenu {
     public void removed(Player playerIn) {
         super.removed(playerIn);
         callable.execute((p_217068_2_, p_217068_3_) -> {
-            this.clearContainer(playerIn, p_217068_2_, this.core);
-            this.clearContainer(playerIn, p_217068_2_, this.extras);
+            this.clearContainer(playerIn, this.core);
+            this.clearContainer(playerIn, this.extras);
         });
     }
 
@@ -147,9 +139,9 @@ public class WorktableContainer extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
 
-            ItemStack itemstack2 = slot.onTake(playerIn, itemstack1);
+            slot.onTake(playerIn, itemstack1);
             if (index == 0) {
-                playerIn.drop(itemstack2, false);
+                playerIn.drop(itemstack1, false);
             }
         }
 

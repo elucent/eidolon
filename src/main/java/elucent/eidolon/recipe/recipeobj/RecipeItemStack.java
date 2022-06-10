@@ -3,7 +3,7 @@ package elucent.eidolon.recipe.recipeobj;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class RecipeItemStack extends RecipeObject<ItemStack> {
     public RecipeItemStack(ItemStack obj) {
@@ -22,7 +22,7 @@ public class RecipeItemStack extends RecipeObject<ItemStack> {
 
     @Override
     public JsonObject toJson() {
-        return new Ingredient.SingleItemList(obj).serialize();
+        return new Ingredient.ItemValue(obj).serialize();
     }
 
     @Override

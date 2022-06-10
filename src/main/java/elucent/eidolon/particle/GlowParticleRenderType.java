@@ -2,33 +2,34 @@ package elucent.eidolon.particle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import elucent.eidolon.ClientEvents;
 import elucent.eidolon.util.RenderUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IParticleRenderType;
-import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import org.lwjgl.opengl.GL11;
 
-public class GlowParticleRenderType implements IParticleRenderType {
+public class GlowParticleRenderType implements ParticleRenderType {
     public static final GlowParticleRenderType INSTANCE = new GlowParticleRenderType();
 
     private static void beginRenderCommon(BufferBuilder bufferBuilder, TextureManager textureManager) {
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.disableLighting();
+        // todo RenderSystem.disableAlphaTest();
+        // todo RenderSystem.disableLighting();
 
-        textureManager.bind(TextureAtlas.LOCATION_PARTICLES);
-        bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormat.PARTICLE);
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
     }
 
     private static void endRenderCommon() {
         Minecraft.getInstance().textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES).restoreLastBlurMipmap();
-        RenderSystem.enableAlphaTest();
+        // todo RenderSystem.enableAlphaTest();
         RenderSystem.disableBlend();
         RenderSystem.depthMask(true);
     }

@@ -10,37 +10,35 @@ import elucent.eidolon.recipe.CrucibleRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.INBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class CrucibleTileEntity extends TileEntityBase implements ITickableTileEntity {
-    boolean boiling = false;
-    boolean hasWater = false;
-    int stirTicks = 0;
-    int stirs = 0;
-    int stepCounter = 0;
-    List<CrucibleStep> steps = new ArrayList<>();
-    long seed = 0;
-    Random random = new Random();
+public class CrucibleTileEntity extends TileEntityBase implements TickBlockEntity {
+    public boolean boiling = false;
+    public boolean hasWater = false;
+    public int stirTicks = 0;
+    public int stirs = 0;
+    public int stepCounter = 0;
+    public List<CrucibleStep> steps = new ArrayList<>();
+    public long seed = 0;
+    public Random random = new Random();
 
     public float getRed() {
         random.setSeed(seed);
@@ -76,8 +74,8 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
 
         public CrucibleStep(CompoundTag nbt) {
             stirs = nbt.getInt("stirs");
-            ListTag list = nbt.getList("contents", Constants.NBT.TAG_COMPOUND);
-            for (INBT item : list) contents.add(ItemStack.of((CompoundTag)item));
+            ListTag list = nbt.getList("contents", Tag.TAG_COMPOUND);
+            for (Tag item : list) contents.add(ItemStack.of((CompoundTag)item));
         }
 
         public CompoundTag write() {
@@ -99,12 +97,8 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
         (BlockState b) -> b.getBlock() == Blocks.SOUL_CAMPFIRE && b.getValue(CampfireBlock.LIT)
     };
 
-    public CrucibleTileEntity() {
-        this(Registry.CRUCIBLE_TILE_ENTITY);
-    }
-
-    public CrucibleTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public CrucibleTileEntity(BlockPos pos, BlockState state) {
+        super(Registry.CRUCIBLE_TILE_ENTITY.get(), pos, state);
     }
 
     @Override
@@ -144,11 +138,11 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
     }
 
     @Override
-    public void load(BlockState state, CompoundTag tag) {
-        super.load(state, tag);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         this.steps.clear();
-        ListTag steps = tag.getList("steps", Constants.NBT.TAG_COMPOUND);
-        for (INBT step : steps) this.steps.add(new CrucibleStep((CompoundTag)step));
+        ListTag steps = tag.getList("steps", Tag.TAG_COMPOUND);
+        for (Tag step : steps) this.steps.add(new CrucibleStep((CompoundTag)step));
         boiling = tag.getBoolean("boiling");
         hasWater = tag.getBoolean("hasWater");
         stirs = tag.getInt("stirs");
@@ -157,8 +151,8 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        tag = super.save(tag);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         ListTag steps = new ListTag();
         for (CrucibleStep step : this.steps) steps.add(step.write());
         tag.put("steps", steps);
@@ -166,7 +160,6 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
         tag.putBoolean("hasWater", hasWater);
         tag.putInt("stirs", stirs);
         tag.putInt("stirTicks", stirTicks);
-        return tag;
     }
 
     @Override
@@ -226,7 +219,7 @@ public class CrucibleTileEntity extends TileEntityBase implements ITickableTileE
                         stack.setCount(1);
                         contents.add(stack);
                     }
-                    item.remove();
+                    item.remove(Entity.RemovalReason.DISCARDED);
                 }
                 if (stirs == 0 && contents.isEmpty()) { // no action done; end recipe
                     Networking.sendToTracking(level, worldPosition, new CrucibleFailPacket(worldPosition));

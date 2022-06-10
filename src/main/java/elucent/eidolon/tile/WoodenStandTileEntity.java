@@ -4,16 +4,18 @@ import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.block.WoodenStandBlock;
 import elucent.eidolon.gui.WoodenBrewingStandContainer;
-import mezz.jei.common.plugins.vanilla.ingredients.item.ItemStackHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +30,7 @@ import net.minecraftforge.common.Tags;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class WoodenStandTileEntity extends BaseContainerBlockEntity implements WorldlyContainer {
+public class WoodenStandTileEntity extends BaseContainerBlockEntity implements WorldlyContainer, TickBlockEntity {
     private static final int[] SLOTS_FOR_UP = new int[]{3};
     private static final int[] SLOTS_FOR_DOWN = new int[]{0, 1, 2, 3};
     private static final int[] OUTPUT_SLOTS = new int[]{0, 1, 2};
@@ -66,12 +68,12 @@ public class WoodenStandTileEntity extends BaseContainerBlockEntity implements W
         }
     };
 
-    public WoodenStandTileEntity() {
-        super(Registry.WOODEN_STAND_TILE_ENTITY);
+    public WoodenStandTileEntity(BlockPos pos, BlockState state) {
+        super(Registry.WOODEN_STAND_TILE_ENTITY.get(), pos, state);
     }
 
     @Override
-    protected TextComponent getDefaultName() {
+    protected Component getDefaultName() {
         return new TranslatableComponent("container." + Eidolon.MODID + ".wooden_brewing_stand");
     }
 
@@ -185,7 +187,7 @@ public class WoodenStandTileEntity extends BaseContainerBlockEntity implements W
             if (itemstack.isEmpty()) {
                 itemstack = itemstack1;
             } else if (!this.level.isClientSide) {
-                InventoryHelper.dropItemStack(this.level, (double)blockpos.getX(), (double)blockpos.getY(), (double)blockpos.getZ(), itemstack1);
+                Containers.dropItemStack(this.level, (double)blockpos.getX(), (double)blockpos.getY(), (double)blockpos.getZ(), itemstack1);
             }
         }
         else itemstack.shrink(1);
@@ -195,19 +197,18 @@ public class WoodenStandTileEntity extends BaseContainerBlockEntity implements W
     }
 
     @Override
-    public void load(BlockState state, CompoundTag nbt) {
-        super.load(state, nbt);
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
         this.brewingItemStacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        ItemStackHelper.loadAllItems(nbt, this.brewingItemStacks);
+        ContainerHelper.loadAllItems(nbt, this.brewingItemStacks);
         this.brewTime = nbt.getShort("BrewTime");
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        super.save(compound);
+    protected void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
         compound.putShort("BrewTime", (short)this.brewTime);
-        ItemStackHelper.saveAllItems(compound, this.brewingItemStacks);
-        return compound;
+        ContainerHelper.saveAllItems(compound, this.brewingItemStacks);
     }
 
     @Override
@@ -217,12 +218,12 @@ public class WoodenStandTileEntity extends BaseContainerBlockEntity implements W
 
     @Override
     public ItemStack removeItem(int index, int count) {
-        return ItemStackHelper.removeItem(this.brewingItemStacks, index, count);
+        return ContainerHelper.removeItem(this.brewingItemStacks, index, count);
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int index) {
-        return ItemStackHelper.takeItem(this.brewingItemStacks, index);
+        return ContainerHelper.takeItem(this.brewingItemStacks, index);
     }
 
     @Override
@@ -246,8 +247,8 @@ public class WoodenStandTileEntity extends BaseContainerBlockEntity implements W
     public boolean canPlaceItem(int index, ItemStack stack) {
         if (index == 3) {
             return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidIngredient(stack)
-                && !Tags.Items.DUSTS_REDSTONE.contains(stack.getItem())
-                && !Tags.Items.DUSTS_GLOWSTONE.contains(stack.getItem());
+                && !stack.is(Tags.Items.DUSTS_REDSTONE)
+                && !stack.is(Tags.Items.DUSTS_GLOWSTONE);
         } else {
             return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidInput(stack) && this.getItem(index).isEmpty();
         }
@@ -282,7 +283,7 @@ public class WoodenStandTileEntity extends BaseContainerBlockEntity implements W
     }
 
     @Override
-    public Container createMenu(int id, Inventory player) {
+    public AbstractContainerMenu createMenu(int id, Inventory player) {
         return new WoodenBrewingStandContainer(id, player, this, this.dataAccess);
     }
 

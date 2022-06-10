@@ -1,7 +1,8 @@
 package elucent.eidolon;
 
-import elucent.eidolon.block.*;
 import elucent.eidolon.block.CandleBlock;
+import elucent.eidolon.block.*;
+import elucent.eidolon.client.renderer.blockentity.SoulEnchanterTileRenderer;
 import elucent.eidolon.entity.*;
 import elucent.eidolon.gui.SoulEnchanterContainer;
 import elucent.eidolon.gui.WoodenBrewingStandContainer;
@@ -15,7 +16,7 @@ import elucent.eidolon.ritual.*;
 import elucent.eidolon.spell.Sign;
 import elucent.eidolon.spell.Signs;
 import elucent.eidolon.tile.*;
-import net.minecraft.block.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -24,34 +25,28 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.*;
-import net.minecraft.potion.*;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.ToolType;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,8 +59,8 @@ public class Registry {
     static DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Eidolon.MODID);
     static DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Eidolon.MODID);
     static DeferredRegister<BlockEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Eidolon.MODID);
-    static DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, Eidolon.MODID);
-    static DeferredRegister<MobEffect> POTION_TYPES = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Eidolon.MODID);
+    static DeferredRegister<MobEffect> POTIONS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Eidolon.MODID);
+    static DeferredRegister<Potion> POTION_TYPES = DeferredRegister.create(ForgeRegistries.POTIONS, Eidolon.MODID);
     static DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Eidolon.MODID);
     static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Eidolon.MODID);
 
@@ -78,33 +73,47 @@ public class Registry {
     }
 
     static RegistryObject<Item> addItem(String name) {
-        Item i = new Item(itemProps());
-        ITEM_MAP.put(name, i);
-        return ITEMS.register(name, () -> i);
+        return ITEMS.register(name, () -> {
+            Item i = new Item(itemProps());
+            ITEM_MAP.put(name, i);
+            return i;
+        });
     }
 
     static RegistryObject<Item> addItem(String name, Item.Properties props) {
-        Item i = new Item(props);
-        ITEM_MAP.put(name, i);
-        return ITEMS.register(name, () -> i);
+        return ITEMS.register(name, () -> {
+            Item i = new Item(props);
+            ITEM_MAP.put(name, i);
+            return i;
+        });
     }
 
-    static RegistryObject<Item> addItem(String name, Item item) {
-        ITEM_MAP.put(name, item);
-        return ITEMS.register(name, () -> item);
+    static RegistryObject<Item> addItem(String name, Supplier<Item> item) {
+        return ITEMS.register(name, () -> {
+            var result = item.get();
+            ITEM_MAP.put(name, result);
+            return result;
+        });
     }
 
     static RegistryObject<Block> addBlock(String name, Block.Properties props) {
-        Block b = new Block(props);
-        BLOCK_MAP.put(name, b);
-        ITEMS.register(name, () -> new BlockItem(b, itemProps()));
-        return BLOCKS.register(name, () -> b);
+        var block = BLOCKS.register(name, () -> {
+            Block b = new Block(props);
+            BLOCK_MAP.put(name, b);
+            return b;
+        });
+        ITEMS.register(name, () -> new BlockItem(block.get(), itemProps()));
+        return block;
     }
 
-    static RegistryObject<Block> addBlock(String name, Block block) {
-        BLOCK_MAP.put(name, block);
-        ITEMS.register(name, () -> new BlockItem(block, itemProps()));
-        return BLOCKS.register(name, () -> block);
+    static RegistryObject<Block> addBlock(String name, Supplier<Block> block) {
+        var aa = BLOCKS.register(name, () -> {
+            var result = block.get();
+            BLOCK_MAP.put(name, result);
+            return result;
+        });
+        ITEMS.register(name, () -> new BlockItem(aa.get(), itemProps()));
+        return aa;
     }
 
     public static class DecoBlockPack {
@@ -117,19 +126,19 @@ public class Registry {
             this.registry = blocks;
             this.basename = basename;
             this.props = props;
-            full = addBlock(basename, new Block(props));
-            slab = addBlock(basename + "_slab", new SlabBlock(props));
-            stair = addBlock(basename + "_stairs", new StairBlock(() -> full.get().defaultBlockState(), props));
+            full = addBlock(basename, () -> new Block(props));
+            slab = addBlock(basename + "_slab", () -> new SlabBlock(props));
+            stair = addBlock(basename + "_stairs", () -> new StairBlock(() -> full.get().defaultBlockState(), props));
         }
 
         public DecoBlockPack addWall() {
-            wall = addBlock(basename + "_wall", new WallBlock(props));
+            wall = addBlock(basename + "_wall", () -> new WallBlock(props));
             return this;
         }
 
         public DecoBlockPack addFence() {
-            fence = addBlock(basename + "_fence", new FenceBlock(props));
-            fence = addBlock(basename + "_fence_gate", new FenceGateBlock(props));
+            fence = addBlock(basename + "_fence", () -> new FenceBlock(props));
+            fence = addBlock(basename + "_fence_gate", () -> new FenceGateBlock(props));
             return this;
         }
 
@@ -140,23 +149,24 @@ public class Registry {
         public Block getFence() { return fence.get(); }
     }
 
-    static <T extends Entity> RegistryObject<EntityType<T>> addEntity(String name, float width, float height, EntityType.IFactory<T> factory, MobCategory kind) {
-        EntityType<T> type = EntityType.Builder.<T>of(factory, kind)
-            .setTrackingRange(64)
-            .setUpdateInterval(1)
-            .sized(width, height)
-            .build(Eidolon.MODID + ":" + name);
-        return ENTITIES.register(name, () -> type);
+    static <T extends Entity> RegistryObject<EntityType<T>> addEntity(String name, float width, float height, EntityType.EntityFactory<T> factory, MobCategory kind) {
+        return ENTITIES.register(name, () -> EntityType.Builder.<T>of(factory, kind)
+                .setTrackingRange(64)
+                .setUpdateInterval(1)
+                .sized(width, height)
+                .build(Eidolon.MODID + ":" + name));
     }
 
-    static <T extends Entity> RegistryObject<EntityType<T>> addEntity(String name, int color1, int color2, float width, float height, EntityType.IFactory<T> factory, MobCategory kind) {
-        EntityType<T> type = EntityType.Builder.<T>of(factory, kind)
-            .setTrackingRange(64)
-            .setUpdateInterval(1)
-            .sized(width, height)
-            .build(Eidolon.MODID + ":" + name);
-        ITEMS.register("spawn_" + name, () -> new SpawnEggItem(type, color1, color2, itemProps().tab(CreativeModeTab.TAB_MISC)));
-        return ENTITIES.register(name, () -> type);
+    static <T extends Mob> RegistryObject<EntityType<T>> addEntity(String name, int color1, int color2, float width, float height, EntityType.EntityFactory<T> factory, MobCategory kind) {
+        var type = ENTITIES.register(name, () ->
+            EntityType.Builder.<T>of(factory, kind)
+                    .setTrackingRange(64)
+                    .setUpdateInterval(1)
+                    .sized(width, height)
+                    .build(Eidolon.MODID + ":" + name)
+        );
+        ITEMS.register("spawn_" + name, () -> new ForgeSpawnEggItem(type, color1, color2, itemProps().tab(CreativeModeTab.TAB_MISC)));
+        return type;
     }
 
     static RegistryObject<SoundEvent> addSound(String name) {
@@ -164,16 +174,24 @@ public class Registry {
         return SOUND_EVENTS.register(name, () -> event);
     }
 
-    static <T extends Container> RegistryObject<MenuType<T>> addContainer(String name, MenuType.IFactory<T> factory) {
+    static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> addContainer(String name, MenuType.MenuSupplier<T> factory) {
         return CONTAINERS.register(name, () -> new MenuType<T>(factory));
     }
 
-    static <T extends BlockEntity> BlockEntityType<T> addTileEntity(IForgeRegistry<BlockEntityType<?>> registry, String name, Supplier<T> factory, Block... blocks) {
-        BlockEntityType<T> type = BlockEntityType.Builder.<T>of(factory, blocks).build(null);
-        type.setRegistryName(Eidolon.MODID, name);
-        registry.register(type);
-        for (Block block : blocks) if (block instanceof BlockBase) ((BlockBase)block).setTile(type);
-        return type;
+    static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> addTileEntity(String name, BlockEntityType.BlockEntitySupplier<T> factory, Supplier<Block>... blocks) {
+        return TILE_ENTITIES.register(name, () -> {
+            var blockArray = new Block[blocks.length];
+            for (int i = 0; i < blocks.length; i++) {
+                blockArray[i] = blocks[i].get();
+            }
+            var result = BlockEntityType.Builder.of(factory, blockArray).build(null);
+            for (var block : blockArray) {
+                if (block instanceof BlockBase base) {
+                    base.setTile(result);
+                }
+            }
+            return result;
+        });
     }
 
     public static RegistryObject<SoundEvent>
@@ -206,16 +224,16 @@ public class Registry {
         ARCANE_GOLD_NUGGET = addItem("arcane_gold_nugget"),
         SULFUR = addItem("sulfur"),
         GOLD_INLAY = addItem("gold_inlay"),
-        ZOMBIE_HEART = addItem("zombie_heart", new ItemBase(itemProps().rarity(Rarity.UNCOMMON))
+        ZOMBIE_HEART = addItem("zombie_heart", () -> new ItemBase(itemProps().rarity(Rarity.UNCOMMON))
             .setLore("lore.eidolon.zombie_heart")),
         TATTERED_CLOTH = addItem("tattered_cloth"),
-        WRAITH_HEART = addItem("wraith_heart", new ItemBase(itemProps()
+        WRAITH_HEART = addItem("wraith_heart", () -> new ItemBase(itemProps()
             .rarity(Rarity.UNCOMMON)).setLore("lore.eidolon.wraith_heart")),
-        TOP_HAT = addItem("top_hat", new TopHatItem(itemProps().stacksTo(1).rarity(Rarity.EPIC)).setLore("lore.eidolon.top_hat")),
-        BASIC_RING = addItem("basic_ring", new BasicRingItem(itemProps().stacksTo(1))),
-        BASIC_AMULET = addItem("basic_amulet", new BasicAmuletItem(itemProps().stacksTo(1))),
-        BASIC_BELT = addItem("basic_belt", new BasicBeltItem(itemProps().stacksTo(1))),
-        CODEX = addItem("codex", new CodexItem(itemProps().stacksTo(1).rarity(Rarity.UNCOMMON)).setLore("lore.eidolon.codex")),
+        TOP_HAT = addItem("top_hat", () -> new TopHatItem(itemProps().stacksTo(1).rarity(Rarity.EPIC)).setLore("lore.eidolon.top_hat")),
+        BASIC_RING = addItem("basic_ring", () -> new BasicRingItem(itemProps().stacksTo(1))),
+        BASIC_AMULET = addItem("basic_amulet", () -> new BasicAmuletItem(itemProps().stacksTo(1))),
+        BASIC_BELT = addItem("basic_belt", () -> new BasicBeltItem(itemProps().stacksTo(1))),
+        CODEX = addItem("codex", () -> new CodexItem(itemProps().stacksTo(1).rarity(Rarity.UNCOMMON)).setLore("lore.eidolon.codex")),
         SOUL_SHARD = addItem("soul_shard"),
         DEATH_ESSENCE = addItem("death_essence"),
         CRIMSON_ESSENCE = addItem("crimson_essence"),
@@ -224,104 +242,118 @@ public class Registry {
         ENDER_CALX = addItem("ender_calx"),
         TALLOW = addItem("tallow"),
         LESSER_SOUL_GEM = addItem("lesser_soul_gem"),
-        UNHOLY_SYMBOL = addItem("unholy_symbol", new UnholySymbolItem(itemProps().rarity(Rarity.UNCOMMON).stacksTo(1))),
-        REAPER_SCYTHE = addItem("reaper_scythe", new ReaperScytheItem(itemProps().rarity(Rarity.UNCOMMON))
+        UNHOLY_SYMBOL = addItem("unholy_symbol", () -> new UnholySymbolItem(itemProps().rarity(Rarity.UNCOMMON).stacksTo(1))),
+        REAPER_SCYTHE = addItem("reaper_scythe", () -> new ReaperScytheItem(itemProps().rarity(Rarity.UNCOMMON))
             .setLore("lore.eidolon.reaper_scythe")),
-        CLEAVING_AXE = addItem("cleaving_axe", new CleavingAxeItem(itemProps().rarity(Rarity.UNCOMMON))
+        CLEAVING_AXE = addItem("cleaving_axe", () -> new CleavingAxeItem(itemProps().rarity(Rarity.UNCOMMON))
             .setLore("lore.eidolon.cleaving_axe")),
         SHADOW_GEM = addItem("shadow_gem"),
         WICKED_WEAVE = addItem("wicked_weave"),
-        WARLOCK_HAT = addItem("warlock_hat", new WarlockRobesItem(EquipmentSlot.HEAD, itemProps())),
-        WARLOCK_CLOAK = addItem("warlock_cloak", new WarlockRobesItem(EquipmentSlot.CHEST, itemProps())),
-        WARLOCK_BOOTS = addItem("warlock_boots", new WarlockRobesItem(EquipmentSlot.FEET, itemProps())),
-        REVERSAL_PICK = addItem("reversal_pick", new ReversalPickItem(itemProps()
+        WARLOCK_HAT = addItem("warlock_hat", () -> new WarlockRobesItem(EquipmentSlot.HEAD, itemProps())),
+        WARLOCK_CLOAK = addItem("warlock_cloak", () -> new WarlockRobesItem(EquipmentSlot.CHEST, itemProps())),
+        WARLOCK_BOOTS = addItem("warlock_boots", () -> new WarlockRobesItem(EquipmentSlot.FEET, itemProps())),
+        REVERSAL_PICK = addItem("reversal_pick", () -> new ReversalPickItem(itemProps()
             .rarity(Rarity.UNCOMMON))),
-        VOID_AMULET = addItem("void_amulet", new VoidAmuletItem(itemProps()
+        VOID_AMULET = addItem("void_amulet", () -> new VoidAmuletItem(itemProps()
             .rarity(Rarity.UNCOMMON).stacksTo(1)).setLore("lore.eidolon.void_amulet")),
-        WARDED_MAIL = addItem("warded_mail", new WardedMailItem(itemProps()
+        WARDED_MAIL = addItem("warded_mail", () -> new WardedMailItem(itemProps()
             .rarity(Rarity.UNCOMMON).stacksTo(1)).setLore("lore.eidolon.warded_mail")),
-        SAPPING_SWORD = addItem("sapping_sword", new SappingSwordItem(itemProps()
+        SAPPING_SWORD = addItem("sapping_sword", () -> new SappingSwordItem(itemProps()
             .rarity(Rarity.UNCOMMON).stacksTo(1)).setLore("lore.eidolon.sapping_sword")),
-        SANGUINE_AMULET = addItem("sanguine_amulet", new SanguineAmuletItem(itemProps()
+        SANGUINE_AMULET = addItem("sanguine_amulet", () -> new SanguineAmuletItem(itemProps()
             .rarity(Rarity.UNCOMMON).stacksTo(1)).setLore("lore.eidolon.sanguine_amulet")),
-        SOULFIRE_WAND = addItem("soulfire_wand", new SoulfireWandItem(itemProps()
+        SOULFIRE_WAND = addItem("soulfire_wand", () -> new SoulfireWandItem(itemProps()
             .rarity(Rarity.UNCOMMON).stacksTo(1).durability(253).setNoRepair())
             .setLore("lore.eidolon.soulfire_wand")),
-        BONECHILL_WAND = addItem("bonechill_wand", new BonechillWandItem(itemProps()
+        BONECHILL_WAND = addItem("bonechill_wand", () -> new BonechillWandItem(itemProps()
             .rarity(Rarity.UNCOMMON).stacksTo(1).durability(253).setNoRepair())
             .setLore("lore.eidolon.bonechill_wand")),
-        GRAVITY_BELT = addItem("gravity_belt", new GravityBeltItem(itemProps()
+        GRAVITY_BELT = addItem("gravity_belt", () -> new GravityBeltItem(itemProps()
             .rarity(Rarity.UNCOMMON).stacksTo(1)).setLore("lore.eidolon.gravity_belt")),
-        RESOLUTE_BELT = addItem("resolute_belt", new ResoluteBeltItem(itemProps()
+        RESOLUTE_BELT = addItem("resolute_belt", () -> new ResoluteBeltItem(itemProps()
             .rarity(Rarity.UNCOMMON).stacksTo(1)).setLore("lore.eidolon.resolute_belt")),
-        PRESTIGIOUS_PALM = addItem("prestigious_palm", new PrestigiousPalmItem(itemProps()
+        PRESTIGIOUS_PALM = addItem("prestigious_palm", () -> new PrestigiousPalmItem(itemProps()
             .rarity(Rarity.UNCOMMON).stacksTo(1)).setLore("lore.eidolon.prestigious_palm")),
-        MIND_SHIELDING_PLATE = addItem("mind_shielding_plate", new MindShieldingPlateItem(itemProps()
+        MIND_SHIELDING_PLATE = addItem("mind_shielding_plate", () -> new MindShieldingPlateItem(itemProps()
             .rarity(Rarity.UNCOMMON).stacksTo(1)).setLore("lore.eidolon.mind_shielding_plate")),
-        GLASS_HAND = addItem("glass_hand", new GlassHandItem(itemProps()
+        GLASS_HAND = addItem("glass_hand", () -> new GlassHandItem(itemProps()
             .rarity(Rarity.RARE).stacksTo(1)).setLore("lore.eidolon.glass_hand")),
-        PAROUSIA_DISC = addItem("music_disc_parousia", new MusicDiscItem(9, () -> PAROUSIA.get(),
+        PAROUSIA_DISC = addItem("music_disc_parousia", () -> new RecordItem(9, () -> PAROUSIA.get(),
             itemProps().stacksTo(1).tab(CreativeModeTab.TAB_MISC).rarity(Rarity.RARE)));
 
     public static RegistryObject<Block>
         LEAD_ORE = addBlock("lead_ore", blockProps(Material.STONE, MaterialColor.STONE)
             .sound(SoundType.STONE).strength(2.8f, 3.0f)
-            .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
+            //.harvestLevel(2).harvestTool(ToolType.PICKAXE)
+    ),
         LEAD_BLOCK = addBlock("lead_block", blockProps(Material.STONE, MaterialColor.TERRACOTTA_PURPLE)
             .sound(SoundType.METAL).strength(3.0f, 3.0f)
-            .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
+            //.harvestLevel(2).harvestTool(ToolType.PICKAXE)
+        ),
         PEWTER_BLOCK = addBlock("pewter_block", blockProps(Material.STONE, MaterialColor.COLOR_LIGHT_GRAY)
             .sound(SoundType.METAL).strength(4.0f, 4.0f)
-            .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
+            //.harvestLevel(2).harvestTool(ToolType.PICKAXE)
+        ),
         ARCANE_GOLD_BLOCK = addBlock("arcane_gold_block", blockProps(Material.STONE, MaterialColor.GOLD)
             .sound(SoundType.METAL).strength(3.0f, 4.0f)
-            .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
-        WOODEN_ALTAR = addBlock("wooden_altar", new TableBlockBase(blockProps(Material.WOOD, MaterialColor.WOOD)
+            //.harvestLevel(2).harvestTool(ToolType.PICKAXE)
+        ),
+        WOODEN_ALTAR = addBlock("wooden_altar", () -> new TableBlockBase(blockProps(Material.WOOD, MaterialColor.WOOD)
             .sound(SoundType.WOOD).strength(1.6f, 3.0f)
-            .harvestTool(ToolType.AXE))),
-        STONE_ALTAR = addBlock("stone_altar", new TableBlockBase(blockProps(Material.STONE, MaterialColor.STONE)
+            //.harvestTool(ToolType.AXE)
+        )),
+        STONE_ALTAR = addBlock("stone_altar", () -> new TableBlockBase(blockProps(Material.STONE, MaterialColor.STONE)
             .sound(SoundType.STONE).strength(2.8f, 3.0f)
-            .requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).noOcclusion())
+            .requiresCorrectToolForDrops()
+                //.harvestTool(ToolType.PICKAXE)
+                .noOcclusion())
             .setMainShape(Shapes.or(
                 Shapes.box(0, 0.375, 0, 1, 1, 1),
                 Shapes.box(0.0625, 0.125, 0.0625, 0.9375, 0.375, 0.9375)
             ))),
-        CANDLE = addBlock("candle", new CandleBlock(blockProps(Material.DECORATION, MaterialColor.TERRACOTTA_WHITE)
+        CANDLE = addBlock("candle", () -> new CandleBlock(blockProps(Material.DECORATION, MaterialColor.TERRACOTTA_WHITE)
             .sound(SoundType.STONE).lightLevel((state) -> 15).strength(0.6f, 0.8f).noOcclusion())),
-        CANDLESTICK = addBlock("candlestick", new CandlestickBlock(blockProps(Material.METAL, MaterialColor.GOLD)
+        CANDLESTICK = addBlock("candlestick", () -> new CandlestickBlock(blockProps(Material.METAL, MaterialColor.GOLD)
             .sound(SoundType.STONE).lightLevel((state) -> 15).strength(1.2f, 2.0f).noOcclusion())),
-        STRAW_EFFIGY = addBlock("straw_effigy", new HorizontalWaterloggableBlock(blockProps(Material.PLANT, MaterialColor.COLOR_YELLOW)
+        STRAW_EFFIGY = addBlock("straw_effigy", () -> new HorizontalWaterloggableBlock(blockProps(Material.PLANT, MaterialColor.COLOR_YELLOW)
             .sound(SoundType.WOOD).strength(1.4f, 2.0f)
             .noOcclusion()).setShape(
                 Shapes.box(0.28125, 0, 0.28125, 0.71875, 1, 0.71875)
             )),
-        GOBLET = addBlock("goblet", new BlockBase(blockProps(Material.METAL, MaterialColor.GOLD)
-            .sound(SoundType.METAL).strength(1.4f, 2.0f).requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE)
+        GOBLET = addBlock("goblet", () -> new BlockBase(blockProps(Material.METAL, MaterialColor.GOLD)
+            .sound(SoundType.METAL).strength(1.4f, 2.0f).requiresCorrectToolForDrops()
+                //.harvestTool(ToolType.PICKAXE)
             .noOcclusion()).setShape(Shapes.box(0.3125, 0, 0.3125, 0.6875, 0.5, 0.6875))),
-        UNHOLY_EFFIGY = addBlock("unholy_effigy", new HorizontalWaterloggableBlock(blockProps(Material.STONE, MaterialColor.STONE)
+        UNHOLY_EFFIGY = addBlock("unholy_effigy", () -> new HorizontalWaterloggableBlock(blockProps(Material.STONE, MaterialColor.STONE)
             .sound(SoundType.STONE).strength(2.8f, 3.0f)
-            .requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE)
+            .requiresCorrectToolForDrops()
+                //.harvestTool(ToolType.PICKAXE)
             .noOcclusion()).setShape(
                 Shapes.box(0.25, 0, 0.25, 0.75, 1, 0.75)
             )),
-        WORKTABLE = addBlock("worktable", new WorktableBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
+        WORKTABLE = addBlock("worktable", () -> new WorktableBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
             .sound(SoundType.WOOD).strength(1.6f, 3.0f)
-            .harvestTool(ToolType.AXE).noOcclusion()).setShape(Shapes.or(
+            //.harvestTool(ToolType.AXE)
+                .noOcclusion()).setShape(Shapes.or(
                 Shapes.box(0, 0, 0, 1, 0.25, 1),
                 Shapes.box(0.125, 0.25, 0.125, 0.875, 0.625, 0.875),
                 Shapes.box(0, 0.625, 0, 1, 1, 1)
             ))),
-        PLINTH = addBlock("plinth", new PlinthBlockBase(blockProps(Material.STONE, MaterialColor.STONE)
+        PLINTH = addBlock("plinth", () -> new PlinthBlockBase(blockProps(Material.STONE, MaterialColor.STONE)
             .sound(SoundType.STONE).strength(2.0f, 3.0f)
-            .requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).noOcclusion())
+            .requiresCorrectToolForDrops()
+                //.harvestTool(ToolType.PICKAXE)
+                .noOcclusion())
             .setShape(Shapes.box(0.25, 0, 0.25, 0.75, 1, 0.75))),
-        BRAZIER = addBlock("brazier", new BlockBase(blockProps(Material.WOOD, MaterialColor.METAL)
+        BRAZIER = addBlock("brazier", () -> new BlockBase(blockProps(Material.WOOD, MaterialColor.METAL)
             .sound(SoundType.METAL).strength(2.5f, 3.0f)
             .noOcclusion())
             .setShape(Shapes.box(0.1875, 0, 0.1875, 0.8125, 0.75, 0.8125))),
-        CRUCIBLE = addBlock("crucible", new BlockBase(blockProps(Material.METAL, MaterialColor.METAL)
+        CRUCIBLE = addBlock("crucible", () -> new BlockBase(blockProps(Material.METAL, MaterialColor.METAL)
             .sound(SoundType.METAL).strength(4.0f, 3.0f)
-            .requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).noOcclusion())
+            .requiresCorrectToolForDrops()
+                //.harvestTool(ToolType.PICKAXE)
+                .noOcclusion())
             .setShape(Shapes.or(
                 Shapes.box(0.0625, 0.875, 0.0625, 0.1875, 1, 0.9375),
                 Shapes.box(0.8125, 0.875, 0.0625, 0.9375, 1, 0.9375),
@@ -333,36 +365,49 @@ public class Registry {
                 Shapes.box(0, 0.125, 0.875, 1, 0.875, 1),
                 Shapes.box(0.0625, 0, 0.0625, 0.9375, 0.125, 0.9375)
             ))),
-        STONE_HAND = addBlock("stone_hand", new HorizontalWaterloggableBlock(blockProps(Material.STONE, MaterialColor.STONE)
+        STONE_HAND = addBlock("stone_hand", () -> new HorizontalWaterloggableBlock(blockProps(Material.STONE, MaterialColor.STONE)
             .sound(SoundType.STONE).strength(2.0f, 3.0f)
-            .requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).noOcclusion())
+            .requiresCorrectToolForDrops()
+                //.harvestTool(ToolType.PICKAXE)
+                .noOcclusion())
             .setShape(Shapes.box(0.25, 0, 0.25, 0.75, 0.75, 0.75))),
-        ENCHANTED_ASH = addBlock("enchanted_ash", new EnchantedAshBlock(blockProps(Material.DECORATION, MaterialColor.TERRACOTTA_WHITE)
+        ENCHANTED_ASH = addBlock("enchanted_ash", () -> new EnchantedAshBlock(blockProps(Material.DECORATION, MaterialColor.TERRACOTTA_WHITE)
             .sound(SoundType.STONE).strength(0.0f, 0.75f).noOcclusion())
             .setShape(Shapes.empty())),
-        NECROTIC_FOCUS = addBlock("necrotic_focus", new NecroticFocusBlock(blockProps(Material.STONE, MaterialColor.STONE)
+        NECROTIC_FOCUS = addBlock("necrotic_focus", () -> new NecroticFocusBlock(blockProps(Material.STONE, MaterialColor.STONE)
             .sound(SoundType.STONE).strength(2.8f, 3.0f)
-            .requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).noOcclusion())
+            .requiresCorrectToolForDrops()
+                //.harvestTool(ToolType.PICKAXE)
+                .noOcclusion())
             .setShape(Shapes.box(0.25, 0, 0.25, 0.75, 0.75, 0.75))),
-        SOUL_ENCHANTER = addBlock("soul_enchanter", new SoulEnchanterBlock(blockProps(Material.STONE, MaterialColor.PODZOL)
+        SOUL_ENCHANTER = addBlock("soul_enchanter", () -> new SoulEnchanterBlock(blockProps(Material.STONE, MaterialColor.PODZOL)
             .sound(SoundType.STONE).strength(5.0f, 1200.0f)
-            .harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().noOcclusion())
+            //.harvestTool(ToolType.PICKAXE)
+                .requiresCorrectToolForDrops().noOcclusion())
             .setShape(Shapes.box(0, 0, 0, 1, 0.75, 1))),
-        WOODEN_STAND = addBlock("wooden_brewing_stand", new WoodenStandBlock(blockProps(Material.METAL, MaterialColor.WOOD)
+        WOODEN_STAND = addBlock("wooden_brewing_stand", () -> new WoodenStandBlock(blockProps(Material.METAL, MaterialColor.WOOD)
             .sound(SoundType.STONE).strength(2.0f, 3.0f)
-            .harvestTool(ToolType.PICKAXE).noOcclusion()));
+            //.harvestTool(ToolType.PICKAXE)
+                .noOcclusion()));
     public static DecoBlockPack
         SMOOTH_STONE_BRICK = new DecoBlockPack(BLOCKS, "smooth_stone_bricks", blockProps(Material.STONE, MaterialColor.STONE)
-            .sound(SoundType.STONE).requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).strength(2.0f, 3.0f))
+            .sound(SoundType.STONE).requiresCorrectToolForDrops()
+            //.harvestTool(ToolType.PICKAXE)
+            .strength(2.0f, 3.0f))
             .addWall(),
         SMOOTH_STONE_TILES = new DecoBlockPack(BLOCKS, "smooth_stone_tiles", blockProps(Material.STONE, MaterialColor.STONE)
-            .sound(SoundType.STONE).requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).strength(2.0f, 3.0f)),
+            .sound(SoundType.STONE).requiresCorrectToolForDrops()
+                //.harvestTool(ToolType.PICKAXE)
+                .strength(2.0f, 3.0f)),
         POLISHED_PLANKS = new DecoBlockPack(BLOCKS, "polished_planks", blockProps(Material.WOOD, MaterialColor.WOOD)
-            .sound(SoundType.WOOD).harvestTool(ToolType.AXE).strength(1.6f, 3.0f))
+            .sound(SoundType.WOOD)
+                //.harvestTool(ToolType.AXE)
+                .strength(1.6f, 3.0f))
             .addFence();
     public static RegistryObject<Block>
-        POLISHED_WOOD_PILLAR = addBlock("polished_wood_pillar", new RotatedPillarBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
-            .harvestTool(ToolType.AXE).strength(1.6f, 3.0f)));
+        POLISHED_WOOD_PILLAR = addBlock("polished_wood_pillar", () -> new RotatedPillarBlock(blockProps(Material.WOOD, MaterialColor.WOOD)
+            //.harvestTool(ToolType.AXE)
+            .strength(1.6f, 3.0f)));
 
     public static RegistryObject<EntityType<ZombieBruteEntity>>
         ZOMBIE_BRUTE = addEntity("zombie_brute", 7969893, 44975, 1.2f, 2.5f, ZombieBruteEntity::new, MobCategory.MONSTER);
@@ -388,8 +433,8 @@ public class Registry {
 
     public static void init() {
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         POTIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
         POTION_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         TILE_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -411,25 +456,24 @@ public class Registry {
     public static void clientInit() {
     }
 
-    public static BlockEntityType<HandTileEntity> HAND_TILE_ENTITY;
-    public static BlockEntityType<BrazierTileEntity> BRAZIER_TILE_ENTITY;
-    public static BlockEntityType<NecroticFocusTileEntity> NECROTIC_FOCUS_TILE_ENTITY;
-    public static BlockEntityType<CrucibleTileEntity> CRUCIBLE_TILE_ENTITY;
-    public static BlockEntityType<EffigyTileEntity> EFFIGY_TILE_ENTITY;
-    public static BlockEntityType<SoulEnchanterTileEntity> SOUL_ENCHANTER_TILE_ENTITY;
-    public static BlockEntityType<WoodenStandTileEntity> WOODEN_STAND_TILE_ENTITY;
-    public static BlockEntityType<GobletTileEntity> GOBLET_TILE_ENTITY;
+    public static RegistryObject<BlockEntityType<HandTileEntity>         >  HAND_TILE_ENTITY;
+    public static RegistryObject<BlockEntityType<BrazierTileEntity>      >  BRAZIER_TILE_ENTITY;
+    public static RegistryObject<BlockEntityType<NecroticFocusTileEntity>>  NECROTIC_FOCUS_TILE_ENTITY;
+    public static RegistryObject<BlockEntityType<CrucibleTileEntity>     >  CRUCIBLE_TILE_ENTITY;
+    public static RegistryObject<BlockEntityType<EffigyTileEntity>       >  EFFIGY_TILE_ENTITY;
+    public static RegistryObject<BlockEntityType<SoulEnchanterTileEntity>>  SOUL_ENCHANTER_TILE_ENTITY;
+    public static RegistryObject<BlockEntityType<WoodenStandTileEntity>  >  WOODEN_STAND_TILE_ENTITY;
+    public static RegistryObject<BlockEntityType<GobletTileEntity>       >  GOBLET_TILE_ENTITY;
 
-    @SubscribeEvent
-    public void registerTiles(RegistryEvent.Register<BlockEntityType<?>> evt) {
-        HAND_TILE_ENTITY = addTileEntity(evt.getRegistry(), "hand_tile", HandTileEntity::new, STONE_HAND.get());
-        BRAZIER_TILE_ENTITY = addTileEntity(evt.getRegistry(), "brazier_tile", BrazierTileEntity::new, BRAZIER.get());
-        NECROTIC_FOCUS_TILE_ENTITY = addTileEntity(evt.getRegistry(), "necrotic_focus", NecroticFocusTileEntity::new, NECROTIC_FOCUS.get());
-        CRUCIBLE_TILE_ENTITY = addTileEntity(evt.getRegistry(), "crucible", CrucibleTileEntity::new, CRUCIBLE.get());
-        EFFIGY_TILE_ENTITY = addTileEntity(evt.getRegistry(), "effigy", EffigyTileEntity::new, STRAW_EFFIGY.get(), UNHOLY_EFFIGY.get());
-        SOUL_ENCHANTER_TILE_ENTITY = addTileEntity(evt.getRegistry(), "soul_enchanter", SoulEnchanterTileEntity::new, SOUL_ENCHANTER.get());
-        WOODEN_STAND_TILE_ENTITY = addTileEntity(evt.getRegistry(), "wooden_brewing_stand", WoodenStandTileEntity::new, WOODEN_STAND.get());
-        GOBLET_TILE_ENTITY = addTileEntity(evt.getRegistry(), "goblet", GobletTileEntity::new, GOBLET.get());
+    static {
+        HAND_TILE_ENTITY = addTileEntity("hand_tile", HandTileEntity::new, STONE_HAND);
+        BRAZIER_TILE_ENTITY = addTileEntity("brazier_tile", BrazierTileEntity::new, BRAZIER);
+        NECROTIC_FOCUS_TILE_ENTITY = addTileEntity("necrotic_focus", NecroticFocusTileEntity::new, NECROTIC_FOCUS);
+        CRUCIBLE_TILE_ENTITY = addTileEntity( "crucible", CrucibleTileEntity::new, CRUCIBLE);
+        EFFIGY_TILE_ENTITY = addTileEntity("effigy", EffigyTileEntity::new, STRAW_EFFIGY, UNHOLY_EFFIGY);
+        SOUL_ENCHANTER_TILE_ENTITY = addTileEntity("soul_enchanter", SoulEnchanterTileEntity::new, SOUL_ENCHANTER);
+        WOODEN_STAND_TILE_ENTITY = addTileEntity("wooden_brewing_stand", WoodenStandTileEntity::new, WOODEN_STAND);
+        GOBLET_TILE_ENTITY = addTileEntity("goblet", GobletTileEntity::new, GOBLET);
     }
 
     public static DamageSource RITUAL_DAMAGE = new DamageSource("ritual").bypassArmor().bypassMagic();

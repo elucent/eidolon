@@ -1,29 +1,28 @@
 package elucent.eidolon.util;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import elucent.eidolon.ClientEvents;
 import elucent.eidolon.Eidolon;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
 import net.minecraft.world.phys.Vec3;
-import com.mojang.math.Vector3f;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
 public class RenderUtil {
-    public static final RenderStateShard.TransparencyState ADDITIVE_TRANSPARENCY = new RenderStateShard.TransparencyState("lightning_transparency", () -> {
+    public static final RenderStateShard.TransparencyStateShard ADDITIVE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("lightning_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
     }, () -> {
@@ -31,7 +30,7 @@ public class RenderUtil {
         RenderSystem.defaultBlendFunc();
     });
 
-    public static final RenderStateShard.TransparencyState NORMAL_TRANSPARENCY = new RenderStateShard.TransparencyState("lightning_transparency", () -> {
+    public static final RenderStateShard.TransparencyStateShard NORMAL_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("lightning_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }, () -> {
@@ -42,61 +41,66 @@ public class RenderUtil {
     public static RenderType GLOWING_SPRITE = RenderType.create(
         Eidolon.MODID + ":glowing_sprite",
         DefaultVertexFormat.POSITION_COLOR_TEX,
-        GL11.GL_QUADS, 256,
-        RenderType.State.builder()
-            .setShadeModelState(new RenderStateShard.ShadeModelState(false))
-            .setWriteMaskState(new RenderStateShard.WriteMaskState(true, false))
-            .setLightmapState(new RenderStateShard.LightmapState(false))
-            .setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
+            VertexFormat.Mode.QUADS, 256,
+        false, false,
+        RenderType.CompositeState.builder()
+            //.setShadeModelState(new RenderStateShard.ShadeModelState(false))
+            .setWriteMaskState(new RenderStateShard.WriteMaskStateShard(true, false))
+            .setLightmapState(new RenderStateShard.LightmapStateShard(false))
+            //.setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
-            .setTextureState(new RenderStateShard.TextureState(TextureAtlas.LOCATION_BLOCKS, false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
             .createCompositeState(false)
     ), GLOWING = RenderType.create(
         Eidolon.MODID + ":glowing",
         DefaultVertexFormat.POSITION_COLOR,
-        GL11.GL_QUADS, 256,
-        RenderType.State.builder()
-            .setShadeModelState(new RenderStateShard.ShadeModelState(true))
-            .setWriteMaskState(new RenderStateShard.WriteMaskState(true, false))
-            .setLightmapState(new RenderStateShard.LightmapState(false))
-            .setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
+            VertexFormat.Mode.QUADS, 256,
+        false, false,
+        RenderType.CompositeState.builder()
+            //.setShadeModelState(new RenderStateShard.ShadeModelState(true))
+            .setWriteMaskState(new RenderStateShard.WriteMaskStateShard(true, false))
+            .setLightmapState(new RenderStateShard.LightmapStateShard(false))
+            //.setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
             .createCompositeState(false)
     ), DELAYED_PARTICLE = RenderType.create(
         Eidolon.MODID + ":delayed_particle",
         DefaultVertexFormat.PARTICLE,
-        GL11.GL_QUADS, 256,
-        RenderType.State.builder()
-            .setShadeModelState(new RenderStateShard.ShadeModelState(true))
-            .setWriteMaskState(new RenderStateShard.WriteMaskState(true, false))
-            .setLightmapState(new RenderStateShard.LightmapState(false))
-            .setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
+            VertexFormat.Mode.QUADS, 256,
+        false, false,
+        RenderType.CompositeState.builder()
+            //.setShadeModelState(new RenderStateShard.ShadeModelState(true))
+            .setWriteMaskState(new RenderStateShard.WriteMaskStateShard(true, false))
+            .setLightmapState(new RenderStateShard.LightmapStateShard(false))
+            //.setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
             .setTransparencyState(NORMAL_TRANSPARENCY)
-            .setTextureState(new RenderStateShard.TextureState(TextureAtlas.LOCATION_PARTICLES, false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false, false))
             .createCompositeState(false)
     ), GLOWING_PARTICLE = RenderType.create(
         Eidolon.MODID + ":glowing_particle",
         DefaultVertexFormat.PARTICLE,
-        GL11.GL_QUADS, 256,
-        RenderType.State.builder()
-            .setShadeModelState(new RenderStateShard.ShadeModelState(true))
-            .setWriteMaskState(new RenderStateShard.WriteMaskState(true, false))
-            .setLightmapState(new RenderStateShard.LightmapState(false))
-            .setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
+            VertexFormat.Mode.QUADS, 256,
+        false, false,
+        RenderType.CompositeState.builder()
+            //.setShadeModelState(new RenderStateShard.ShadeModelState(true))
+            .setWriteMaskState(new RenderStateShard.WriteMaskStateShard(true, false))
+            .setLightmapState(new RenderStateShard.LightmapStateShard(false))
+            //.setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
-            .setTextureState(new RenderStateShard.TextureState(TextureAtlas.LOCATION_PARTICLES, false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false, false))
             .createCompositeState(false)
     ), GLOWING_BLOCK_PARTICLE = RenderType.create(
         Eidolon.MODID + ":glowing_particle",
         DefaultVertexFormat.PARTICLE,
-        GL11.GL_QUADS, 256,
-        RenderType.State.builder()
-            .setShadeModelState(new RenderStateShard.ShadeModelState(true))
-            .setWriteMaskState(new RenderStateShard.WriteMaskState(true, false))
-            .setLightmapState(new RenderStateShard.LightmapState(false))
-            .setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
+            VertexFormat.Mode.QUADS, 256,
+        false, false,
+        RenderType.CompositeState.builder()
+            //.setShadeModelState(new RenderStateShard.ShadeModelState(true))
+            .setWriteMaskState(new RenderStateShard.WriteMaskStateShard(true, false))
+            .setLightmapState(new RenderStateShard.LightmapStateShard(false))
+            //.setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
-            .setTextureState(new RenderStateShard.TextureState(TextureAtlas.LOCATION_BLOCKS, false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
             .createCompositeState(false)
     );
 
@@ -128,7 +132,7 @@ public class RenderUtil {
 
     public static void litBillboard(PoseStack mStack, MultiBufferSource buffer, double x, double y, double z, float r, float g, float b, TextureAtlasSprite sprite) {
         VertexConsumer builder = buffer.getBuffer(GLOWING_SPRITE);
-        ActiveRenderInfo renderInfo = Minecraft.getInstance().gameRenderer.getMainCamera();
+        var renderInfo = Minecraft.getInstance().gameRenderer.getMainCamera();
         Vec3 vector3d = renderInfo.getPosition();
         float partialTicks = Minecraft.getInstance().getFrameTime();
         float f = (float)(x);

@@ -2,7 +2,7 @@ package elucent.eidolon.codex;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import elucent.eidolon.ClientEvents;
 import elucent.eidolon.Eidolon;
@@ -12,18 +12,14 @@ import elucent.eidolon.spell.Sign;
 import elucent.eidolon.util.ColorUtil;
 import elucent.eidolon.util.RenderUtil;
 import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
-import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
 
 public class ChantPage extends Page {
     public static final ResourceLocation BACKGROUND = new ResourceLocation(Eidolon.MODID, "textures/gui/codex_chant_page.png");
@@ -47,14 +43,14 @@ public class ChantPage extends Page {
             g = ColorUtil.getGreen(color),
             b = ColorUtil.getBlue(color);
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        bufferbuilder.begin(7, DefaultVertexFormat.POSITION_TEX_COLOR);
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         bufferbuilder.vertex(matrix, (float)x, (float)maxY, 0).uv(minU, maxV).color(r, g, b, 255).endVertex();
         bufferbuilder.vertex(matrix, (float)maxX, (float)maxY, 0).uv(maxU, maxV).color(r, g, b, 255).endVertex();
         bufferbuilder.vertex(matrix, (float)maxX, (float)y, 0).uv(maxU, minV).color(r, g, b, 255).endVertex();
         bufferbuilder.vertex(matrix, (float)x, (float)y, 0).uv(minU, minV).color(r, g, b, 255).endVertex();
         bufferbuilder.end();
-        RenderSystem.enableAlphaTest();
-        WorldVertexBufferUploader.end(bufferbuilder);
+        // todo RenderSystem.enableAlphaTest();
+        BufferUploader.end(bufferbuilder);
     }
 
     @Override
@@ -64,26 +60,26 @@ public class ChantPage extends Page {
         int titleWidth = Minecraft.getInstance().font.width(title);
         drawText(gui, mStack, title, x + 64 - titleWidth / 2, y + 15 - Minecraft.getInstance().font.lineHeight);
 
-        Minecraft.getInstance().getTextureManager().bind(CodexGui.CODEX_BACKGROUND);
+        RenderSystem.setShaderTexture(0, CodexGui.CODEX_BACKGROUND);
         Player entity = Minecraft.getInstance().player;
         IKnowledge knowledge = entity.getCapability(KnowledgeProvider.CAPABILITY, null).resolve().get();
         int w = chant.length * 24;
         int baseX = x + 64 - w / 2;
-        gui.blit(mStack, baseX - 16, y + 28, 256, 208, 16, 32, 512, 512);
+        GuiComponent.blit(mStack, baseX - 16, y + 28, 256, 208, 16, 32, 512, 512);
         for (int i = 0; i < chant.length; i ++) {
-            gui.blit(mStack, baseX + i * 24, y + 28, 272, 208, 24, 32, 512, 512);
+            GuiComponent.blit(mStack, baseX + i * 24, y + 28, 272, 208, 24, 32, 512, 512);
         }
-        gui.blit(mStack, baseX + w, y + 28, 296, 208, 16, 32, 512, 512);
+        GuiComponent.blit(mStack, baseX + w, y + 28, 296, 208, 16, 32, 512, 512);
 
         Tesselator tess = Tesselator.getInstance();
         RenderSystem.enableBlend();
-        RenderSystem.alphaFunc(GL11.GL_GEQUAL, 1f / 256f);
+        // todo RenderSystem.alphaFunc(GL11.GL_GEQUAL, 1f / 256f);
         for (int i = 0; i < chant.length; i ++) {
-            Minecraft.getInstance().getTextureManager().bind(CodexGui.CODEX_BACKGROUND);
+            RenderSystem.setShaderTexture(0, CodexGui.CODEX_BACKGROUND);
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            gui.blit(mStack, baseX + i * 24, y + 28, 312, 208, 24, 24, 512, 512);
+            GuiComponent.blit(mStack, baseX + i * 24, y + 28, 312, 208, 24, 24, 512, 512);
 
-            Minecraft.getInstance().getTextureManager().bind(TextureAtlas.LOCATION_BLOCKS);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
             Sign sign = chant[i];
             float flicker = 0.875f + 0.125f * (float)Math.sin(Math.toRadians(12 * ClientEvents.getClientTicks()));
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
@@ -94,7 +90,7 @@ public class ChantPage extends Page {
                 sign.getRed() * flicker, sign.getGreen() * flicker, sign.getBlue() * flicker, Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(sign.getSprite()));
             tess.end();
         }
-        RenderSystem.defaultAlphaFunc();
+        // todo RenderSystem.defaultAlphaFunc();
         RenderSystem.disableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 

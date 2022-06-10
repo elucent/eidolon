@@ -3,14 +3,15 @@ package elucent.eidolon.item;
 import elucent.eidolon.Registry;
 import elucent.eidolon.entity.BonechillProjectileEntity;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,7 +26,7 @@ public class BonechillWandItem extends WandItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, Level worldIn, List<TextComponent> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (this.loreTag != null) {
             tooltip.add(new TextComponent(""));
             tooltip.add(new TextComponent("" + ChatFormatting.DARK_PURPLE + ChatFormatting.ITALIC + I18n.get(this.loreTag)));
@@ -42,7 +43,7 @@ public class BonechillWandItem extends WandItem {
                 world.addFreshEntity(new BonechillProjectileEntity(Registry.BONECHILL_PROJECTILE.get(), world).shoot(
                     pos.x, pos.y, pos.z, vel.x, vel.y, vel.z, entity.getUUID()
                 ));
-                world.playSound(null, pos.x, pos.y, pos.z, Registry.CAST_BONECHILL_EVENT.get(), SoundSource.NEUTRAL, 0.75f, random.nextFloat() * 0.2f + 0.9f);
+                world.playSound(null, pos.x, pos.y, pos.z, Registry.CAST_BONECHILL_EVENT.get(), SoundSource.NEUTRAL, 0.75f, world.random.nextFloat() * 0.2f + 0.9f);
                 stack.hurtAndBreak(1, entity, (player) -> {
                     player.broadcastBreakEvent(hand);
                 });

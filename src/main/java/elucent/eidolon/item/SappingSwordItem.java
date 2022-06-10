@@ -3,21 +3,20 @@ package elucent.eidolon.item;
 import elucent.eidolon.network.LifestealEffectPacket;
 import elucent.eidolon.network.Networking;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.Item;
-import net.minecraft.item.SwordItem;
-import net.minecraft.util.EntityDamageSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class SappingSwordItem extends SwordItem {
     public SappingSwordItem(Properties builderIn) {
@@ -33,7 +32,7 @@ public class SappingSwordItem extends SwordItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, Level worldIn, List<TextComponent> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (this.loreTag != null) {
             tooltip.add(new TextComponent(""));
             tooltip.add(new TextComponent("" + ChatFormatting.DARK_PURPLE + ChatFormatting.ITALIC + I18n.get(this.loreTag)));

@@ -1,14 +1,14 @@
 package elucent.eidolon.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 
 import java.awt.*;
 
-public class GenericParticle extends SpriteTexturedParticle {
+public class GenericParticle extends TextureSheetParticle {
     GenericParticleData data;
     float[] hsv1 = new float[3], hsv2 = new float[3];
     public GenericParticle(ClientLevel world, GenericParticleData data, double x, double y, double z, double vx, double vy, double vz) {
@@ -36,9 +36,9 @@ public class GenericParticle extends SpriteTexturedParticle {
         float s = Mth.lerp(coeff, hsv1[1], hsv2[1]);
         float v = Mth.lerp(coeff, hsv1[2], hsv2[2]);
         int packed = Color.HSBtoRGB(h, s, v);
-        float r = FastColor.PackedColor.red(packed) / 255.0f;
-        float g = FastColor.PackedColor.green(packed) / 255.0f;
-        float b = FastColor.PackedColor.blue(packed) / 255.0f;
+        float r = FastColor.ARGB32.red(packed) / 255.0f;
+        float g = FastColor.ARGB32.green(packed) / 255.0f;
+        float b = FastColor.ARGB32.blue(packed) / 255.0f;
         setColor(r, g, b);
         setAlpha(Mth.lerp(coeff, data.a1, data.a2));
         oRoll = roll;
@@ -52,7 +52,7 @@ public class GenericParticle extends SpriteTexturedParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return SpriteParticleRenderType.INSTANCE;
     }
 }

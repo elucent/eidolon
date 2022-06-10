@@ -15,10 +15,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.world.phys.AABB;
 
 import java.util.Comparator;
@@ -44,7 +44,7 @@ public class AnimalSacrificeSpell extends StaticSpell {
         GobletTileEntity goblet = goblets.stream().min(Comparator.comparingDouble((e) -> e.getBlockPos().distSqr(pos))).get();
         if (goblet.getEntityType() == null) return false;
         Entity test = goblet.getEntityType().create(world);
-        return test instanceof AnimalEntity && effigy.ready();
+        return test instanceof Animal && effigy.ready();
     }
 
     @Override

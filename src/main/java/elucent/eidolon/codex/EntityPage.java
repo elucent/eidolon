@@ -32,7 +32,7 @@ public class EntityPage extends Page {
         RenderSystem.disableCull();
         RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
-        RenderSystem.enableLighting();
+        // RenderSystem.enableLighting();
         Tesselator tess = Tesselator.getInstance();
         mStack.pushPose();
         mStack.translate(x + 64, y + 136, 64);
@@ -40,13 +40,13 @@ public class EntityPage extends Page {
         mStack.mulPose(Vector3f.YP.rotationDegrees(-30));
         float scale = 112 / e.getBbHeight();
         mStack.scale(scale, -scale, scale);
-        Minecraft.getInstance().getTextureManager().bind(renderer.getTextureLocation(e));
-        renderer.render(e, e.yRot, 0, mStack, MultiBufferSource.immediate(tess.getBuilder()), 0xf000f0);
+        RenderSystem.setShaderTexture(0, renderer.getTextureLocation(e));
+        renderer.render(e, e.getYRot(), 0, mStack, MultiBufferSource.immediate(tess.getBuilder()), 0xf000f0);
         tess.end();
         mStack.popPose();
         RenderSystem.enableCull();
         RenderSystem.disableBlend();
         RenderSystem.disableDepthTest();
-        RenderSystem.disableLighting();
+        // RenderSystem.disableLighting();
     }
 }

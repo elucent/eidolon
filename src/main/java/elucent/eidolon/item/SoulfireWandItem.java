@@ -11,10 +11,11 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.Template;
 
 public class SoulfireWandItem extends WandItem {
     public SoulfireWandItem(Properties builderIn) {
@@ -26,6 +27,7 @@ public class SoulfireWandItem extends WandItem {
         ItemStack stack = entity.getItemInHand(hand);
         if (!entity.swinging) {
             if (!world.isClientSide) {
+                var random = world.random;
                 Vec3 pos = entity.position().add(entity.getLookAngle().scale(0.5)).add(0.5 * Math.sin(Math.toRadians(225 - entity.yHeadRot)), entity.getBbHeight() * 2 / 3, 0.5 * Math.cos(Math.toRadians(225 - entity.yHeadRot)));
                 Vec3 vel = entity.getEyePosition(0).add(entity.getLookAngle().scale(40)).subtract(pos).scale(1.0 / 20);
                 world.addFreshEntity(new SoulfireProjectileEntity(Registry.SOULFIRE_PROJECTILE.get(), world).shoot(
@@ -37,12 +39,14 @@ public class SoulfireWandItem extends WandItem {
                 });
 
                 try {
-                    Template t = ((ServerLevel)world).getStructureManager().get(new ResourceLocation("eidolon", "corridor"));
-                    BlockPos d = t.getSize();
+                    StructureTemplate t = ((ServerLevel)world).getStructureManager().get(new ResourceLocation("eidolon", "corridor")).get();
+                    var d = t.getSize();
                     Rotation r = Rotation.values()[entity.getDirection().get2DDataValue()];
                     BlockPos o = new BlockPos(-d.getX() / 2, -d.getY() / 2, -d.getZ() / 2);
                     BlockPos s = new BlockPos(Math.max(o.getX(), o.getZ()), o.getY(), Math.max(o.getX(), o.getZ()));
-                    t.placeInWorld((ServerLevel)world, entity.blockPosition().below(8).offset(o.rotate(r)).subtract(s), new PlacementSettings().setRotation(r), random);
+                    t.placeInWorld((ServerLevelAccessor)world, entity.blockPosition().below(8).offset(o.rotate(r)).subtract(s),
+                            entity.blockPosition().below(8).offset(o.rotate(r)).subtract(s).offset(d),
+                            new StructurePlaceSettings().setRotation(r), random, 0);
                 } catch (Exception e) {
                     //
                 }

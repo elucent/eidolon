@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class RecipeItem extends RecipeObject<Item> {
     public RecipeItem(Item obj) {
@@ -23,7 +23,7 @@ public class RecipeItem extends RecipeObject<Item> {
 
     @Override
     public JsonObject toJson() {
-        return new Ingredient.SingleItemList(new ItemStack(obj)).serialize();
+        return new Ingredient.ItemValue(new ItemStack(obj)).serialize();
     }
 
     @Override

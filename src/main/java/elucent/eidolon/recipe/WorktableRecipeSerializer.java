@@ -9,8 +9,8 @@ import elucent.eidolon.recipe.recipeobj.RecipeObjectType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;

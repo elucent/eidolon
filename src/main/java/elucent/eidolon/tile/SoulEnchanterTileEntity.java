@@ -1,14 +1,14 @@
 package elucent.eidolon.tile;
 
 import elucent.eidolon.Registry;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Random;
 
-public class SoulEnchanterTileEntity extends TileEntityBase implements ITickableTileEntity {
+public class SoulEnchanterTileEntity extends TileEntityBase implements TickBlockEntity {
     public float flip;
     public float oFlip;
     public float flipT;
@@ -20,12 +20,8 @@ public class SoulEnchanterTileEntity extends TileEntityBase implements ITickable
     public float tRot;
     private static final Random random = new Random();
 
-    public SoulEnchanterTileEntity() {
-        this(Registry.SOUL_ENCHANTER_TILE_ENTITY);
-    }
-
-    public SoulEnchanterTileEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public SoulEnchanterTileEntity(BlockPos pos, BlockState state) {
+        super(Registry.SOUL_ENCHANTER_TILE_ENTITY.get(), pos, state);
     }
 
     @Override
