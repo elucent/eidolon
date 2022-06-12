@@ -17,7 +17,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
-version = '0.2.7.4'
+version = '0.3.7.4'
 group = 'elucent.eidolon' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 
 java {
