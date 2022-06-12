@@ -1,0 +1,21 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "item": "minecraft:coal"
+        },
+        {
+          "item": "eidolon:enchanted_ash"
+        }
+      ],
+      "stirs": 0
+    }
+  ],
+  "result": {
+    "item": "eidolon:sulfur",
+    "nbt": "{}",
+    "count": 2
+  },
+  "type": "eidolon:crucible"
+}

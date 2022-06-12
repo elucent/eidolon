@@ -1,0 +1,47 @@
+{
+  "core": [
+    {
+      "item": "eidolon:lead_ingot"
+    },
+    {
+      "item": "eidolon:lead_ingot"
+    },
+    {
+      "item": "eidolon:lead_ingot"
+    },
+    {
+      "item": "eidolon:lead_ingot"
+    },
+    {
+      "item": "eidolon:lead_ingot"
+    },
+    {
+      "item": "eidolon:lead_ingot"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "eidolon:soul_shard"
+    },
+    {
+      "item": "minecraft:leather"
+    }
+  ],
+  "extras": [
+    {
+      "tag": "forge:storage_blocks/lapis"
+    },
+    [],
+    {
+      "tag": "forge:gems/quartz"
+    },
+    []
+  ],
+  "result": {
+    "item": "eidolon:mind_shielding_plate",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

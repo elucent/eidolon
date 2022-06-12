@@ -1,0 +1,45 @@
+{
+  "core": [
+    {
+      "item": "minecraft:smooth_stone_slab"
+    },
+    {
+      "item": "minecraft:smooth_stone_slab"
+    },
+    {
+      "item": "minecraft:smooth_stone_slab"
+    },
+    {
+      "tag": "forge:stone"
+    },
+    {
+      "tag": "forge:stone"
+    },
+    {
+      "tag": "forge:stone"
+    },
+    {
+      "tag": "forge:stone"
+    },
+    {
+      "item": "eidolon:pewter_inlay"
+    },
+    {
+      "tag": "forge:stone"
+    }
+  ],
+  "extras": [
+    {
+      "item": "eidolon:soul_shard"
+    },
+    [],
+    [],
+    []
+  ],
+  "result": {
+    "item": "eidolon:stone_altar",
+    "nbt": "{}",
+    "count": 3
+  },
+  "type": "eidolon:worktable"
+}

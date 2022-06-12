@@ -1,6 +1,6 @@
 package elucent.eidolon.gui;
 
-import elucent.eidolon.recipe.WorktableRecipe;
+import elucent.eidolon.recipe.recipes.recipe.WorktableRecipe;
 import elucent.eidolon.recipe.WorktableRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundEvents;

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.codex.CodexGui;
-import elucent.eidolon.recipe.CrucibleRecipe;
+import elucent.eidolon.recipe.recipes.recipe.CrucibleRecipe;
 import elucent.eidolon.recipe.CrucibleRegistry;
 import elucent.eidolon.util.StackUtil;
 import mezz.jei.api.constants.VanillaTypes;

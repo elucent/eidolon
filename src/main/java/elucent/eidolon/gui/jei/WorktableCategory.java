@@ -5,7 +5,6 @@ import elucent.eidolon.Eidolon;
 import elucent.eidolon.Registry;
 import elucent.eidolon.codex.CodexGui;
 import elucent.eidolon.recipe.WorktableRegistry;
-import elucent.eidolon.recipe.recipeobj.RecipeObject;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -62,13 +61,9 @@ public class WorktableCategory implements IRecipeCategory<RecipeWrappers.Worktab
             wrapper.page = WorktableRegistry.getDefaultPage(wrapper.recipe);
         }
 
-        List<Ingredient> inputs = new ArrayList<>();
-        for (RecipeObject<?> o : wrapper.recipe.getCore()) {
-            inputs.add(o.getIngredient());
-        }
-        for (RecipeObject<?> o : wrapper.recipe.getOuter()) {
-            inputs.add(o.getIngredient());
-        }
+        List<Ingredient> inputs = new ArrayList<>(wrapper.recipe.getCore());
+        inputs.addAll(wrapper.recipe.getOuter());
+
         ingredients.setInputIngredients(inputs);
         ingredients.setOutput(VanillaTypes.ITEM, wrapper.recipe.getResultItem());
     }

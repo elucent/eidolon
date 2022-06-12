@@ -5,7 +5,7 @@ import elucent.eidolon.network.CrucibleFailPacket;
 import elucent.eidolon.network.CrucibleSuccessPacket;
 import elucent.eidolon.network.Networking;
 import elucent.eidolon.particle.Particles;
-import elucent.eidolon.recipe.CrucibleRecipe;
+import elucent.eidolon.recipe.recipes.recipe.CrucibleRecipe;
 import elucent.eidolon.recipe.CrucibleRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -233,7 +233,7 @@ public class CrucibleTileEntity extends TileEntityBase implements TickBlockEntit
                     CrucibleStep step = new CrucibleStep(stirs, contents);
                     steps.add(step);
 
-                    CrucibleRecipe recipe = CrucibleRegistry.find(steps);
+                    CrucibleRecipe recipe = CrucibleRegistry.find(getLevel(), steps);
                     if (recipe != null) { // if recipe found
                         Networking.sendToTracking(level, worldPosition, new CrucibleSuccessPacket(worldPosition, steamR, steamG, steamB));
                         double angle = level.random.nextDouble() * Math.PI * 2;

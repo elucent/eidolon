@@ -1,0 +1,43 @@
+{
+  "core": [
+    [],
+    {
+      "item": "eidolon:lesser_soul_gem"
+    },
+    [],
+    {
+      "item": "eidolon:enchanted_ash"
+    },
+    {
+      "item": "minecraft:iron_chestplate"
+    },
+    {
+      "item": "eidolon:enchanted_ash"
+    },
+    [],
+    {
+      "item": "eidolon:enchanted_ash"
+    },
+    []
+  ],
+  "extras": [
+    {
+      "item": "eidolon:pewter_inlay"
+    },
+    {
+      "item": "eidolon:pewter_inlay"
+    },
+    {
+      "item": "eidolon:pewter_inlay"
+    },
+    {
+      "item": "eidolon:pewter_inlay"
+    }
+  ],
+  "result": {
+    "item": "eidolon:warded_mail",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

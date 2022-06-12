@@ -1,0 +1,34 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "tag": "forge:mushrooms"
+        }
+      ],
+      "stirs": 0
+    },
+    {
+      "matches": [
+        {
+          "item": "minecraft:bone_meal"
+        }
+      ],
+      "stirs": 2
+    },
+    {
+      "matches": [
+        {
+          "item": "minecraft:wheat_seeds"
+        }
+      ],
+      "stirs": 0
+    }
+  ],
+  "result": {
+    "item": "eidolon:fungus_sprouts",
+    "nbt": "{}",
+    "count": 2
+  },
+  "type": "eidolon:crucible"
+}

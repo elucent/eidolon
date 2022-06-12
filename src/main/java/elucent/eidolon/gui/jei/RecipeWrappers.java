@@ -1,8 +1,8 @@
 package elucent.eidolon.gui.jei;
 
 import elucent.eidolon.codex.Page;
-import elucent.eidolon.recipe.CrucibleRecipe;
-import elucent.eidolon.recipe.WorktableRecipe;
+import elucent.eidolon.recipe.recipes.recipe.CrucibleRecipe;
+import elucent.eidolon.recipe.recipes.recipe.WorktableRecipe;
 import elucent.eidolon.ritual.Ritual;
 
 public class RecipeWrappers {

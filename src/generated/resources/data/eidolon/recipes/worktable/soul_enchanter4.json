@@ -1,0 +1,47 @@
+{
+  "core": [
+    [],
+    {
+      "item": "minecraft:book"
+    },
+    [],
+    {
+      "item": "eidolon:arcane_gold_ingot"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "eidolon:arcane_gold_ingot"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "minecraft:obsidian"
+    }
+  ],
+  "extras": [
+    {
+      "tag": "forge:gems/diamond"
+    },
+    {
+      "item": "eidolon:gold_inlay"
+    },
+    {
+      "tag": "forge:gems/diamond"
+    },
+    {
+      "item": "eidolon:gold_inlay"
+    }
+  ],
+  "result": {
+    "item": "eidolon:soul_enchanter",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

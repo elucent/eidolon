@@ -1,0 +1,43 @@
+{
+  "core": [
+    {
+      "item": "eidolon:pewter_ingot"
+    },
+    {
+      "item": "eidolon:pewter_ingot"
+    },
+    [],
+    [],
+    {
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "eidolon:pewter_ingot"
+    },
+    {
+      "item": "minecraft:stick"
+    },
+    [],
+    []
+  ],
+  "extras": [
+    {
+      "item": "eidolon:unholy_symbol"
+    },
+    {
+      "item": "eidolon:soul_shard"
+    },
+    {
+      "item": "eidolon:tattered_cloth"
+    },
+    {
+      "item": "eidolon:soul_shard"
+    }
+  ],
+  "result": {
+    "item": "eidolon:reaper_scythe",
+    "nbt": "{Damage:0}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

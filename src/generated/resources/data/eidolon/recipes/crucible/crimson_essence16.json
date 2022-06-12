@@ -1,0 +1,29 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "item": "minecraft:crimson_fungus"
+        },
+        {
+          "item": "minecraft:nether_wart"
+        }
+      ],
+      "stirs": 0
+    },
+    {
+      "matches": [
+        {
+          "item": "eidolon:sulfur"
+        }
+      ],
+      "stirs": 1
+    }
+  ],
+  "result": {
+    "item": "eidolon:crimson_essence",
+    "nbt": "{}",
+    "count": 4
+  },
+  "type": "eidolon:crucible"
+}

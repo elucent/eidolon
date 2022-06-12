@@ -1,0 +1,47 @@
+{
+  "core": [
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "eidolon:shadow_gem"
+    },
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "minecraft:white_wool"
+    }
+  ],
+  "extras": [
+    {
+      "item": "eidolon:unholy_symbol"
+    },
+    [],
+    {
+      "tag": "forge:dyes/blue"
+    },
+    []
+  ],
+  "result": {
+    "item": "eidolon:wicked_weave",
+    "nbt": "{}",
+    "count": 8
+  },
+  "type": "eidolon:worktable"
+}

@@ -1,0 +1,43 @@
+{
+  "core": [
+    [],
+    {
+      "item": "eidolon:pewter_ingot"
+    },
+    {
+      "item": "eidolon:wraith_heart"
+    },
+    [],
+    {
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "eidolon:pewter_ingot"
+    },
+    {
+      "item": "eidolon:pewter_inlay"
+    },
+    [],
+    []
+  ],
+  "extras": [
+    {
+      "item": "eidolon:lesser_soul_gem"
+    },
+    {
+      "item": "minecraft:bone_meal"
+    },
+    {
+      "item": "minecraft:bone_meal"
+    },
+    {
+      "item": "minecraft:bone_meal"
+    }
+  ],
+  "result": {
+    "item": "eidolon:bonechill_wand",
+    "nbt": "{Damage:0}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

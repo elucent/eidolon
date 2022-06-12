@@ -1,0 +1,39 @@
+{
+  "core": [
+    [],
+    {
+      "tag": "forge:storage_blocks/diamond"
+    },
+    [],
+    [],
+    {
+      "item": "eidolon:basic_amulet"
+    },
+    [],
+    [],
+    {
+      "item": "minecraft:glass"
+    },
+    []
+  ],
+  "extras": [
+    {
+      "item": "eidolon:zombie_heart"
+    },
+    {
+      "item": "eidolon:lesser_soul_gem"
+    },
+    {
+      "item": "eidolon:wraith_heart"
+    },
+    {
+      "item": "eidolon:lesser_soul_gem"
+    }
+  ],
+  "result": {
+    "item": "eidolon:glass_hand",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

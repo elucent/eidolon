@@ -1,0 +1,122 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        },
+        {
+          "tag": "minecraft:planks"
+        }
+      ],
+      "stirs": 0
+    },
+    {
+      "matches": [
+        {
+          "item": "eidolon:soul_shard"
+        },
+        {
+          "item": "eidolon:enchanted_ash"
+        }
+      ],
+      "stirs": 1
+    }
+  ],
+  "result": {
+    "item": "eidolon:polished_planks",
+    "nbt": "{}",
+    "count": 32
+  },
+  "type": "eidolon:crucible"
+}

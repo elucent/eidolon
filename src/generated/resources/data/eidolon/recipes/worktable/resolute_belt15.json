@@ -1,0 +1,43 @@
+{
+  "core": [
+    [],
+    {
+      "item": "eidolon:gold_inlay"
+    },
+    [],
+    {
+      "item": "eidolon:arcane_gold_ingot"
+    },
+    {
+      "item": "eidolon:basic_belt"
+    },
+    {
+      "item": "eidolon:arcane_gold_ingot"
+    },
+    [],
+    {
+      "tag": "forge:gems/diamond"
+    },
+    []
+  ],
+  "extras": [
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "eidolon:soul_shard"
+    },
+    {
+      "item": "eidolon:enchanted_ash"
+    },
+    {
+      "item": "eidolon:soul_shard"
+    }
+  ],
+  "result": {
+    "item": "eidolon:resolute_belt",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

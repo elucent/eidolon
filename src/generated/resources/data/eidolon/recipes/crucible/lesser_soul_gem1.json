@@ -1,0 +1,52 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "tag": "forge:dusts/redstone"
+        },
+        {
+          "tag": "forge:dusts/redstone"
+        },
+        {
+          "tag": "forge:gems/lapis"
+        },
+        {
+          "tag": "forge:gems/lapis"
+        }
+      ],
+      "stirs": 0
+    },
+    {
+      "matches": [
+        {
+          "item": "eidolon:soul_shard"
+        },
+        {
+          "item": "eidolon:soul_shard"
+        },
+        {
+          "item": "eidolon:soul_shard"
+        },
+        {
+          "item": "eidolon:soul_shard"
+        }
+      ],
+      "stirs": 2
+    },
+    {
+      "matches": [
+        {
+          "tag": "forge:gems/quartz"
+        }
+      ],
+      "stirs": 0
+    }
+  ],
+  "result": {
+    "item": "eidolon:lesser_soul_gem",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:crucible"
+}

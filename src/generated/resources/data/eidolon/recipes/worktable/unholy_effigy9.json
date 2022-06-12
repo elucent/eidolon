@@ -1,0 +1,39 @@
+{
+  "core": [
+    [],
+    {
+      "item": "minecraft:smooth_stone"
+    },
+    [],
+    {
+      "tag": "forge:stone"
+    },
+    {
+      "tag": "forge:stone"
+    },
+    {
+      "tag": "forge:stone"
+    },
+    [],
+    {
+      "tag": "forge:stone"
+    },
+    []
+  ],
+  "extras": [
+    {
+      "item": "eidolon:unholy_symbol"
+    },
+    [],
+    {
+      "item": "eidolon:gold_inlay"
+    },
+    []
+  ],
+  "result": {
+    "item": "eidolon:unholy_effigy",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

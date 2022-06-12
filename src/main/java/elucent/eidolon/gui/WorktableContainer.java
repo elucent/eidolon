@@ -1,7 +1,7 @@
 package elucent.eidolon.gui;
 
 import elucent.eidolon.Registry;
-import elucent.eidolon.recipe.WorktableRecipe;
+import elucent.eidolon.recipe.recipes.recipe.WorktableRecipe;
 import elucent.eidolon.recipe.WorktableRegistry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;

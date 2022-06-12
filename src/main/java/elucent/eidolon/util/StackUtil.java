@@ -1,12 +1,14 @@
 package elucent.eidolon.util;
 
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,5 +38,13 @@ public class StackUtil {
 
     public static List<ItemStack> stacksFromObjects(List<Object> objects) {
         return objects.stream().map(StackUtil::stackFromObject).collect(Collectors.toList());
+    }
+
+    public static List<ItemStack> getStacks(Container container) {
+        var result = new ArrayList<ItemStack>();
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            result.add(container.getItem(i));
+        }
+        return result;
     }
 }

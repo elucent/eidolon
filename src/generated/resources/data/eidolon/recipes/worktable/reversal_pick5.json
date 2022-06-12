@@ -1,0 +1,43 @@
+{
+  "core": [
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "minecraft:crying_obsidian"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    [],
+    {
+      "item": "eidolon:pewter_ingot"
+    },
+    [],
+    [],
+    {
+      "item": "eidolon:pewter_inlay"
+    },
+    []
+  ],
+  "extras": [
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "eidolon:soul_shard"
+    },
+    {
+      "item": "eidolon:lesser_soul_gem"
+    },
+    {
+      "item": "eidolon:soul_shard"
+    }
+  ],
+  "result": {
+    "item": "eidolon:reversal_pick",
+    "nbt": "{Damage:0}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

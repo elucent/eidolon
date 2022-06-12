@@ -1,0 +1,37 @@
+{
+  "core": [
+    [],
+    [],
+    [],
+    {
+      "item": "eidolon:wicked_weave"
+    },
+    [],
+    {
+      "item": "eidolon:wicked_weave"
+    },
+    {
+      "item": "eidolon:wicked_weave"
+    },
+    [],
+    {
+      "item": "eidolon:wicked_weave"
+    }
+  ],
+  "extras": [
+    {
+      "item": "eidolon:soul_shard"
+    },
+    [],
+    {
+      "item": "eidolon:soul_shard"
+    },
+    []
+  ],
+  "result": {
+    "item": "eidolon:warlock_boots",
+    "nbt": "{Damage:0}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

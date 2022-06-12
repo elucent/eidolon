@@ -1,0 +1,51 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "item": "minecraft:coal"
+        }
+      ],
+      "stirs": 0
+    },
+    {
+      "matches": [
+        {
+          "item": "minecraft:ghast_tear"
+        },
+        {
+          "item": "eidolon:death_essence"
+        }
+      ],
+      "stirs": 1
+    },
+    {
+      "matches": [
+        {
+          "item": "eidolon:soul_shard"
+        },
+        {
+          "item": "eidolon:soul_shard"
+        },
+        {
+          "item": "eidolon:death_essence"
+        }
+      ],
+      "stirs": 1
+    },
+    {
+      "matches": [
+        {
+          "tag": "forge:gems/diamond"
+        }
+      ],
+      "stirs": 0
+    }
+  ],
+  "result": {
+    "item": "eidolon:shadow_gem",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:crucible"
+}

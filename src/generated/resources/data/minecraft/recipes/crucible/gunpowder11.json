@@ -1,0 +1,29 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "item": "eidolon:sulfur"
+        },
+        {
+          "item": "minecraft:bone_meal"
+        }
+      ],
+      "stirs": 0
+    },
+    {
+      "matches": [
+        {
+          "item": "minecraft:charcoal"
+        }
+      ],
+      "stirs": 1
+    }
+  ],
+  "result": {
+    "item": "minecraft:gunpowder",
+    "nbt": "{}",
+    "count": 4
+  },
+  "type": "eidolon:crucible"
+}

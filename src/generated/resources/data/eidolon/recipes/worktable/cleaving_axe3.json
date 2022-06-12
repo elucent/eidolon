@@ -1,0 +1,39 @@
+{
+  "core": [
+    {
+      "item": "eidolon:pewter_ingot"
+    },
+    {
+      "item": "eidolon:pewter_ingot"
+    },
+    [],
+    {
+      "item": "eidolon:pewter_ingot"
+    },
+    {
+      "item": "minecraft:stick"
+    },
+    [],
+    [],
+    {
+      "item": "minecraft:stick"
+    },
+    []
+  ],
+  "extras": [
+    {
+      "item": "eidolon:unholy_symbol"
+    },
+    [],
+    {
+      "item": "eidolon:pewter_inlay"
+    },
+    []
+  ],
+  "result": {
+    "item": "eidolon:cleaving_axe",
+    "nbt": "{Damage:0}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

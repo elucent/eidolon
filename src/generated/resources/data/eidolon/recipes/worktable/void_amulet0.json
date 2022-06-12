@@ -1,0 +1,39 @@
+{
+  "core": [
+    [],
+    {
+      "item": "eidolon:pewter_ingot"
+    },
+    [],
+    {
+      "item": "eidolon:pewter_inlay"
+    },
+    {
+      "item": "eidolon:basic_amulet"
+    },
+    {
+      "item": "eidolon:pewter_inlay"
+    },
+    [],
+    {
+      "item": "minecraft:obsidian"
+    },
+    []
+  ],
+  "extras": [
+    {
+      "item": "eidolon:soul_shard"
+    },
+    [],
+    {
+      "item": "eidolon:soul_shard"
+    },
+    []
+  ],
+  "result": {
+    "item": "eidolon:void_amulet",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

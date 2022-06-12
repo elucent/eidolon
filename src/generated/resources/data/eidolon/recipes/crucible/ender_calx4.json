@@ -1,0 +1,21 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "tag": "forge:ender_pearls"
+        },
+        {
+          "item": "eidolon:enchanted_ash"
+        }
+      ],
+      "stirs": 0
+    }
+  ],
+  "result": {
+    "item": "eidolon:ender_calx",
+    "nbt": "{}",
+    "count": 2
+  },
+  "type": "eidolon:crucible"
+}

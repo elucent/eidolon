@@ -1,0 +1,43 @@
+{
+  "core": [
+    [],
+    {
+      "item": "eidolon:wicked_weave"
+    },
+    [],
+    {
+      "item": "eidolon:wicked_weave"
+    },
+    {
+      "item": "eidolon:wicked_weave"
+    },
+    {
+      "item": "eidolon:wicked_weave"
+    },
+    [],
+    {
+      "item": "eidolon:lesser_soul_gem"
+    },
+    []
+  ],
+  "extras": [
+    {
+      "item": "eidolon:warped_sprouts"
+    },
+    {
+      "item": "eidolon:ender_calx"
+    },
+    {
+      "item": "eidolon:soul_shard"
+    },
+    {
+      "item": "eidolon:ender_calx"
+    }
+  ],
+  "result": {
+    "item": "eidolon:prestigious_palm",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

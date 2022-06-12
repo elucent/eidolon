@@ -17,7 +17,7 @@ public class GenDataHandler {
         }
 
         if (event.includeServer()) {
-            generator.addProvider(new WorktableRecipeProvider(generator));
+            generator.addProvider(new RecipesProvider(generator));
         }
     }
 }

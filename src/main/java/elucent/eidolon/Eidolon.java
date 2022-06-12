@@ -9,7 +9,10 @@ import elucent.eidolon.client.renderer.entity.NecromancerRenderer;
 import elucent.eidolon.client.renderer.entity.WraithRenderer;
 import elucent.eidolon.client.renderer.entity.ZombieBruteRenderer;
 import elucent.eidolon.codex.CodexChapters;
-import elucent.eidolon.entity.*;
+import elucent.eidolon.entity.EmptyRenderer;
+import elucent.eidolon.entity.NecromancerEntity;
+import elucent.eidolon.entity.WraithEntity;
+import elucent.eidolon.entity.ZombieBruteEntity;
 import elucent.eidolon.gui.SoulEnchanterScreen;
 import elucent.eidolon.gui.WoodenBrewingStandScreen;
 import elucent.eidolon.gui.WorktableScreen;
@@ -17,8 +20,7 @@ import elucent.eidolon.network.Networking;
 import elucent.eidolon.proxy.ClientProxy;
 import elucent.eidolon.proxy.ISidedProxy;
 import elucent.eidolon.proxy.ServerProxy;
-import elucent.eidolon.recipe.CrucibleRegistry;
-import elucent.eidolon.recipe.WorktableRegistry;
+import elucent.eidolon.recipe.recipes.register.RecipeManager;
 import elucent.eidolon.ritual.RitualRegistry;
 import elucent.eidolon.spell.AltarEntries;
 import elucent.eidolon.world.worldgen.WorldGen;
@@ -73,6 +75,11 @@ public class Eidolon {
         proxy.init();
         MinecraftForge.EVENT_BUS.register(new WorldGen());
         WorldGen.preInit();
+
+        var bus = FMLJavaModLoadingContext.get().getModEventBus();
+        WorldGen.register(bus);
+        RecipeManager.register(bus);
+
         MinecraftForge.EVENT_BUS.register(new Events());
         DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> {
             MinecraftForge.EVENT_BUS.register(new ClientEvents());
@@ -84,8 +91,6 @@ public class Eidolon {
         Networking.init();
         WorldGen.init();
         event.enqueueWork(() -> {
-            CrucibleRegistry.init();
-            WorktableRegistry.init();
             RitualRegistry.init();
             CodexChapters.init();
             Registry.addBrewingRecipes();

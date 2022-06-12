@@ -1,0 +1,40 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "item": "eidolon:zombie_heart"
+        },
+        {
+          "item": "minecraft:rotten_flesh"
+        }
+      ],
+      "stirs": 0
+    },
+    {
+      "matches": [
+        {
+          "item": "minecraft:bone_meal"
+        },
+        {
+          "item": "minecraft:bone_meal"
+        }
+      ],
+      "stirs": 2
+    },
+    {
+      "matches": [
+        {
+          "item": "minecraft:charcoal"
+        }
+      ],
+      "stirs": 0
+    }
+  ],
+  "result": {
+    "item": "eidolon:death_essence",
+    "nbt": "{}",
+    "count": 4
+  },
+  "type": "eidolon:crucible"
+}

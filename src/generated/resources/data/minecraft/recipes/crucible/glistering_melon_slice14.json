@@ -1,0 +1,37 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "tag": "forge:nuggets/gold"
+        },
+        {
+          "tag": "forge:nuggets/gold"
+        }
+      ],
+      "stirs": 0
+    },
+    {
+      "matches": [
+        {
+          "item": "eidolon:enchanted_ash"
+        }
+      ],
+      "stirs": 2
+    },
+    {
+      "matches": [
+        {
+          "item": "minecraft:melon_slice"
+        }
+      ],
+      "stirs": 0
+    }
+  ],
+  "result": {
+    "item": "minecraft:glistering_melon_slice",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:crucible"
+}

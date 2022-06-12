@@ -1,0 +1,21 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "item": "minecraft:beef"
+        },
+        {
+          "tag": "forge:mushrooms"
+        }
+      ],
+      "stirs": 0
+    }
+  ],
+  "result": {
+    "item": "minecraft:rotten_flesh",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:crucible"
+}

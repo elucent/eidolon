@@ -1,0 +1,37 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "tag": "forge:ingots/gold"
+        },
+        {
+          "tag": "forge:ingots/gold"
+        }
+      ],
+      "stirs": 0
+    },
+    {
+      "matches": [
+        {
+          "item": "eidolon:enchanted_ash"
+        }
+      ],
+      "stirs": 2
+    },
+    {
+      "matches": [
+        {
+          "item": "minecraft:apple"
+        }
+      ],
+      "stirs": 0
+    }
+  ],
+  "result": {
+    "item": "minecraft:golden_apple",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:crucible"
+}

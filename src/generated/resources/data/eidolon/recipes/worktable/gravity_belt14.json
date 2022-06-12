@@ -1,0 +1,43 @@
+{
+  "core": [
+    [],
+    {
+      "tag": "forge:ender_pearls"
+    },
+    [],
+    {
+      "tag": "forge:feathers"
+    },
+    {
+      "item": "eidolon:basic_belt"
+    },
+    {
+      "tag": "forge:feathers"
+    },
+    [],
+    {
+      "item": "eidolon:lesser_soul_gem"
+    },
+    []
+  ],
+  "extras": [
+    {
+      "item": "eidolon:ender_calx"
+    },
+    {
+      "item": "eidolon:pewter_inlay"
+    },
+    {
+      "item": "eidolon:ender_calx"
+    },
+    {
+      "item": "eidolon:pewter_inlay"
+    }
+  ],
+  "result": {
+    "item": "eidolon:gravity_belt",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:worktable"
+}

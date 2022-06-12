@@ -1,0 +1,29 @@
+{
+  "steps": [
+    {
+      "matches": [
+        {
+          "item": "eidolon:enchanted_ash"
+        },
+        {
+          "item": "eidolon:enchanted_ash"
+        }
+      ],
+      "stirs": 0
+    },
+    {
+      "matches": [
+        {
+          "item": "minecraft:rotten_flesh"
+        }
+      ],
+      "stirs": 2
+    }
+  ],
+  "result": {
+    "item": "minecraft:leather",
+    "nbt": "{}",
+    "count": 1
+  },
+  "type": "eidolon:crucible"
+}
