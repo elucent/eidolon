@@ -93,7 +93,7 @@ public class BlockBase extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return tileEntityType.create(pPos, pState);
+        return hasTileEntity(pState) ? tileEntityType.create(pPos, pState) : null;
     }
 
     @Nullable
