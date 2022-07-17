@@ -130,7 +130,7 @@ public class BrazierTileEntity extends TileEntityBase implements ITickableTileEn
         ritual = null;
     }
 
-    protected void startBurning() {
+    public void startBurning() {
         burning = true;
         findingCounter = 0;
         if (!world.isRemote) {

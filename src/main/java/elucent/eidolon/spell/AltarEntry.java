@@ -9,16 +9,16 @@ public class AltarEntry {
     ResourceLocation key = null;
     Consumer<AltarInfo> callback = null;
 
-    AltarEntry(ResourceLocation key) {
+    public AltarEntry(ResourceLocation key) {
         this.key = key;
     }
 
-    AltarEntry setCapacity(double capacity) {
+    public AltarEntry setCapacity(double capacity) {
         this.capacity = capacity;
         return this;
     }
 
-    AltarEntry setPower(double power) {
+    public AltarEntry setPower(double power) {
         this.power = power;
         return this;
     }
