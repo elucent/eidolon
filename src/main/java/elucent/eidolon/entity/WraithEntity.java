@@ -117,16 +117,16 @@ public class WraithEntity extends MonsterEntity {
 
     @Override
     public SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_STRAY_DEATH;
+        return Registry.WRAITH_DEATH.get();
     }
 
     @Override
     public SoundEvent getAmbientSound() {
-        return SoundEvents.ENTITY_STRAY_AMBIENT;
+        return Registry.WRAITH_AMBIENT.get();
     }
 
     @Override
     public SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.ENTITY_STRAY_HURT;
+        return Registry.WRAITH_HURT.get();
     }
 }

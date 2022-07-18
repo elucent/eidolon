@@ -144,6 +144,10 @@
   "eidolon.subtitle.splash_bonechill": "Bonechill spell lands",
   "eidolon.subtitle.chant_word": "Chanting",
 
+  "eidolon.subtitle.wraith.ambient": "Wraith moans",
+  "eidolon.subtitle.wraith.death": "Wraith dies",
+  "eidolon.subtitle.wraith.hurt": "Wraith hurts",
+
   "gui.eidolon.codex.title": "Ars Ecclesia",
 
   "jei.eidolon.crucible": "Crucible",

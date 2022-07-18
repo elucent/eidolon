@@ -183,7 +183,11 @@ public class Registry {
         SPLASH_BONECHILL_EVENT = addSound("splash_bonechill"),
         SELECT_SIGN = addSound("select_sign"),
         CHANT_WORD = addSound("chant_word"),
-        PAROUSIA = addSound("parousia");
+        PAROUSIA = addSound("parousia"),
+        WRAITH_DEATH = addSound("wraith_death"),
+        WRAITH_AMBIENT = addSound("wraith_ambient"),
+        WRAITH_HURT = addSound("wraith_hurt");
+
 
     public static RegistryObject<Effect>
         CHILLED_EFFECT = POTIONS.register("chilled", () -> new ChilledEffect()),
