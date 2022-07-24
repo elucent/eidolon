@@ -26,10 +26,14 @@ public class PlinthBlockBase extends BlockBase implements SimpleWaterloggedBlock
         super(properties);
     }
 
-    protected boolean canConnectTo(Level world, BlockPos pos, Direction dir) {
+    protected boolean canConnectTo(LevelAccessor world, BlockPos pos, Direction dir) {
         BlockState state = world.getBlockState(pos);
-        if (state.getBlock() instanceof PlinthBlockBase && dir.getAxis() == Direction.Axis.Y) return true;
-        if (dir == Direction.UP && state.getBlock() == Registry.STONE_HAND.get()) return true;
+        if (state.getBlock() instanceof PlinthBlockBase && dir.getAxis() == Direction.Axis.Y) {
+            return true;
+        }
+        if (dir == Direction.UP && state.getBlock() == Registry.STONE_HAND.get()) {
+            return true;
+        }
         return false;
     }
 
@@ -61,8 +65,12 @@ public class PlinthBlockBase extends BlockBase implements SimpleWaterloggedBlock
             world.getFluidTicks().schedule(ScheduledTick.probe(Fluids.WATER, pos));
         }
 
-        if (facing == Direction.UP) state = state.setValue(TOP, canConnectTo((Level) world, pos.above(), Direction.UP));
-        if (facing == Direction.DOWN) state = state.setValue(BOTTOM, canConnectTo((Level) world, pos.below(), Direction.DOWN));
+        if (facing == Direction.UP) {
+            state = state.setValue(TOP, canConnectTo(world, pos.above(), Direction.UP));
+        }
+        if (facing == Direction.DOWN) {
+            state = state.setValue(BOTTOM, canConnectTo(world, pos.below(), Direction.DOWN));
+        }
 
         return state;
     }

@@ -1,18 +1,27 @@
 package elucent.eidolon.world.worldgen;
 
+import com.mojang.datafixers.util.Pair;
 import elucent.eidolon.Eidolon;
 import elucent.eidolon.world.CatacombPieces;
 import elucent.eidolon.world.CatacombStructure;
 import elucent.eidolon.world.LabStructure;
 import elucent.eidolon.world.StrayTowerStructure;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
+import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,6 +30,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -32,6 +42,8 @@ public class WorldGen {
     static DeferredRegister<StructurePieceType> PIECES = DeferredRegister.create(Registry.STRUCTURE_PIECE.key(), Eidolon.MODID);
     static DeferredRegister<ConfiguredStructureFeature<?, ?>> CONFIGURED_STRUCTURE =
             DeferredRegister.create(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.key(), Eidolon.MODID);
+    static DeferredRegister<StructureSet> STRUCTURE_SET = DeferredRegister.create(Registry.STRUCTURE_SET_REGISTRY, Eidolon.MODID);
+    static DeferredRegister<StructureTemplatePool> TEMPLATE_POOL = DeferredRegister.create(Registry.TEMPLATE_POOL_REGISTRY, Eidolon.MODID);
 
     static RegistryObject<StructurePieceType> register(Supplier<StructurePieceType> type, String name) {
         return PIECES.register(name, type);
@@ -65,6 +77,8 @@ public class WorldGen {
         STRUCTURES.register(bus);
         PIECES.register(bus);
         CONFIGURED_STRUCTURE.register(bus);
+        STRUCTURE_SET.register(bus);
+        TEMPLATE_POOL.register(bus);
     }
 
     public static void init() {
@@ -87,6 +101,26 @@ public class WorldGen {
         CatacombPieces.TURNAROUND = register(() -> CatacombPieces.Turnaround::new, CatacombPieces.TURNAROUND_ID.getPath());
         CatacombPieces.LAB = register(() -> CatacombPieces.Lab::new, CatacombPieces.LAB_ID.getPath());
         CATACOMB_FEATURE = registerC(() -> addStep(CATACOMB_STRUCTURE.get().configured(NoneFeatureConfiguration.INSTANCE, BiomeTags.HAS_VILLAGE_SNOWY), GenerationStep.Decoration.UNDERGROUND_STRUCTURES), "catacomb");
+
+        baseTemplate(baseSet(LAB_FEATURE, 2496546));
+        baseTemplate(baseSet(STRAY_TOWER_FEATURE, 8146023));
+        baseTemplate(baseSet(CATACOMB_FEATURE, 9564599));
+    }
+
+    static RegistryObject<StructureSet> baseSet(RegistryObject object, int salt) {
+        return STRUCTURE_SET.register(object.getId().getPath(), () -> new StructureSet(
+                List.of(StructureSet.entry((Holder<ConfiguredStructureFeature<?,?>>) (object.getHolder().get()), 1)),
+                new RandomSpreadStructurePlacement(30, 8, RandomSpreadType.LINEAR, salt)
+        ));
+    }
+
+    static final ResourceLocation EMPTY_FALLBACK = new ResourceLocation("empty");
+
+    static RegistryObject<StructureTemplatePool> baseTemplate(RegistryObject<StructureSet> object) {
+        return TEMPLATE_POOL.register(object.getId().getPath(), () -> new StructureTemplatePool(
+                object.getId(), EMPTY_FALLBACK,
+                List.of(new Pair<>(new SinglePoolElement(new StructureTemplate()), 1))
+        ));
     }
 
     static ConfiguredStructureFeature<NoneFeatureConfiguration, ? extends StructureFeature<NoneFeatureConfiguration>> addStep(
