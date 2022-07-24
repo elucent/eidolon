@@ -21,7 +21,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
 
-public class RenderUtil {
+public class RenderUtil extends RenderStateShard {
     public static final RenderStateShard.TransparencyStateShard ADDITIVE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("lightning_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
@@ -49,6 +49,8 @@ public class RenderUtil {
             .setLightmapState(new RenderStateShard.LightmapStateShard(false))
             //.setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
+                // TODO
+                .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
             .createCompositeState(false)
     ), GLOWING = RenderType.create(
@@ -62,6 +64,8 @@ public class RenderUtil {
             .setLightmapState(new RenderStateShard.LightmapStateShard(false))
             //.setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
+                // TODO
+                .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
             .createCompositeState(false)
     ), DELAYED_PARTICLE = RenderType.create(
         Eidolon.MODID + ":delayed_particle",
@@ -75,6 +79,8 @@ public class RenderUtil {
             //.setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
             .setTransparencyState(NORMAL_TRANSPARENCY)
             .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false, false))
+                // TODO
+                .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
             .createCompositeState(false)
     ), GLOWING_PARTICLE = RenderType.create(
         Eidolon.MODID + ":glowing_particle",
@@ -88,6 +94,8 @@ public class RenderUtil {
             //.setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
             .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false, false))
+                // TODO
+                .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
             .createCompositeState(false)
     ), GLOWING_BLOCK_PARTICLE = RenderType.create(
         Eidolon.MODID + ":glowing_particle",
@@ -101,10 +109,16 @@ public class RenderUtil {
             //.setDiffuseLightingState(new RenderStateShard.DiffuseLightingState(false))
             .setTransparencyState(ADDITIVE_TRANSPARENCY)
             .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
+                // TODO
+                .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
             .createCompositeState(false)
     );
 
     static double ticks = 0;
+
+    public RenderUtil(String pName, Runnable pSetupState, Runnable pClearState) {
+        super(pName, pSetupState, pClearState);
+    }
 
     public static void litQuad(PoseStack mStack, MultiBufferSource buffer, double x, double y, double w, double h, float r, float g, float b, TextureAtlasSprite sprite) {
         VertexConsumer builder = buffer.getBuffer(GLOWING_SPRITE);

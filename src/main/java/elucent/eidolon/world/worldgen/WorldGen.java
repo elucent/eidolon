@@ -30,7 +30,8 @@ public class WorldGen {
 
     static DeferredRegister<StructureFeature<?>> STRUCTURES = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, Eidolon.MODID);
     static DeferredRegister<StructurePieceType> PIECES = DeferredRegister.create(Registry.STRUCTURE_PIECE.key(), Eidolon.MODID);
-    static DeferredRegister<ConfiguredStructureFeature<?, ?>> CONFIGURED_STRUCTURE = DeferredRegister.create(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.key(), Eidolon.MODID);
+    static DeferredRegister<ConfiguredStructureFeature<?, ?>> CONFIGURED_STRUCTURE =
+            DeferredRegister.create(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.key(), Eidolon.MODID);
 
     static RegistryObject<StructurePieceType> register(Supplier<StructurePieceType> type, String name) {
         return PIECES.register(name, type);
@@ -60,15 +61,18 @@ public class WorldGen {
             LAB_FEATURE, STRAY_TOWER_FEATURE, CATACOMB_FEATURE;
 
     public static void preInit() {
-        STRUCTURES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        STRUCTURES.register(bus);
+        PIECES.register(bus);
+        CONFIGURED_STRUCTURE.register(bus);
     }
 
     public static void init() {
         LAB_PIECE = register(() -> LabStructure.Piece::new, "lab");
-        LAB_FEATURE = registerC(() -> LAB_STRUCTURE.get().configured(NoneFeatureConfiguration.INSTANCE, BiomeTags.HAS_VILLAGE_PLAINS), "lab");
+        LAB_FEATURE = registerC(() -> addStep(LAB_STRUCTURE.get().configured(NoneFeatureConfiguration.INSTANCE, BiomeTags.HAS_VILLAGE_PLAINS)), "lab");
 
         STRAY_TOWER_PIECE = register(() -> StrayTowerStructure.Piece::new, "stray_tower");
-        STRAY_TOWER_FEATURE = registerC(() -> STRAY_TOWER_STRUCTURE.get().configured(NoneFeatureConfiguration.INSTANCE, BiomeTags.HAS_VILLAGE_PLAINS), "stray_tower");
+        STRAY_TOWER_FEATURE = registerC(() -> addStep(STRAY_TOWER_STRUCTURE.get().configured(NoneFeatureConfiguration.INSTANCE, BiomeTags.HAS_VILLAGE_PLAINS)), "stray_tower");
 
         CatacombPieces.CORRIDOR_CENTER = register(() -> CatacombPieces.CorridorCenter::new, CatacombPieces.CORRIDOR_CENTER_ID.getPath());
         CatacombPieces.CORRIDOR_DOOR = register(() -> CatacombPieces.CorridorDoor::new, CatacombPieces.CORRIDOR_DOOR_ID.getPath());
@@ -82,7 +86,21 @@ public class WorldGen {
         CatacombPieces.GRAVEYARD = register(() -> CatacombPieces.Graveyard::new, CatacombPieces.GRAVEYARD_ID.getPath());
         CatacombPieces.TURNAROUND = register(() -> CatacombPieces.Turnaround::new, CatacombPieces.TURNAROUND_ID.getPath());
         CatacombPieces.LAB = register(() -> CatacombPieces.Lab::new, CatacombPieces.LAB_ID.getPath());
-        CATACOMB_FEATURE = registerC(() -> CATACOMB_STRUCTURE.get().configured(NoneFeatureConfiguration.INSTANCE, BiomeTags.HAS_VILLAGE_SNOWY), "catacomb");
+        CATACOMB_FEATURE = registerC(() -> addStep(CATACOMB_STRUCTURE.get().configured(NoneFeatureConfiguration.INSTANCE, BiomeTags.HAS_VILLAGE_SNOWY), GenerationStep.Decoration.UNDERGROUND_STRUCTURES), "catacomb");
+    }
+
+    static ConfiguredStructureFeature<NoneFeatureConfiguration, ? extends StructureFeature<NoneFeatureConfiguration>> addStep(
+            ConfiguredStructureFeature<NoneFeatureConfiguration, ? extends StructureFeature<NoneFeatureConfiguration>> feature,
+            GenerationStep.Decoration decoration
+    ) {
+        StructureFeature.STEP.put(feature.feature, decoration);
+        return feature;
+    }
+
+    static ConfiguredStructureFeature<NoneFeatureConfiguration, ? extends StructureFeature<NoneFeatureConfiguration>> addStep(
+            ConfiguredStructureFeature<NoneFeatureConfiguration, ? extends StructureFeature<NoneFeatureConfiguration>> feature
+    ) {
+        return addStep(feature, GenerationStep.Decoration.SURFACE_STRUCTURES);
     }
 
     @SubscribeEvent

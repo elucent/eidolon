@@ -74,7 +74,9 @@ public class Eidolon {
         Registry.init();
         proxy.init();
         MinecraftForge.EVENT_BUS.register(new WorldGen());
+
         WorldGen.preInit();
+        WorldGen.init();
 
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
         WorldGen.register(bus);
@@ -89,7 +91,6 @@ public class Eidolon {
 
     public void setup(final FMLCommonSetupEvent event) {
         Networking.init();
-        WorldGen.init();
         event.enqueueWork(() -> {
             RitualRegistry.init();
             CodexChapters.init();
