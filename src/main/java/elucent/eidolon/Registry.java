@@ -266,16 +266,16 @@ public class Registry {
     public static RegistryObject<Block>
         LEAD_ORE = addBlock("lead_ore", blockProps(Material.ROCK, MaterialColor.STONE)
             .sound(SoundType.STONE).hardnessAndResistance(2.8f, 3.0f)
-            .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
+            .setRequiresTool().harvestLevel(2).harvestTool(ToolType.PICKAXE)),
         LEAD_BLOCK = addBlock("lead_block", blockProps(Material.ROCK, MaterialColor.PURPLE_TERRACOTTA)
             .sound(SoundType.METAL).hardnessAndResistance(3.0f, 3.0f)
-            .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
+            .setRequiresTool().harvestLevel(2).harvestTool(ToolType.PICKAXE)),
         PEWTER_BLOCK = addBlock("pewter_block", blockProps(Material.ROCK, MaterialColor.LIGHT_GRAY)
             .sound(SoundType.METAL).hardnessAndResistance(4.0f, 4.0f)
-            .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
+            .setRequiresTool().harvestLevel(2).harvestTool(ToolType.PICKAXE)),
         ARCANE_GOLD_BLOCK = addBlock("arcane_gold_block", blockProps(Material.ROCK, MaterialColor.GOLD)
             .sound(SoundType.METAL).hardnessAndResistance(3.0f, 4.0f)
-            .harvestLevel(2).harvestTool(ToolType.PICKAXE)),
+            .setRequiresTool().harvestLevel(2).harvestTool(ToolType.PICKAXE)),
         WOODEN_ALTAR = addBlock("wooden_altar", new TableBlockBase(blockProps(Material.WOOD, MaterialColor.WOOD)
             .sound(SoundType.WOOD).hardnessAndResistance(1.6f, 3.0f)
             .harvestTool(ToolType.AXE))),
