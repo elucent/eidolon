@@ -92,13 +92,13 @@ public class WorktableResultSlot extends Slot {
             if (!item.isEmpty()) {
                 inv.decrStackSize(index, 1);
                 item = inv.getStackInSlot(index);
+                remaining.grow(1);
             }
 
             if (!remaining.isEmpty()) {
                 if (item.isEmpty()) {
                     inv.setInventorySlotContents(index, remaining);
                 } else if (ItemStack.areItemsEqual(item, remaining) && ItemStack.areItemStackTagsEqual(item, remaining)) {
-                    remaining.grow(item.getCount());
                     inv.setInventorySlotContents(index, remaining);
                 } else if (!this.player.inventory.addItemStackToInventory(remaining)) {
                     this.player.dropItem(remaining, false);
